@@ -1147,11 +1147,10 @@ function geoPunch(d,dir){
   else{var lp=d.punches[d.punches.length-1];if(lp&&GEO.last&&Date.now()-GEO.last.at<600000)lp.outLoc=[GEO.last.lat,GEO.last.lng];setTimeout(geoStop,0)}
 }
 function geoSync(){if(!SB||!ME)return;var on=clockedIn();if(on&&GEO.watch==null&&!GEO.denied&&!GEO.err)geoStart();else if(!on&&GEO.watch!=null)geoStop();geoChip()}
-function geoChip(){var e=$('geo');if(!e)return;if(!SB||!ME||!clockedIn()){e.hidden=true;return}e.hidden=false;e.textContent=GEO.err?'⚠️ Location off':'📍 Location on';e.className=GEO.err?'off':'';tr(e)}
+function geoChip(){var e=$('geo');if(e)e.hidden=true;}
 function geoNote(on){
-  if(!SB||!on)return '';
-  if(GEO.err)return '<div class="box2" style="color:var(--tx)"><b>⚠️ Location is off</b><div>'+(GEO.err=='denied'?'Allow location for this website: iPhone Settings → Privacy & Security → Location Services → Safari Websites → While Using. Then tap Try again.':'Your phone could not get a location. Check that Location Services is on.')+'</div><button class="btn alt" onclick="GEO.denied=false;GEO.err=null;geoStart()">Try again</button></div>';
-  return '<div style="margin:6px 0;font-size:14px">📍 Your location is shared with the shop while you are clocked in. Keep this app open for live updates.</div>';
+  if(!SB||!on||!GEO.err)return '';
+  return '<div class="box2" style="color:var(--tx)"><b>⚠️ Location is off</b><div>'+(GEO.err=='denied'?'Allow location for this website: iPhone Settings → Privacy & Security → Location Services → Safari Websites → While Using. Then tap Try again.':'Your phone could not get a location. Check that Location Services is on.')+'</div><button class="btn alt" onclick="GEO.denied=false;GEO.err=null;geoStart()">Try again</button></div>';
 }
 function ago(t){if(!t)return '–';var m=Math.round((Date.now()-t)/60000);return m<1?'just now':m<60?m+' min ago':Math.floor(m/60)+' h '+(m%60)+' min ago'}
 function mapView(){
