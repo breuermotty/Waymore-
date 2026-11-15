@@ -12,6 +12,10 @@ header{background:var(--ac);color:var(--on-ac);padding:12px 16px;font-weight:700
 #gear{font-size:17px;line-height:1;padding:3px 8px;border-radius:99px;border:2px solid currentColor;background:transparent;cursor:pointer}
 #net{font-size:12px;font-weight:600;background:rgba(0,0,0,.14);padding:3px 8px;border-radius:99px}
 nav{display:none!important}
+#geo{font-size:12px;font-weight:700;background:rgba(0,0,0,.14);padding:3px 8px;border-radius:99px;white-space:nowrap}#geo.off{background:#e03131;color:#fff}
+.lmap{height:55vh;min-height:260px;border-radius:12px;overflow:hidden;border:1px solid var(--ln);background:var(--card)}
+.lpin{display:inline-block;transform:translate(-50%,-120%);background:var(--ac);color:#1a1a1a;font:700 13px/1 system-ui,sans-serif;padding:6px 9px;border-radius:99px;border:2px solid #1a1a1a;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,.35)}
+.lpin.off{background:#ccc}
 .pv{position:fixed;inset:0;z-index:60;background:#000;color:#fff;display:flex;flex-direction:column}
 .pvt{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:calc(10px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) 10px max(16px,env(safe-area-inset-left,0px));font-weight:600}
 .pvt button{flex:none;background:rgba(255,255,255,.18);color:#fff;border:0;border-radius:99px;width:42px;height:42px;font-size:20px;cursor:pointer}
@@ -100,7 +104,7 @@ label{font-size:13px;font-weight:600;color:var(--mu)}
 header.in{background:#2b8a3e;color:#fff}
 .card.on{background:#2b8a3e;border-color:#2b8a3e;color:#fff}.card.on .mu{color:#e6f4ea}
 </style></head><body>
-<header><span style="display:flex;gap:10px;align-items:center;min-width:0"><button id="menu" onclick="drawer(true)" aria-label="Menu">☰</button><span id="shopnm">Waymore Jobs</span></span><span style="display:flex;gap:8px;align-items:center"><button id="lng" onclick="setLang()">Español</button><button id="gear" onclick="openSettings()" aria-label="Settings">⚙️</button><span id="net">online</span></span></header>
+<header><span style="display:flex;gap:10px;align-items:center;min-width:0"><button id="menu" onclick="drawer(true)" aria-label="Menu">☰</button><span id="shopnm">Waymore Jobs</span></span><span style="display:flex;gap:8px;align-items:center"><button id="lng" onclick="setLang()">Español</button><button id="gear" onclick="openSettings()" aria-label="Settings">⚙️</button><span id="geo" hidden></span><span id="net">online</span></span></header>
 <nav><button id="t1" class="on">Shop desk</button><button id="t2">Mechanic</button></nav>
 <main id="app"></main>
 <script>
@@ -284,6 +288,7 @@ async function init(){
   setNet();
   if(SB){db=SBDB;assets=SBASSETS;dict=webDict();uid=ME.id;
     db.collection('serviceOrders').orderBy('created','desc').limit(5000).onSnapshot(function(s){orders=s.docs.map(function(d){var x=d.data();x.id=d.id;return x});render()});
+    if(!isMech())db.collection('locations').onSnapshot(function(s){GMAP.list=s.docs.map(function(d){var x=d.data();x.uid=x.uid||d.id;return x});render()});
   }else{
   try{
     var c=window.claude&&await claude.use('db');
@@ -484,7 +489,7 @@ var ES={
 'This plate is not in your records yet. Type the VIN or scan it with the camera and the truck info fills in.':'Esta placa todavía no está en tus registros. Escribe el VIN o escanéalo con la cámara y se llenan los datos del camión.',
 'Could not read a VIN in the photo. Try again closer, or type it.':'No se pudo leer un VIN en la foto. Intenta más de cerca o escríbelo.',
 'Scanning needs Claude, which is not available here.':'Escanear necesita a Claude, que no está disponible aquí.','Claude was not allowed, so the photo could not be read.':'Claude no fue permitido, así que no se pudo leer la foto.',
-'Add an item':'Agregar una tarea','Purchase orders':'Órdenes de compra','Vendors':'Proveedores','⬆︎ Share':'⬆︎ Compartir','Open full size ↗':'Ver en tamaño completo ↗','✓ Photo link copied':'✓ Enlace de la foto copiado',
+'Add an item':'Agregar una tarea','Live map':'Mapa en vivo','📍 Location on':'📍 Ubicación activa','⚠️ Location off':'⚠️ Ubicación apagada','⚠️ Location is off':'⚠️ La ubicación está apagada','Allow location for this website: iPhone Settings → Privacy & Security → Location Services → Safari Websites → While Using. Then tap Try again.':'Permite la ubicación para esta página: Ajustes del iPhone → Privacidad y seguridad → Localización → Sitios web de Safari → Cuando se use. Luego toca Intentar otra vez.','Your phone could not get a location. Check that Location Services is on.':'Tu teléfono no pudo obtener la ubicación. Revisa que la Localización esté activada.','Try again':'Intentar otra vez','📍 Your location is shared with the shop while you are clocked in. Keep this app open for live updates.':'📍 Tu ubicación se comparte con el taller mientras estás en turno. Mantén la app abierta para actualizaciones en vivo.','Sharing location now':'Compartiendo ubicación ahora','Clocked in, location off':'En turno, ubicación apagada','Updates about every minute while each phone has the app open. Map © OpenStreetMap.':'Se actualiza cada minuto mientras cada teléfono tenga la app abierta. Mapa © OpenStreetMap.','Show on map':'Ver en el mapa',"Today's route":'Ruta de hoy','Open in Maps ↗':'Abrir en Mapas ↗','Nobody has clocked in on the website yet.':'Nadie ha marcado entrada en la página todavía.','No route recorded today yet.':'Todavía no hay ruta hoy.','The map could not load. Check your signal.':'El mapa no pudo cargar. Revisa la señal.','📍 Live map':'📍 Mapa en vivo','just now':'justo ahora','Purchase orders':'Órdenes de compra','Vendors':'Proveedores','⬆︎ Share':'⬆︎ Compartir','Open full size ↗':'Ver en tamaño completo ↗','✓ Photo link copied':'✓ Enlace de la foto copiado',
 'Sharing is not available here. Tap Open full size, then share from there.':'Compartir no está disponible aquí. Toca Ver en tamaño completo y comparte desde ahí.','Sharing is not available here.':'Compartir no está disponible aquí.',
 'Add vendor':'Agregar proveedor','Cost $':'Costo $','each':'c/u','Edit vendor':'Editar proveedor','Contact person':'Persona de contacto','Account #':'Cuenta #','Delete this vendor? Their purchase orders stay.':'¿Eliminar este proveedor? Sus órdenes de compra se quedan.','Delete vendor':'Eliminar proveedor',
 '← All vendors':'← Todos los proveedores','Ordered from this vendor:':'Comprado a este proveedor:','➕ New PO':'➕ Nueva orden de compra','No purchase orders yet.':'Todavía no hay órdenes de compra.','➕ Add vendor':'➕ Agregar proveedor',
@@ -529,6 +534,7 @@ var ES={
 var CH={'All':'Todas','Open':'Abiertas','Ready to bill':'Listas para facturar','Billed':'Facturadas'};
 var AX={'complaint':'queja','cause':'causa','correction':'corrección','not marked repaired':'no marcada como reparada'};
 var PAT=[
+[/^(🟢 Clocked in|⚪ Clocked out) · (updated|last seen) (.+)$/,function(m,a,b,c){return (a.indexOf('in')>0?'🟢 En turno':'⚪ Fuera de turno')+' · '+(b=='updated'?'actualizado ':'visto ')+trS(c)}],[/^(\d+) min ago$/,'hace $1 min'],[/^(\d+) h (\d+) min ago$/,'hace $1 h $2 min'],[/^Accurate to about (\d+) m$/,'Precisión de unos $1 m'],[/^Live location works on the website version, where phones can share their location: (.+)$/,'La ubicación en vivo funciona en la página web, donde los teléfonos pueden compartir su ubicación: $1'],
 [/^PO-(\d+) · (.*)$/,function(m,a,b){return 'PO-'+a+' · '+trS(b)}],[/^(\d+) lines?( · .*)?$/,function(m,a,b){return a+' línea(s)'+(b||'').replace(/(\d+) of (\d+) received/,'$1 de $2 recibidas')}],
 [/^(\d+) open POs?$/,'$1 orden(es) abierta(s)'],[/^Created (.*)$/,function(m,a){return 'Creada '+a.replace(' · Ordered ',' · Pedida ').replace(' · Received ',' · Recibida ')}],
 [/^Purchase orders \((\d+)\)$/,'Órdenes de compra ($1)'],[/^(Open|Received|All) \((\d+)\)$/,function(m,a,b){return {Open:'Abiertas',Received:'Recibidas',All:'Todas'}[a]+' ('+b+')'}],
@@ -618,6 +624,8 @@ function render(){
   dc=$('dtc');if(keep&&dc&&dc.dataset.id===cur)Object.keys(keep).forEach(function(k){var e=$(k);if(e&&e!==document.activeElement)e.value=keep[k]});
   $('lng').textContent=lang=='es'?'English':'Español';document.documentElement.lang=lang;
   tr(document.body);
+  if(SB)geoSync();
+  if(dtab=='map'&&tab==1&&!cur&&!setOpen)mapMount();
 }
 function render0(){
   var ae=document.activeElement;if(ae&&ae.id&&ae.type!='checkbox'&&/^(nt|ei|eo|nmi|sp|ck|rv|f_|cu_|pa_|pu_|sc_|dt_|ac_|s_|rp_|lg_|wr_|ve_|po_)/.test(ae.id)){pendR=true;return}
@@ -631,7 +639,7 @@ function render0(){
   a.innerHTML='<div class="ptitle"><span>🛠</span>Tech Home</div>'+listView();
 }
 function deskView(){
-  return pendingBanner()+subNav()+(dtab=='new'?newView():dtab=='sched'?schedView():dtab=='hrs'?hoursView():dtab=='open'?ticketsView():dtab=='cust'?custView():dtab=='office'?officeView():dtab=='rep'?reportsView():dtab=='po'?poView():dtab=='vendors'?vendorsView():partsView());
+  return pendingBanner()+subNav()+(dtab=='new'?newView():dtab=='sched'?schedView():dtab=='hrs'?hoursView():dtab=='open'?ticketsView():dtab=='cust'?custView():dtab=='office'?officeView():dtab=='rep'?reportsView():dtab=='po'?poView():dtab=='map'?mapView():dtab=='vendors'?vendorsView():partsView());
 }
 var nItems=[];
 function nowLocal(){var d=new Date();d.setMinutes(d.getMinutes()-d.getTimezoneOffset());return d.toISOString().slice(0,16)}
@@ -879,7 +887,7 @@ function subNav(){
   return m?'<div class="ptitle"><span>'+m[2]+'</span>'+m[1]+'</div>':'';
 }
 // ---- slide-out side menu (replaces the tabs) ----
-var MENU=[['tech','Tech Home','🛠'],['new','Create SO','➕'],['open','Service','📋'],['sched','Schedule','📅'],['parts','Parts','🔧'],['po','Purchase orders','📦'],['vendors','Vendors','🏭'],['office','Office','🧾'],['rep','Reporting','📈'],['cust','Customers','👤'],['hrs','Workers hours','⏱']];
+var MENU=[['tech','Tech Home','🛠'],['new','Create SO','➕'],['open','Service','📋'],['map','Live map','📍'],['sched','Schedule','📅'],['parts','Parts','🔧'],['po','Purchase orders','📦'],['vendors','Vendors','🏭'],['office','Office','🧾'],['rep','Reporting','📈'],['cust','Customers','👤'],['hrs','Workers hours','⏱']];
 function menuBadges(k){
   var a=all(),B=[];
   if(k=='tech'){var n=a.filter(function(o){return o.status!='done'&&(!nm||!o.mechanic||lc(o.mechanic)===lc(nm))}).length;if(n)B.push([n,''])}
@@ -1090,6 +1098,92 @@ function saveCust(){
   saveDoc('customers',o);copen=n;cedit=null;render();
 }
 // parts catalog
+// ---- live location while clocked in (website only; Claude blocks location) ----
+var GEO={watch:null,last:null,sent:null,trail:null,trailSent:0,err:null,needIn:false,denied:false};
+var GMAP={map:null,el:null,marks:{},line:null,lib:null,list:[],fit:true};
+function clockedIn(){var l=day&&day.punches&&day.punches[day.punches.length-1];return !!(l&&!l.out)}
+function dist(a,b){var R=6371000,r=Math.PI/180,dl=(b.lat-a.lat)*r,dg=(b.lng-a.lng)*r,x=Math.pow(Math.sin(dl/2),2)+Math.cos(a.lat*r)*Math.cos(b.lat*r)*Math.pow(Math.sin(dg/2),2);return 2*R*Math.asin(Math.sqrt(x))}
+function geoStart(){
+  if(!SB||!ME||GEO.watch!=null)return;
+  if(!navigator.geolocation){GEO.err='unavailable';geoReport();geoChip();return}
+  try{GEO.watch=navigator.geolocation.watchPosition(geoPos,geoErr,{enableHighAccuracy:true,maximumAge:20000,timeout:60000})}catch(e){GEO.err='unavailable';geoReport()}
+  geoChip();
+}
+function geoStop(){
+  if(GEO.watch!=null){try{navigator.geolocation.clearWatch(GEO.watch)}catch(e){}}GEO.watch=null;
+  if(GEO.trail&&GEO.trail.pts.length)dbWrite('loctrail',GEO.trail.id,{uid:ME.id,name:nm,date:today(),pts:GEO.trail.pts});GEO.trail=null;GEO.trailSent=0;
+  var c=GEO.last||{};if(ME)dbWrite('locations',ME.id,{uid:ME.id,name:nm,lat:c.lat==null?null:c.lat,lng:c.lng==null?null:c.lng,acc:c.acc||null,at:c.at||Date.now(),clockedIn:false,outAt:Date.now()});
+  GEO.sent=null;GEO.err=null;geoChip();
+}
+function geoPos(p){
+  var c={lat:p.coords.latitude,lng:p.coords.longitude,acc:Math.round(p.coords.accuracy||0),at:Date.now()},hadErr=GEO.err;GEO.last=c;GEO.err=null;GEO.denied=false;
+  if(GEO.needIn&&day&&day.punches&&day.punches.length){var d=JSON.parse(JSON.stringify(day)),l=d.punches[d.punches.length-1];if(l&&!l.out&&!l.inLoc){l.inLoc=[c.lat,c.lng];day=d;db.doc('timeclock/'+dayKey()).set(d)}GEO.needIn=false}
+  if(!clockedIn())return;
+  if(hadErr||!GEO.sent||c.at-GEO.sent.at>60000||dist(GEO.sent,c)>100){GEO.sent=c;dbWrite('locations',ME.id,{uid:ME.id,name:nm,lat:c.lat,lng:c.lng,acc:c.acc,at:c.at,clockedIn:true});geoTrail(c)}
+  geoChip();if(hadErr)render();
+}
+function geoErr(e){
+  GEO.err=e&&e.code==1?'denied':'unavailable';
+  if(e&&e.code==1){GEO.denied=true;if(GEO.watch!=null){try{navigator.geolocation.clearWatch(GEO.watch)}catch(x){}GEO.watch=null}}
+  geoReport();geoChip();render();
+}
+function geoReport(){if(!ME||!clockedIn())return;var c=GEO.last||{};dbWrite('locations',ME.id,{uid:ME.id,name:nm,lat:c.lat==null?null:c.lat,lng:c.lng==null?null:c.lng,acc:c.acc||null,at:c.at||null,clockedIn:true,off:GEO.err,offAt:Date.now()})}
+async function geoTrail(c){
+  var id='trail_'+ME.id+'_'+today();
+  if(!GEO.trail||GEO.trail.id!==id){GEO.trail={id:id,pts:[]};try{var r=await sbc.from('docs').select('data').eq('col','loctrail').eq('id',id).maybeSingle();if(r.data&&r.data.data&&r.data.data.pts)GEO.trail.pts=r.data.data.pts.concat(GEO.trail.pts)}catch(e){}}
+  GEO.trail.pts.push([c.at,+c.lat.toFixed(6),+c.lng.toFixed(6)]);if(GEO.trail.pts.length>3000)GEO.trail.pts=GEO.trail.pts.slice(-3000);
+  if(c.at-GEO.trailSent>300000||GEO.trail.pts.length<3){GEO.trailSent=c.at;dbWrite('loctrail',id,{uid:ME.id,name:nm,date:today(),pts:GEO.trail.pts})}
+}
+function geoPunch(d,dir){
+  if(dir=='in'){GEO.needIn=true;GEO.denied=false;GEO.err=null;geoStart()}
+  else{var lp=d.punches[d.punches.length-1];if(lp&&GEO.last&&Date.now()-GEO.last.at<600000)lp.outLoc=[GEO.last.lat,GEO.last.lng];setTimeout(geoStop,0)}
+}
+function geoSync(){if(!SB||!ME)return;var on=clockedIn();if(on&&GEO.watch==null&&!GEO.denied&&!GEO.err)geoStart();else if(!on&&GEO.watch!=null)geoStop();geoChip()}
+function geoChip(){var e=$('geo');if(!e)return;if(!SB||!ME||!clockedIn()){e.hidden=true;return}e.hidden=false;e.textContent=GEO.err?'⚠️ Location off':'📍 Location on';e.className=GEO.err?'off':'';tr(e)}
+function geoNote(on){
+  if(!SB||!on)return '';
+  if(GEO.err)return '<div class="box2" style="color:var(--tx)"><b>⚠️ Location is off</b><div>'+(GEO.err=='denied'?'Allow location for this website: iPhone Settings → Privacy & Security → Location Services → Safari Websites → While Using. Then tap Try again.':'Your phone could not get a location. Check that Location Services is on.')+'</div><button class="btn alt" onclick="GEO.denied=false;GEO.err=null;geoStart()">Try again</button></div>';
+  return '<div style="margin:6px 0;font-size:14px">📍 Your location is shared with the shop while you are clocked in. Keep this app open for live updates.</div>';
+}
+function ago(t){if(!t)return '–';var m=Math.round((Date.now()-t)/60000);return m<1?'just now':m<60?m+' min ago':Math.floor(m/60)+' h '+(m%60)+' min ago'}
+function mapView(){
+  if(!SB)return '<div class="card"><b>📍 Live map</b><p class="mu">Live location works on the website version, where phones can share their location: '+SITE+'</p></div>';
+  var Ls=GMAP.list.slice().sort(function(a,b){return (b.clockedIn?1:0)-(a.clockedIn?1:0)||(lc(a.name)<lc(b.name)?-1:1)}),on=Ls.filter(function(x){return x.clockedIn&&!x.off}),off=Ls.filter(function(x){return x.clockedIn&&x.off});
+  return tiles([[on.length,'Sharing location now'],[off.length,'Clocked in, location off']])+'<div id="lmap_ph" class="lmap"></div><p class="mu" style="margin:6px 0 12px">Updates about every minute while each phone has the app open. Map © OpenStreetMap.</p>'+
+    (Ls.map(function(x){var st=x.clockedIn?(x.off?'⚠️ Location off':'🟢 Clocked in · updated '+ago(x.at)):'⚪ Clocked out · last seen '+ago(x.at),has=x.lat!=null;
+      return '<div class="card"><div class="row" style="align-items:center"><b>'+esc(x.name||'')+'</b><span class="mu" style="text-align:right">'+st+'</span></div>'+(x.acc&&x.clockedIn&&!x.off?'<div class="mu">Accurate to about '+x.acc+' m</div>':'')+
+        (has?'<div class="row"><button class="btn alt" onclick="mapFocus(\''+x.uid+'\')">Show on map</button><button class="btn alt" onclick="mapRoute(\''+x.uid+'\')">Today\'s route</button></div><a class="btn alt" style="display:block;text-align:center;text-decoration:none" href="https://maps.apple.com/?q='+x.lat+','+x.lng+'" target="_blank" rel="noopener">Open in Maps ↗</a>':'')+'</div>'}).join('')||'<p class="mu">Nobody has clocked in on the website yet.</p>');
+}
+function loadLeaflet(){
+  if(window.L&&window.L.map)return Promise.resolve();if(GMAP.lib)return GMAP.lib;
+  GMAP.lib=new Promise(function(res,rej){var l=document.createElement('link');l.rel='stylesheet';l.href='https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css';document.head.appendChild(l);
+    var s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js';s.onload=res;s.onerror=function(){GMAP.lib=null;rej()};document.head.appendChild(s)});
+  return GMAP.lib;
+}
+function mapMount(){
+  var ph=$('lmap_ph');if(!ph)return;if(!GMAP.el){GMAP.el=document.createElement('div');GMAP.el.style.cssText='width:100%;height:100%'}if(GMAP.el.parentNode!==ph)ph.appendChild(GMAP.el);
+  loadLeaflet().then(function(){
+    if(!GMAP.map){GMAP.map=L.map(GMAP.el);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(GMAP.map);GMAP.map.setView([39.5,-98.35],4)}
+    setTimeout(function(){if(GMAP.map){GMAP.map.invalidateSize();mapMarks()}},0);
+  }).catch(function(){ph.innerHTML='<div class="mu" style="padding:12px">The map could not load. Check your signal.</div>'});
+}
+function mapMarks(){
+  if(!GMAP.map)return;var seen={},pts=[];
+  GMAP.list.forEach(function(x){if(x.lat==null||!x.clockedIn)return;seen[x.uid]=1;var ll=[x.lat,x.lng];pts.push(ll);
+    var ic=L.divIcon({className:'',iconSize:null,html:'<span class="lpin'+(x.off?' off':'')+'">'+esc((x.name||'?').split(' ')[0])+'</span>'});
+    if(GMAP.marks[x.uid])GMAP.marks[x.uid].setLatLng(ll).setIcon(ic);else GMAP.marks[x.uid]=L.marker(ll,{icon:ic}).addTo(GMAP.map);
+    GMAP.marks[x.uid].bindPopup(esc(x.name||'')+'<br>'+ago(x.at))});
+  Object.keys(GMAP.marks).forEach(function(k){if(!seen[k]){GMAP.map.removeLayer(GMAP.marks[k]);delete GMAP.marks[k]}});
+  if(GMAP.fit&&pts.length){GMAP.map.fitBounds(pts,{padding:[40,40],maxZoom:15});GMAP.fit=false}
+}
+function mapFocus(u){var x=GMAP.list.find(function(y){return y.uid===u});if(!x||!GMAP.map||x.lat==null)return;GMAP.map.setView([x.lat,x.lng],16);if(GMAP.marks[u])GMAP.marks[u].openPopup();$('lmap_ph').scrollIntoView({block:'center'})}
+async function mapRoute(u){
+  if(!GMAP.map)return;var r=await sbc.from('docs').select('data').eq('col','loctrail').eq('id','trail_'+u+'_'+today()).maybeSingle(),pts=(r.data&&r.data.data&&r.data.data.pts)||[];
+  if(GMAP.line){GMAP.map.removeLayer(GMAP.line);GMAP.line=null}
+  if(pts.length<2){toast('No route recorded today yet.');return}
+  GMAP.line=L.polyline(pts.map(function(p){return [p[1],p[2]]}),{color:'#1c7ed6',weight:4}).addTo(GMAP.map);GMAP.map.fitBounds(GMAP.line.getBounds(),{padding:[30,30]});$('lmap_ph').scrollIntoView({block:'center'});
+}
+
 // ---- photo viewer: tap a photo to see it big, swipe or arrows, share ----
 var PV=null;
 function phList(id){var o=byId(id);if(!o)return [];var L=(o.photos||[]).map(function(p){return {src:p.url,label:p.from||''}});queue().filter(function(q){return q.so===id}).forEach(function(q){L.push({src:q.data,label:'waiting'})});return L}
@@ -1644,7 +1738,7 @@ function clock(dir){
   var d=day?JSON.parse(JSON.stringify(day)):{name:nm,date:today(),uid:uid,punches:[]};d.name=nm;d.punches=d.punches||[];
   var l=d.punches[d.punches.length-1];
   if(dir=='in'){if(l&&!l.out)return;d.punches.push({'in':Date.now()})}else{if(!l||l.out){$('net').textContent='Not clocked in';return}d.punches[d.punches.length-1]={'in':l['in'],out:Date.now()}}
-  day=d;sbPush('timeclock',dayKey(),d);
+  day=d;if(SB)geoPunch(d,dir);sbPush('timeclock',dayKey(),d);
   if(db&&uid!='local')db.doc('timeclock/'+dayKey()).set(d).catch(function(e){$('net').textContent='Clock not saved: '+((e&&(e.code||e.message))||'try again')});else sv('wm_day_'+today(),d);
   render();
   }catch(e){$('net').textContent='Clock error: '+e.message}
@@ -1652,7 +1746,7 @@ function clock(dir){
 function clockCard(){
   var l=day&&day.punches&&day.punches[day.punches.length-1],on=l&&!l.out;
   return '<div class="card'+(on?' on':'')+'"><b>'+(on?'CLOCKED IN':'Today\'s hours')+'</b><div style="font-size:28px;font-weight:700" id="dtick">'+fmt(dayMs(day))+'</div><div class="mu">'+(on?'Clocked in since '+tm(l['in']):(l?'Clocked out at '+tm(l.out):'Not clocked in'))+'</div>'+
-  nameBox()+(on?'<button class="btn" onclick="clock(\'out\')">Clock out</button>':'<button class="btn" onclick="clock(\'in\')">Clock in</button>')+'</div>';
+  geoNote(on)+nameBox()+(on?'<button class="btn" onclick="clock(\'out\')">Clock out</button>':'<button class="btn" onclick="clock(\'in\')">Clock in</button>')+'</div>';
 }
 function weekStart(){var d=new Date();d.setDate(d.getDate()-((d.getDay()+6)%7));return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2)}
 function hhmm(t){var d=new Date(t);return ('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2)}
