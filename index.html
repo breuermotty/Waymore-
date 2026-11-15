@@ -622,7 +622,7 @@ function trS(s){if(lang!='es')return s;if(Object.prototype.hasOwnProperty.call(E
 function tr(root){
   if(lang!='es'||!root)return;
   var w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT),n,list=[];while(n=w.nextNode())list.push(n);
-  list.forEach(function(n){var p=n.parentNode;if(!p||(p.closest&&p.closest('textarea,script,style')))return;var t=n.nodeValue,s=t.trim();if(!s)return;var r=trS(s);if(r!==s)n.nodeValue=t.replace(s,r)});
+  list.forEach(function(n){var p=n.parentNode;if(!p||(p.closest&&p.closest('textarea,script,style,.raw')))return;var t=n.nodeValue,s=t.trim();if(!s)return;var r=trS(s);if(r!==s)n.nodeValue=t.replace(s,r)});
   if(root.querySelectorAll)root.querySelectorAll('[placeholder]').forEach(function(e){var r=trS(e.placeholder);if(r!==e.placeholder)e.placeholder=r});
 }
 window.alert=function(s){toast(s)};
@@ -1733,18 +1733,31 @@ function jobView(o){
 }
 function noteEntries(o){var L=(o.noteLog||[]).slice();if(o.notes&&lc(o.notes))L.unshift({t:o.notes,by:'',at:o.created||0,legacy:true});return L}
 function noteStamp(n){var who=n.by?esc(n.by):'—';return who+' · '+new Date(n.at||Date.now()).toLocaleString(LOC(),{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'})}
+function noteText(n){return (lang=='es'?(n.es||n.t):(n.t||n.es))||n.t||''}
 function notesCard(o){
   var L=noteEntries(o).slice().sort(function(a,b){return (b.at||0)-(a.at||0)});
   return '<div class="card"><b>Work log</b>'+
-    (L.map(function(n){return '<div class="note"><div style="white-space:pre-wrap">'+esc(n.t)+'</div><div class="mu">'+noteStamp(n)+'</div></div>'}).join('')||'<div class="mu" style="margin:6px 0">No notes yet.</div>')+
+    (L.map(function(n){return '<div class="note"><div class="raw" style="white-space:pre-wrap">'+esc(noteText(n))+'</div><div class="mu">'+noteStamp(n)+(n.es&&n.t&&n.es!==n.t?' · <span class="raw">'+(lang=='es'?'guardada en inglés':'auto-translated')+'</span>':'')+'</div></div>'}).join('')||'<div class="mu" style="margin:6px 0">No notes yet.</div>')+
     '<label style="display:block;margin-top:10px">Add a note</label><textarea id="nt" rows="3" placeholder="Type a note and tap Add"></textarea>'+
-    '<div class="row">'+(dict?'<button class="btn alt" id="mic" onclick="mic()">🎤 Dictate</button>':'')+'<button class="btn" onclick="addNote(\''+o.id+'\')">Add note</button></div></div>';
+    '<div class="row">'+(dict?'<button class="btn alt" id="mic" onclick="mic()">🎤 Dictate</button>':'')+'<button class="btn" id="addnote" onclick="addNote(\''+o.id+'\')">Add note</button></div></div>';
 }
-function addNote(id){
-  var e=$('nt'),v=e?e.value.trim():'';if(!v){if(e)e.focus();return}
+// translate: Claude artifact uses the Claude model; the website uses a free translation service.
+async function autoTr(text,from,to){
+  try{if(!SB&&window.claude&&claude.use){var s=await claude.use('sample');if(s){var r=await s('Translate this auto repair shop work note from '+(from=='es'?'Spanish':'English')+' to '+(to=='es'?'Spanish':'English')+'. Keep part numbers and names. Reply with ONLY the translation, no quotes:\n\n'+text,{modelTier:'quick'});if(r&&r.text)return r.text.trim()}}}catch(e){}
+  try{var u='https://api.mymemory.translated.net/get?q='+encodeURIComponent(text)+'&langpair='+from+'%7C'+to+'&de=waymore.jobs@gmail.com';var rr=await fetch(u);var j=await rr.json();var t=j&&j.responseData&&j.responseData.translatedText;if(t&&!/MYMEMORY WARNING|QUOTA EXCEEDED|INVALID/i.test(t))return t}catch(e){}
+  return null;
+}
+var adding=false;
+async function addNote(id){
+  if(adding)return;var e=$('nt'),v=e?e.value.trim():'';if(!v){if(e)e.focus();return}
   if(SB&&!nm&&ME)nm=ME.name;
-  var o=byId(id);if(!o)return;blurA();
-  o.noteLog=(o.noteLog||[]).concat([{t:v,by:nm||'',at:Date.now()}]);if(e)e.value='';
+  var o=byId(id);if(!o)return;blurA();adding=true;
+  var btn=$('addnote');if(btn){btn.disabled=true;btn.textContent=lang=='es'?'Guardando…':'Saving…';tr(btn)}
+  var note={by:nm||'',at:Date.now()};
+  if(lang=='es'){var en=await autoTr(v,'es','en');note.t=en||v;note.es=v}
+  else{note.t=v;var es=await autoTr(v,'en','es');if(es)note.es=es}
+  o.noteLog=(o.noteLog||[]).concat([note]);if(e){e.value='';e.disabled=false}
+  adding=false;
   saveOrder(o).then(render);toast('✓ Note added');
 }
 function setSt(id,s){var o=byId(id);if(!o)return;o.status=s;saveOrder(o).then(function(){if(s=='done')cur=null;render()})}
