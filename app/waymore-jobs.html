@@ -332,10 +332,19 @@ function LOC(){return lang=='es'?'es':[]}
 var cfg=lg('wm_settings')||{},setOpen=false,setMsg='';
 // ---- Supabase backup: every change is also added to the shop_backup table ----
 var SBDEF={url:'https://onyjozzlyxknodhmfhte.supabase.co',key:'sb_publishable_MO1SPIG19eRAfwz3a6hU6w_mO__2MdN'};
-var sbQ=lg('wm_sbq')||[],sbBusy=false,sbStat=lg('wm_sbstat')||{};
+var sbQ=[],sbBusy=false,sbStat={};try{localStorage.removeItem('wm_sbq');localStorage.removeItem('wm_sbstat')}catch(e){}
+var SITE='https://breuermotty.github.io/Waymore-/';
+function cpSite(){try{navigator.clipboard.writeText(SITE).then(function(){toast('✓ Copied')},function(){toast(SITE)})}catch(e){toast(SITE)}}
+function hideMove(){sv('wm_hidemove',1);var e=$('mvb');if(e)e.remove()}
+function movedBox(id,hide){
+  return '<div'+(id?' id="'+id+'"':'')+' class="box2" style="margin-top:0;border:2px solid var(--ac)"><b>🌐 Waymore Jobs moved to the website</b>'+
+    '<div class="mu">Use the website on every phone. It has worker logins, live updates, and saves everything in Supabase. This Claude version can\'t connect to Supabase.</div>'+
+    '<div class="row" style="align-items:center;margin-top:8px"><span style="font-weight:700;overflow-wrap:anywhere">'+SITE+'</span><button class="btn alt" style="flex:0 0 auto;width:auto;margin:0;padding:8px 12px" onclick="cpSite()">Copy</button></div>'+
+    '<div class="row"><a class="btn" href="'+SITE+'" target="_blank" rel="noopener" style="text-align:center;text-decoration:none">Open the website ↗</a>'+(hide?'<button class="btn alt" onclick="hideMove()">Hide</button>':'')+'</div></div>';
+}
 function sbUrl(){return cfg.sbUrl||SBDEF.url}
 function sbKey(){return cfg.sbKey||SBDEF.key}
-function sbOn(){return !SB&&cfg.sb!==false&&!!sbUrl()&&!!sbKey()}
+function sbOn(){return false}
 async function sbSend(rows,u,k){
   var r=await fetch((u||sbUrl())+'/rest/v1/shop_backup',{method:'POST',headers:{'apikey':k||sbKey(),'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify(rows)});
   if(!r.ok){var t='';try{t=await r.text()}catch(e){}var er=new Error(t.slice(0,200));er.status=r.status;throw er}
@@ -390,7 +399,7 @@ function settingsView(){
     '<label class="ck"><input type="checkbox" id="s_auth"'+ck(cfg.auth!==false)+'><span>Shop must authorize each repair</span></label>'+
     '<label class="ck"><input type="checkbox" id="s_mp"'+ck(cfg.mechPrices)+'><span>Mechanics can see prices</span></label>'+
     '<label style="display:block;margin-top:10px">Mechanics (one name per line)</label><textarea id="s_me" rows="4">'+esc((cfg.mechs||[]).join('\n'))+'</textarea>'+
-    (SB?'<div class="box2"><b>🗄 Supabase</b><div class="mu">All shop data is saved in Supabase. Every change is also kept in the shop_backup history.</div></div>':'<div class="box2"><b>🗄 Supabase backup</b>'+
+    (SB?'<div class="box2"><b>🗄 Supabase</b><div class="mu">All shop data is saved in Supabase. Every change is also kept in the shop_backup history.</div></div>':movedBox('',false)+'<div hidden><b>🗄 Supabase backup</b>'+
      '<label class="ck" style="border:0"><input type="checkbox" id="s_sb"'+ck(cfg.sb!==false)+'><span>Copy every change to Supabase</span></label>'+
      '<label>Project URL</label><input id="s_sbu" autocomplete="off" value="'+esc(sbUrl())+'">'+
      '<label>Publishable key</label><input id="s_sbk" autocomplete="off" value="'+esc(sbKey())+'">'+
@@ -464,7 +473,7 @@ var ES={
 'This plate is not in your records yet. Type the VIN or scan it with the camera and the truck info fills in.':'Esta placa todavía no está en tus registros. Escribe el VIN o escanéalo con la cámara y se llenan los datos del camión.',
 'Could not read a VIN in the photo. Try again closer, or type it.':'No se pudo leer un VIN en la foto. Intenta más de cerca o escríbelo.',
 'Scanning needs Claude, which is not available here.':'Escanear necesita a Claude, que no está disponible aquí.','Claude was not allowed, so the photo could not be read.':'Claude no fue permitido, así que no se pudo leer la foto.',
-'Add an item':'Agregar una tarea','🔄 Refresh list':'🔄 Actualizar lista','✓ Updated':'✓ Actualizado','Tap to approve ›':'Toca para aprobar ›','Tech Home':'Inicio técnico','Service':'Servicio','Reporting':'Reportes','Settings':'Ajustes','Create SO':'Crear SO','Schedule':'Horario','Office':'Oficina','Customers':'Clientes','Workers hours':'Horas de trabajadores',
+'Add an item':'Agregar una tarea','🌐 Waymore Jobs moved to the website':'🌐 Waymore Jobs se mudó a la página web',"Use the website on every phone. It has worker logins, live updates, and saves everything in Supabase. This Claude version can't connect to Supabase.":'Usa la página en todos los teléfonos. Tiene cuentas para trabajadores, cambios en vivo y guarda todo en Supabase. Esta versión de Claude no puede conectarse a Supabase.','Open the website ↗':'Abrir la página ↗','Hide':'Ocultar','Copy':'Copiar','✓ Copied':'✓ Copiado','🔄 Refresh list':'🔄 Actualizar lista','✓ Updated':'✓ Actualizado','Tap to approve ›':'Toca para aprobar ›','Tech Home':'Inicio técnico','Service':'Servicio','Reporting':'Reportes','Settings':'Ajustes','Create SO':'Crear SO','Schedule':'Horario','Office':'Oficina','Customers':'Clientes','Workers hours':'Horas de trabajadores',
 'Search SO, customer, truck, VIN':'Buscar SO, cliente, camión, VIN','No matches':'Sin resultados','Signing in…':'Entrando…','No worker profile':'Sin perfil de trabajador','This login has no worker profile yet. Ask the shop owner to run the Supabase setup.':'Esta cuenta aún no tiene perfil de trabajador. Pide al dueño del taller que haga la configuración de Supabase.',
 'Sign out':'Cerrar sesión','Waiting for approval':'Esperando aprobación','Check again':'Revisar otra vez','Create an account':'Crear una cuenta','Your name':'Tu nombre','Email':'Correo','Password (at least 6 characters)':'Contraseña (mínimo 6 caracteres)',
 'Create account':'Crear cuenta','I already have an account':'Ya tengo una cuenta','Reset password':'Restablecer contraseña','Send reset link':'Enviar enlace','Back to sign in':'Volver a entrar','Choose a new password':'Elige una contraseña nueva',
@@ -580,6 +589,7 @@ function render(){
   if(cur&&dc&&dc.dataset.id===cur&&!skipKeep)keep=grabVals();skipKeep=false;
   keepV=keep?Object.assign({id:cur},keep):null;
   render0();
+  if(!SB&&!lg('wm_hidemove')&&!$('mvb'))$('app').insertAdjacentHTML('afterbegin',movedBox('mvb',true));
   dc=$('dtc');if(keep&&dc&&dc.dataset.id===cur)Object.keys(keep).forEach(function(k){var e=$(k);if(e&&e!==document.activeElement)e.value=keep[k]});
   $('lng').textContent=lang=='es'?'English':'Español';document.documentElement.lang=lang;
   tr(document.body);
