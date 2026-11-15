@@ -12,6 +12,15 @@ header{background:var(--ac);color:var(--on-ac);padding:12px 16px;font-weight:700
 #gear{font-size:17px;line-height:1;padding:3px 8px;border-radius:99px;border:2px solid currentColor;background:transparent;cursor:pointer}
 #net{font-size:12px;font-weight:600;background:rgba(0,0,0,.14);padding:3px 8px;border-radius:99px}
 nav{display:none!important}
+.pv{position:fixed;inset:0;z-index:60;background:#000;color:#fff;display:flex;flex-direction:column}
+.pvt{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:calc(10px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) 10px max(16px,env(safe-area-inset-left,0px));font-weight:600}
+.pvt button{flex:none;background:rgba(255,255,255,.18);color:#fff;border:0;border-radius:99px;width:42px;height:42px;font-size:20px;cursor:pointer}
+.pvi{flex:1;min-height:0;position:relative;display:flex;align-items:center;justify-content:center}
+.pvi img{width:100%;height:100%;object-fit:contain;touch-action:pinch-zoom}
+.pvn{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.18);color:#fff;border:0;width:46px;height:66px;font-size:36px;border-radius:12px;cursor:pointer}
+.pvn.l{left:8px}.pvn.r{right:8px}
+.pvb{display:flex;gap:10px;padding:12px max(16px,env(safe-area-inset-right,0px)) calc(14px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.pvb .btn{margin:0;text-align:center;text-decoration:none}.pvb .btn.alt{background:#222;color:#fff;border-color:#444}
 #menu{font:inherit;font-size:22px;line-height:1;padding:2px 10px 4px;border-radius:10px;border:2px solid currentColor;background:transparent;color:inherit;cursor:pointer}
 .ptitle{font:700 22px/1.2 inherit;margin:2px 0 12px;display:flex;align-items:center;gap:8px}
 .drw{position:fixed;inset:0;z-index:40;display:flex}.drw[hidden]{display:none}
@@ -289,6 +298,8 @@ async function init(){
   if(db){
     try{db.collection('customers').orderBy('created','desc').limit(500).onSnapshot(function(s){custs=s.docs.map(function(d){var x=d.data();x.id=d.id;return x});render()},function(){})}catch(e){}
     try{db.collection('parts').orderBy('created','desc').limit(500).onSnapshot(function(s){pcat=s.docs.map(function(d){var x=d.data();x.id=d.id;return x});render()},function(){})}catch(e){}
+    try{db.collection('vendors').orderBy('created','desc').limit(1000).onSnapshot(function(s){vends=s.docs.map(function(d){var x=d.data();x.id=d.id;return x});render()},function(){})}catch(e){}
+    try{db.collection('pos').orderBy('created','desc').limit(2000).onSnapshot(function(s){pos=s.docs.map(function(d){var x=d.data();x.id=d.id;return x});render()},function(){})}catch(e){}
   }
   if(db)try{db.doc('settings/shop').onSnapshot(function(s){if(s.exists){cfg=s.data();sv('wm_settings',cfg)}render()},function(){})}catch(e){}
   render();sync();setTimeout(sbFlush,3000);
@@ -473,7 +484,16 @@ var ES={
 'This plate is not in your records yet. Type the VIN or scan it with the camera and the truck info fills in.':'Esta placa todavía no está en tus registros. Escribe el VIN o escanéalo con la cámara y se llenan los datos del camión.',
 'Could not read a VIN in the photo. Try again closer, or type it.':'No se pudo leer un VIN en la foto. Intenta más de cerca o escríbelo.',
 'Scanning needs Claude, which is not available here.':'Escanear necesita a Claude, que no está disponible aquí.','Claude was not allowed, so the photo could not be read.':'Claude no fue permitido, así que no se pudo leer la foto.',
-'Add an item':'Agregar una tarea','🌐 Waymore Jobs moved to the website':'🌐 Waymore Jobs se mudó a la página web',"Use the website on every phone. It has worker logins, live updates, and saves everything in Supabase. This Claude version can't connect to Supabase.":'Usa la página en todos los teléfonos. Tiene cuentas para trabajadores, cambios en vivo y guarda todo en Supabase. Esta versión de Claude no puede conectarse a Supabase.','Open the website ↗':'Abrir la página ↗','Hide':'Ocultar','Copy':'Copiar','✓ Copied':'✓ Copiado','🔄 Refresh list':'🔄 Actualizar lista','✓ Updated':'✓ Actualizado','Tap to approve ›':'Toca para aprobar ›','Tech Home':'Inicio técnico','Service':'Servicio','Reporting':'Reportes','Settings':'Ajustes','Create SO':'Crear SO','Schedule':'Horario','Office':'Oficina','Customers':'Clientes','Workers hours':'Horas de trabajadores',
+'Add an item':'Agregar una tarea','Purchase orders':'Órdenes de compra','Vendors':'Proveedores','⬆︎ Share':'⬆︎ Compartir','Open full size ↗':'Ver en tamaño completo ↗','✓ Photo link copied':'✓ Enlace de la foto copiado',
+'Sharing is not available here. Tap Open full size, then share from there.':'Compartir no está disponible aquí. Toca Ver en tamaño completo y comparte desde ahí.','Sharing is not available here.':'Compartir no está disponible aquí.',
+'Add vendor':'Agregar proveedor','Cost $':'Costo $','each':'c/u','Edit vendor':'Editar proveedor','Contact person':'Persona de contacto','Account #':'Cuenta #','Delete this vendor? Their purchase orders stay.':'¿Eliminar este proveedor? Sus órdenes de compra se quedan.','Delete vendor':'Eliminar proveedor',
+'← All vendors':'← Todos los proveedores','Ordered from this vendor:':'Comprado a este proveedor:','➕ New PO':'➕ Nueva orden de compra','No purchase orders yet.':'Todavía no hay órdenes de compra.','➕ Add vendor':'➕ Agregar proveedor',
+'No vendors yet. Add the places you buy parts from.':'Aún no hay proveedores. Agrega los lugares donde compras piezas.','No open POs':'Sin órdenes abiertas','Open purchase orders':'Órdenes de compra abiertas','On order':'Pedido','Drafts':'Borradores','SO parts not on a PO':'Piezas de SO sin orden de compra',
+'📋 POs from SO parts':'📋 Órdenes desde piezas de SO','Received':'Recibidas','No purchase orders here.':'No hay órdenes de compra aquí.','← All purchase orders':'← Todas las órdenes de compra','Vendor':'Proveedor','Choose vendor':'Elegir proveedor',
+'Add vendors in the Vendors section first.':'Primero agrega proveedores en la sección Proveedores.','Lines':'Líneas','No lines yet.':'Aún no hay líneas.','Add a line':'Agregar una línea','$ Cost each':'$ Costo c/u','SO parts waiting to be ordered':'Piezas de SO por pedir',
+'➕ Add':'➕ Agregar','📨 Mark as ordered':'📨 Marcar como pedida','Delete this draft PO?':'¿Eliminar este borrador?','🗑 Delete draft':'🗑 Eliminar borrador','Type how many arrived on each line, then tap Receive.':'Escribe cuántas llegaron en cada línea y toca Recibir.',
+'📦 Receive':'📦 Recibir','✓ Everything received':'✓ Todo recibido','Choose the vendor first.':'Primero elige el proveedor.','Add at least one line first.':'Agrega al menos una línea primero.','Type how many arrived first.':'Primero escribe cuántas llegaron.',
+'📋 Make purchase orders for parts to order':'📋 Hacer órdenes de compra para las piezas por pedir','DRAFT':'BORRADOR','ORDERED':'PEDIDA','PARTLY RECEIVED':'RECIBIDA EN PARTE','RECEIVED':'RECIBIDA','No vendor yet':'Sin proveedor','🌐 Waymore Jobs moved to the website':'🌐 Waymore Jobs se mudó a la página web',"Use the website on every phone. It has worker logins, live updates, and saves everything in Supabase. This Claude version can't connect to Supabase.":'Usa la página en todos los teléfonos. Tiene cuentas para trabajadores, cambios en vivo y guarda todo en Supabase. Esta versión de Claude no puede conectarse a Supabase.','Open the website ↗':'Abrir la página ↗','Hide':'Ocultar','Copy':'Copiar','✓ Copied':'✓ Copiado','🔄 Refresh list':'🔄 Actualizar lista','✓ Updated':'✓ Actualizado','Tap to approve ›':'Toca para aprobar ›','Tech Home':'Inicio técnico','Service':'Servicio','Reporting':'Reportes','Settings':'Ajustes','Create SO':'Crear SO','Schedule':'Horario','Office':'Oficina','Customers':'Clientes','Workers hours':'Horas de trabajadores',
 'Search SO, customer, truck, VIN':'Buscar SO, cliente, camión, VIN','No matches':'Sin resultados','Signing in…':'Entrando…','No worker profile':'Sin perfil de trabajador','This login has no worker profile yet. Ask the shop owner to run the Supabase setup.':'Esta cuenta aún no tiene perfil de trabajador. Pide al dueño del taller que haga la configuración de Supabase.',
 'Sign out':'Cerrar sesión','Waiting for approval':'Esperando aprobación','Check again':'Revisar otra vez','Create an account':'Crear una cuenta','Your name':'Tu nombre','Email':'Correo','Password (at least 6 characters)':'Contraseña (mínimo 6 caracteres)',
 'Create account':'Crear cuenta','I already have an account':'Ya tengo una cuenta','Reset password':'Restablecer contraseña','Send reset link':'Enviar enlace','Back to sign in':'Volver a entrar','Choose a new password':'Elige una contraseña nueva',
@@ -509,6 +529,11 @@ var ES={
 var CH={'All':'Todas','Open':'Abiertas','Ready to bill':'Listas para facturar','Billed':'Facturadas'};
 var AX={'complaint':'queja','cause':'causa','correction':'corrección','not marked repaired':'no marcada como reparada'};
 var PAT=[
+[/^PO-(\d+) · (.*)$/,function(m,a,b){return 'PO-'+a+' · '+trS(b)}],[/^(\d+) lines?( · .*)?$/,function(m,a,b){return a+' línea(s)'+(b||'').replace(/(\d+) of (\d+) received/,'$1 de $2 recibidas')}],
+[/^(\d+) open POs?$/,'$1 orden(es) abierta(s)'],[/^Created (.*)$/,function(m,a){return 'Creada '+a.replace(' · Ordered ',' · Pedida ').replace(' · Received ',' · Recibida ')}],
+[/^Purchase orders \((\d+)\)$/,'Órdenes de compra ($1)'],[/^(Open|Received|All) \((\d+)\)$/,function(m,a,b){return {Open:'Abiertas',Received:'Recibidas',All:'Todas'}[a]+' ('+b+')'}],
+[/^✓ PO-(\d+) ordered$/,'✓ PO-$1 pedida'],[/^✓ PO-(\d+) fully received$/,'✓ PO-$1 recibida completa'],[/^✓ Received (.+) item\(s\)$/,'✓ Recibidas $1 pieza(s)'],[/^✓ (\d+) draft POs? created$/,'✓ $1 borrador(es) creado(s)'],
+[/^(\d+) \/ (\d+)( · .*)?$/,function(m,a,b,c){return a+' / '+b+(c||'').replace('waiting','en espera')}],
 [/^👷 (\d+) new workers? waiting for approval$/,'👷 $1 trabajador(es) nuevo(s) esperando aprobación'],
 [/^Hi (.*)! Your account is waiting for the shop owner to approve it\.$/,'¡Hola $1! Tu cuenta está esperando que el dueño del taller la apruebe.'],
 [/^Ask them to open ⚙️ Settings → Workers and choose your role for (.*)\.$/,'Pídele que abra ⚙️ Ajustes → Trabajadores y elija tu rol para $1.'],
@@ -595,7 +620,7 @@ function render(){
   tr(document.body);
 }
 function render0(){
-  var ae=document.activeElement;if(ae&&ae.id&&ae.type!='checkbox'&&/^(nt|ei|eo|nmi|sp|ck|rv|f_|cu_|pa_|pu_|sc_|dt_|ac_|s_|rp_|lg_|wr_)/.test(ae.id)){pendR=true;return}
+  var ae=document.activeElement;if(ae&&ae.id&&ae.type!='checkbox'&&/^(nt|ei|eo|nmi|sp|ck|rv|f_|cu_|pa_|pu_|sc_|dt_|ac_|s_|rp_|lg_|wr_|ve_|po_)/.test(ae.id)){pendR=true;return}
   if(SB&&!ME){$('app').innerHTML=loginHtml();return}
   $('t1').className=tab==1?'on':'';$('t2').className=tab==2?'on':'';
   var cl=day&&day.punches&&day.punches[day.punches.length-1];document.querySelector('header').className=(cl&&!cl.out)?'in':'';
@@ -606,7 +631,7 @@ function render0(){
   a.innerHTML='<div class="ptitle"><span>🛠</span>Tech Home</div>'+listView();
 }
 function deskView(){
-  return pendingBanner()+subNav()+(dtab=='new'?newView():dtab=='sched'?schedView():dtab=='hrs'?hoursView():dtab=='open'?ticketsView():dtab=='cust'?custView():dtab=='office'?officeView():dtab=='rep'?reportsView():partsView());
+  return pendingBanner()+subNav()+(dtab=='new'?newView():dtab=='sched'?schedView():dtab=='hrs'?hoursView():dtab=='open'?ticketsView():dtab=='cust'?custView():dtab=='office'?officeView():dtab=='rep'?reportsView():dtab=='po'?poView():dtab=='vendors'?vendorsView():partsView());
 }
 var nItems=[];
 function nowLocal(){var d=new Date();d.setMinutes(d.getMinutes()-d.getTimezoneOffset());return d.toISOString().slice(0,16)}
@@ -844,7 +869,7 @@ function blurA(){var a=document.activeElement;if(a&&a.blur&&a!==document.body)a.
 function lc(s){return String(s||'').trim().toLowerCase()}
 function SP(){if(isMech())return !!cfg.mechPrices;return tab==1||!!cfg.mechPrices}
 function money(n){return '$'+(+n||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}
-function docs(col){return db?(col=='customers'?custs:pcat):(lg('wm_'+col)||[])}
+function docs(col){return db?({customers:custs,parts:pcat,vendors:vends,pos:pos}[col]||[]):(lg('wm_'+col)||[])}
 function saveDoc(col,o){sbPush(col,o.id,o);if(db)return db.collection(col).doc(o.id).set(o).catch(function(){});var a=lg('wm_'+col)||[],i=a.findIndex(function(x){return x.id===o.id});if(i<0)a.push(o);else a[i]=o;sv('wm_'+col,a);render();return Promise.resolve()}
 function delDoc(col,id){sbPush(col,id,null,true);if(db)return db.collection(col).doc(id).delete().catch(function(){});sv('wm_'+col,(lg('wm_'+col)||[]).filter(function(x){return x.id!==id}));render();return Promise.resolve()}
 function subNav(){
@@ -854,13 +879,14 @@ function subNav(){
   return m?'<div class="ptitle"><span>'+m[2]+'</span>'+m[1]+'</div>':'';
 }
 // ---- slide-out side menu (replaces the tabs) ----
-var MENU=[['tech','Tech Home','🛠'],['new','Create SO','➕'],['open','Service','📋'],['sched','Schedule','📅'],['parts','Parts','🔧'],['office','Office','🧾'],['rep','Reporting','📈'],['cust','Customers','👤'],['hrs','Workers hours','⏱']];
+var MENU=[['tech','Tech Home','🛠'],['new','Create SO','➕'],['open','Service','📋'],['sched','Schedule','📅'],['parts','Parts','🔧'],['po','Purchase orders','📦'],['vendors','Vendors','🏭'],['office','Office','🧾'],['rep','Reporting','📈'],['cust','Customers','👤'],['hrs','Workers hours','⏱']];
 function menuBadges(k){
   var a=all(),B=[];
   if(k=='tech'){var n=a.filter(function(o){return o.status!='done'&&(!nm||!o.mechanic||lc(o.mechanic)===lc(nm))}).length;if(n)B.push([n,''])}
   if(k=='open'){var w=a.filter(function(o){return o.status!='done'&&acts(o).some(function(x){return x.st=='auth'})}).length,op=a.filter(function(o){return o.status!='done'}).length;if(w)B.push([w,'y']);if(op)B.push([op,''])}
   if(k=='sched'){var s=a.filter(function(o){return o.schedDate===today()}).length;if(s)B.push([s,'y'])}
   if(k=='parts'){var p=partsTodo().length;if(p)B.push([p,''])}
+  if(k=='po'){var dr=docs('pos').filter(function(x){return x.status=='draft'}).length,oo=poOpenList().length;if(dr)B.push([dr,'y']);if(oo)B.push([oo,''])}
   if(k=='office'){var f=a.filter(function(o){return o.status=='done'&&!o.billed}).length;if(f)B.push([f,''])}
   return B.map(function(b){return '<span class="bdg '+b[1]+'">'+b[0]+'</span>'}).join('');
 }
@@ -887,7 +913,7 @@ function drSearch(q){
   w.innerHTML=R.map(function(o){return '<button class="dri" onclick="drawer(false);if(!isMech())tab=1;openSO(\''+o.id+'\')"><span><b>SO '+esc(sonum(o))+'</b> · '+esc(o.customer||'')+'<br><span style="opacity:.75">'+esc(o.unit||'')+'</span></span></button>'}).join('')||'<div style="padding:8px 4px;opacity:.75">No matches</div>';tr(w);
 }
 function go(k){
-  drawer(false);commit();copen=null;cedit=null;pedit=null;cdel=false;pdel=false;cur=null;splitting=null;
+  drawer(false);commit();poCommit();copen=null;cedit=null;pedit=null;cdel=false;pdel=false;cur=null;splitting=null;vopen=null;vedit=null;vdel=false;poOpen=null;poDel=false;
   if(k=='settings'){setOpen=true;if(SB)loadWorkers()}else{setOpen=false;if(k=='tech')tab=2;else{tab=1;dtab=k}}
   render();scrollTo(0,0);
 }
@@ -936,7 +962,8 @@ function partsFlow(){
   var sec=function(t,L,f){return '<details class="card"'+(L.length?' open':'')+'><summary>'+t+' ('+L.length+')</summary>'+(L.map(f).join('')||'<div class="mu">Nothing here.</div>')+'</details>'};
   return tiles([[price.length,'Parts to price'],[ord.length,'Parts to order'],[rec.length,'Parts to receive'],[money(r.reduce(function(s,x){return s+x.p.q*(+x.p.pr||0)},0)),'Parts on open SOs']])+
     sec('🏷 Price parts',price,function(x){var k=x.o.id+'_'+x.i+'_'+x.j;return row(x,'<span style="flex:0 0 auto;display:flex;gap:6px;align-items:center"><input id="pa_x'+k+'" inputmode="decimal" placeholder="$" style="width:70px;margin:0"><button class="btn alt" style="width:auto;margin:0;padding:8px 10px" onclick="setPrice(\''+x.o.id+'\','+x.i+','+x.j+')">Save</button></span>')})+
-    sec('🛒 Order parts',ord,function(x){return row(x,'<button class="btn alt" style="flex:0 0 auto;width:auto;margin:0;padding:8px 10px" onclick="advParts(\''+x.o.id+'\','+x.i+')">Ordered</button>')})+
+    (ord.some(function(x){return !x.p.po})?'<button class="btn" style="margin:0 0 12px" onclick="poFromWaiting()">📋 Make purchase orders for parts to order</button>':'')+
+    sec('🛒 Order parts',ord,function(x){return row(x,x.p.po?'<span class="tag working" style="flex:0 0 auto">PO-'+esc(x.p.po)+'</span>':'<button class="btn alt" style="flex:0 0 auto;width:auto;margin:0;padding:8px 10px" onclick="advParts(\''+x.o.id+'\','+x.i+')">Ordered</button>')})+
     sec('📦 Receive parts',rec,function(x){return row(x,'<button class="btn alt" style="flex:0 0 auto;width:auto;margin:0;padding:8px 10px" onclick="advParts(\''+x.o.id+'\','+x.i+')">Received</button>')})+
     '<h3 style="margin:16px 0 8px">📚 Parts list (inventory)</h3>';
 }
@@ -1063,6 +1090,164 @@ function saveCust(){
   saveDoc('customers',o);copen=n;cedit=null;render();
 }
 // parts catalog
+// ---- photo viewer: tap a photo to see it big, swipe or arrows, share ----
+var PV=null;
+function phList(id){var o=byId(id);if(!o)return [];var L=(o.photos||[]).map(function(p){return {src:p.url,label:p.from||''}});queue().filter(function(q){return q.so===id}).forEach(function(q){L.push({src:q.data,label:'waiting'})});return L}
+function viewPh(id,i){PV={list:phList(id),i:i,so:id,files:{}};pvDraw()}
+function pvGo(k){if(!PV)return;var n=PV.list.length;PV.i=(PV.i+k+n)%n;pvDraw()}
+function pvClose(){PV=null;pvDraw()}
+function pvName(){var o=byId(PV.so);return 'SO-'+(o?sonum(o):'')+'-photo-'+(PV.i+1)+'.jpg'}
+function pvPrefetch(){var i=PV.i,it=PV.list[i];if(!it||PV.files[i])return;fetch(it.src).then(function(r){return r.blob()}).then(function(b){if(PV)PV.files[i]=new File([b],pvName(),{type:b.type||'image/jpeg'})}).catch(function(){})}
+function pvDraw(){
+  var d=$('pv');
+  if(!PV){if(d)d.remove();document.body.style.overflow='';return}
+  if(!d){d=document.createElement('div');d.id='pv';d.className='pv';d.setAttribute('role','dialog');d.setAttribute('aria-label','Photo');document.body.appendChild(d);
+    d.addEventListener('touchstart',function(e){if(PV)PV.x=e.touches[0].clientX},{passive:true});
+    d.addEventListener('touchend',function(e){if(!PV||PV.x==null)return;var dx=e.changedTouches[0].clientX-PV.x;PV.x=null;if(Math.abs(dx)>50)pvGo(dx<0?1:-1)})}
+  var it=PV.list[PV.i]||{},n=PV.list.length,o=byId(PV.so),web=/^https?:/.test(it.src||'');
+  d.innerHTML='<div class="pvt"><span>'+(PV.i+1)+' / '+n+(o?' · SO '+esc(sonum(o)):'')+(it.label?' · '+esc(it.label):'')+'</span><button onclick="pvClose()" aria-label="Close">✕</button></div>'+
+    '<div class="pvi">'+(n>1?'<button class="pvn l" onclick="pvGo(-1)" aria-label="Previous">‹</button>':'')+'<img src="'+esc(it.src)+'" alt="Job photo">'+(n>1?'<button class="pvn r" onclick="pvGo(1)" aria-label="Next">›</button>':'')+'</div>'+
+    '<div class="pvb"><button class="btn" onclick="pvShare()">⬆︎ Share</button>'+(web?'<a class="btn alt" href="'+esc(it.src)+'" target="_blank" rel="noopener">Open full size ↗</a>':'')+'</div>';
+  tr(d);document.body.style.overflow='hidden';pvPrefetch();
+}
+function pvShare(){
+  if(!PV)return;var it=PV.list[PV.i],f=PV.files[PV.i],o=byId(PV.so),title='SO '+(o?sonum(o):'')+(o&&o.customer?' · '+o.customer:''),web=/^https?:/.test(it.src);
+  var fallback=function(){if(web){try{navigator.clipboard.writeText(it.src).then(function(){toast('✓ Photo link copied')},function(){toast('Sharing is not available here. Tap Open full size, then share from there.',true)})}catch(e){toast('Sharing is not available here. Tap Open full size, then share from there.',true)}}else toast('Sharing is not available here.',true)};
+  try{
+    if(f&&navigator.canShare&&navigator.canShare({files:[f]})){navigator.share({files:[f],title:title}).catch(function(e){if(!e||e.name!=='AbortError')fallback()});return}
+    if(navigator.share&&web){navigator.share({title:title,url:it.src}).catch(function(e){if(!e||e.name!=='AbortError')fallback()});return}
+  }catch(e){}
+  fallback();
+}
+addEventListener('keydown',function(e){if(!PV)return;if(e.key=='Escape')pvClose();if(e.key=='ArrowRight')pvGo(1);if(e.key=='ArrowLeft')pvGo(-1)});
+
+// ---- vendors + purchase orders ----
+var vends=[],pos=[],vopen=null,vedit=null,vdel=false,poOpen=null,poF='open',poDel=false;
+var POST={draft:'Draft',ordered:'Ordered',partial:'Partly received',received:'Received'};
+function poById(id){var p=docs('pos').find(function(x){return x.id===id});return p?JSON.parse(JSON.stringify(p)):null}
+function nextPO(){var m=1000;docs('pos').forEach(function(p){var n=parseInt(p.num);if(n>m)m=n});return String(m+1)}
+function poTotal(p){return (p.lines||[]).reduce(function(s,l){return s+(+l.q||0)*(+l.cost||0)},0)}
+function poOpenList(){return docs('pos').filter(function(p){return p.status=='ordered'||p.status=='partial'})}
+function soOf(id){return all().find(function(o){return o.id===id})}
+function vendorsView(){
+  var V=docs('vendors').slice().sort(function(a,b){return lc(a.name)<lc(b.name)?-1:1});
+  if(vedit!==null){
+    var e=vedit=='new'?{}:(V.find(function(x){return x.id===vedit})||{});
+    var f=function(id,lab,v,t){return '<label>'+lab+'</label><input id="'+id+'"'+(t?' type="'+t+'"':'')+' autocomplete="off" value="'+esc(v)+'">'};
+    return '<div class="card"><b>'+(vedit=='new'?'Add vendor':'Edit vendor')+'</b><br>'+f('ve_n','Name',e.name)+f('ve_c','Contact person',e.contact)+
+      '<div class="row"><span>'+f('ve_p','Phone',e.phone,'tel')+'</span><span>'+f('ve_a','Account #',e.acct)+'</span></div>'+f('ve_e','Email',e.email,'email')+f('ve_ad','Address',e.address)+
+      '<label>Notes</label><textarea id="ve_no" rows="2">'+esc(e.notes)+'</textarea>'+
+      '<div class="row"><button class="btn alt" onclick="vedit=null;render()">Cancel</button><button class="btn" onclick="saveVendor()">Save</button></div>'+
+      (e.id?(vdel?'<p class="mu">Delete this vendor? Their purchase orders stay.</p><div class="row"><button class="btn alt" onclick="vdel=false;render()">Cancel</button><button class="btn" style="background:#e03131" onclick="delDoc(\'vendors\',\''+e.id+'\');vedit=null;vopen=null;vdel=false;render()">Yes, delete</button></div>':'<button class="btn alt" style="color:#e03131;margin-top:12px" onclick="vdel=true;render()">Delete vendor</button>'):'')+'</div>';
+  }
+  var v=vopen&&V.find(function(x){return x.id===vopen});
+  if(v){
+    var P=docs('pos').filter(function(p){return lc(p.vendor)===lc(v.name)}).sort(function(a,b){return (b.created||0)-(a.created||0)});
+    var spent=P.filter(function(p){return p.status!='draft'}).reduce(function(s,p){return s+poTotal(p)},0);
+    return '<button class="btn alt" onclick="vopen=null;render()">\u2190 All vendors</button><div class="card" style="margin-top:12px"><b style="font-size:20px">'+esc(v.name)+'</b>'+
+      (v.contact?'<div>'+esc(v.contact)+'</div>':'')+(v.phone?'<div>\ud83d\udcde '+esc(v.phone)+'</div>':'')+(v.email?'<div>\u2709\ufe0f '+esc(v.email)+'</div>':'')+(v.address?'<div>\ud83d\udccd '+esc(v.address)+'</div>':'')+
+      (v.acct?'<div class="mu">Account # '+esc(v.acct)+'</div>':'')+(v.notes?'<p class="mu">'+esc(v.notes)+'</p>':'')+
+      '<div class="mu" style="margin-top:6px">Ordered from this vendor: <b>'+money(spent)+'</b></div>'+
+      '<div class="row"><button class="btn alt" onclick="vedit=\''+v.id+'\';vdel=false;render()">Edit</button><button class="btn" onclick="newPO(\''+esc(v.name).replace(/'/g,"\\'")+'\')">\u2795 New PO</button></div></div>'+
+      '<h3 style="margin:8px 0">Purchase orders ('+P.length+')</h3>'+(P.map(poRow).join('')||'<p class="mu">No purchase orders yet.</p>');
+  }
+  return '<button class="btn" onclick="vedit=\'new\';vdel=false;render()">\u2795 Add vendor</button>'+
+    (V.map(function(x){var op=docs('pos').filter(function(p){return lc(p.vendor)===lc(x.name)&&(p.status=='ordered'||p.status=='partial')}).length;
+      return '<div class="card so" style="margin-top:12px" onclick="vopen=\''+x.id+'\';render();scrollTo(0,0)"><b>'+esc(x.name)+'</b><div class="mu">'+(x.phone?esc(x.phone)+' \u00b7 ':'')+(op?op+' open PO'+(op>1?'s':''):'No open POs')+'</div></div>'}).join('')||'<p class="mu" style="margin-top:12px">No vendors yet. Add the places you buy parts from.</p>');
+}
+function saveVendor(){
+  blurA();var n=$('ve_n').value.trim();if(!n){$('ve_n').focus();$('ve_n').style.borderColor='#e03131';return}
+  var old=vedit!='new'&&docs('vendors').find(function(x){return x.id===vedit});
+  var o={id:old?old.id:'v'+Date.now().toString(36),name:n,contact:$('ve_c').value.trim(),phone:$('ve_p').value.trim(),acct:$('ve_a').value.trim(),email:$('ve_e').value.trim(),address:$('ve_ad').value.trim(),notes:$('ve_no').value.trim(),created:old?old.created:Date.now()};
+  if(old&&old.name!==n)docs('pos').forEach(function(p){if(p.vendor===old.name){var c=JSON.parse(JSON.stringify(p));c.vendor=n;saveDoc('pos',c)}});
+  saveDoc('vendors',o);vedit=null;vopen=o.id;render();toast('\u2713 Saved');
+}
+function poRow(p){
+  var rc=(p.lines||[]).reduce(function(s,l){return s+(+l.recv||0)},0),q=(p.lines||[]).reduce(function(s,l){return s+(+l.q||0)},0);
+  return '<div class="card so" onclick="poOpen=\''+p.id+'\';dtab=\'po\';render();scrollTo(0,0)"><div class="row" style="align-items:center"><span><b>PO-'+esc(p.num)+'</b> \u00b7 '+esc(p.vendor||'No vendor yet')+'</span><span class="tag '+(p.status=='received'?'done':p.status=='draft'?'open':'working')+'" style="flex:0 0 auto">'+POST[p.status].toUpperCase()+'</span></div>'+
+    '<div class="mu">'+(p.lines||[]).length+' line'+((p.lines||[]).length==1?'':'s')+(p.status=='partial'?' \u00b7 '+rc+' of '+q+' received':'')+' \u00b7 '+new Date(p.orderedAt||p.created).toLocaleDateString(LOC())+'</div>'+
+    '<div style="font-weight:700">'+money(poTotal(p))+'</div></div>';
+}
+function poView(){
+  var p=poOpen&&poById(poOpen);if(p)return poDetail(p);
+  var A=docs('pos').slice().sort(function(a,b){return (b.created||0)-(a.created||0)});
+  var ok=function(x){return poF=='open'?x.status!='received':poF=='received'?x.status=='received':true};
+  var wait=partsTodo().filter(function(x){return x.st=='quote'&&!x.p.po}).length,open=poOpenList();
+  return tiles([[open.length,'Open purchase orders'],[money(open.reduce(function(s,p){return s+poTotal(p)},0)),'On order'],[A.filter(function(x){return x.status=='draft'}).length,'Drafts'],[wait,'SO parts not on a PO']])+
+    '<div class="row"><button class="btn" style="margin-top:0" onclick="newPO(\'\')">\u2795 New PO</button>'+(wait?'<button class="btn alt" style="margin-top:0" onclick="poFromWaiting()">\ud83d\udccb POs from SO parts</button>':'')+'</div>'+
+    '<div class="sub sm" style="margin-top:12px">'+[['open','Open'],['received','Received'],['all','All']].map(function(x){return '<button class="'+(poF==x[0]?'on':'')+'" onclick="poF=\''+x[0]+'\';render()">'+x[1]+' ('+A.filter(function(y){return x[0]=='open'?y.status!='received':x[0]=='received'?y.status=='received':true}).length+')</button>'}).join('')+'</div>'+
+    (A.filter(ok).map(poRow).join('')||'<p class="mu">No purchase orders here.</p>');
+}
+function newPO(vendor){var o={id:'po'+Date.now().toString(36),num:nextPO(),vendor:vendor||'',status:'draft',lines:[],notes:'',created:Date.now()};saveDoc('pos',o);poOpen=o.id;dtab='po';tab=1;cur=null;setOpen=false;render();scrollTo(0,0)}
+function poDetail(p){
+  var draft=p.status=='draft',V=docs('vendors').map(function(v){return v.name}).sort(),hasV=V.indexOf(p.vendor)>=0;
+  var h='<button class="btn alt" onclick="poCommit();poOpen=null;poDel=false;render()">\u2190 All purchase orders</button>'+
+    '<div class="card" style="margin-top:12px"><div class="row" style="align-items:center"><b style="font-size:22px">PO-'+esc(p.num)+'</b><span class="tag '+(p.status=='received'?'done':draft?'open':'working')+'" style="flex:0 0 auto">'+POST[p.status].toUpperCase()+'</span></div>'+
+    (draft?'<label>Vendor</label><select id="po_v" onchange="setPoVendor(\''+p.id+'\',this.value)"><option value="">Choose vendor</option>'+V.map(function(n){return '<option'+(n===p.vendor?' selected':'')+'>'+esc(n)+'</option>'}).join('')+(p.vendor&&!hasV?'<option selected>'+esc(p.vendor)+'</option>':'')+'</select>'+(V.length?'':'<div class="mu" style="margin:-6px 0 8px">Add vendors in the Vendors section first.</div>')
+      :'<div style="font-size:17px">'+esc(p.vendor)+'</div>')+
+    '<div class="mu">Created '+new Date(p.created).toLocaleDateString(LOC())+(p.orderedAt?' \u00b7 Ordered '+new Date(p.orderedAt).toLocaleDateString(LOC()):'')+(p.receivedAt?' \u00b7 Received '+new Date(p.receivedAt).toLocaleDateString(LOC()):'')+'</div></div>';
+  h+='<div class="card"><b>Lines</b>'+((p.lines||[]).map(function(l,k){var so=l.so&&soOf(l.so),rem=(+l.q||0)-(+l.recv||0);
+    return '<div class="row" style="align-items:center;padding:8px 0;border-top:1px solid var(--ln)"><span>'+l.q+' \u00d7 '+esc((l.no?l.no+' ':'')+l.d)+'<br><span class="mu">'+(draft?'Cost $ <input id="po_c_'+k+'" inputmode="decimal" value="'+(+l.cost||'')+'" placeholder="0.00" style="display:inline-block;width:80px;margin:2px 0;padding:6px"> each':money(l.cost)+' each')+(so?' \u00b7 <a href="#" onclick="event.preventDefault();openSO(\''+so.id+'\')" style="color:var(--act)">SO '+esc(sonum(so))+'</a>':'')+(p.status!='draft'?' \u00b7 '+(+l.recv||0)+' of '+l.q+' received':'')+'</span></span>'+
+      '<span style="flex:0 0 auto;font-weight:700">'+money((+l.q||0)*(+l.cost||0))+'</span>'+
+      (draft?'<button class="btn alt" style="flex:0 0 auto;width:auto;margin:0;padding:6px 10px" onclick="rmPOLine(\''+p.id+'\','+k+')">\u2715</button>':'')+
+      (!draft&&rem>0?'<input id="po_r_'+k+'" inputmode="decimal" value="'+rem+'" style="flex:0 0 auto;width:60px;margin:0" aria-label="Receive">':'')+'</div>'}).join('')||'<div class="mu">No lines yet.</div>')+
+    '<div class="row" style="padding-top:6px;border-top:2px solid var(--tx)"><b>Total</b><b style="text-align:right">'+money(poTotal(p))+'</b></div>';
+  if(draft){
+    h+='<div class="box2"><b>Add a line</b><div class="row"><input id="po_pn" list="pcl" autocomplete="off" placeholder="Part #" onchange="poFill()"><input id="po_pd" placeholder="Description" style="flex:1.6"></div>'+
+      '<div class="row"><input id="po_pq" inputmode="numeric" placeholder="Qty" value="1"><input id="po_pc" inputmode="decimal" placeholder="$ Cost each"><button class="btn alt" style="flex:0 0 auto;width:auto;margin:4px 0 10px;padding:10px 14px" onclick="addPOLine(\''+p.id+'\')">Add</button></div>'+
+      '<datalist id="pcl">'+docs('parts').map(function(x){return '<option value="'+esc(pname(x))+'">'}).join('')+'</datalist></div>';
+    var W=partsTodo().filter(function(x){return x.st=='quote'&&!x.p.po}).sort(function(a,b){return (lc(b.p.ven)===lc(p.vendor))-(lc(a.p.ven)===lc(p.vendor))});
+    if(W.length)h+='<div class="box2"><b>SO parts waiting to be ordered</b>'+W.map(function(x){return '<div class="row" style="align-items:center;padding:6px 0;border-top:1px solid var(--ln)"><span>'+x.p.q+' \u00d7 '+esc((x.p.no?x.p.no+' ':'')+x.p.d)+'<br><span class="mu">SO '+esc(sonum(x.o))+' \u00b7 '+esc(x.o.customer||'')+(x.p.ven?' \u00b7 '+esc(x.p.ven):'')+'</span></span><button class="btn alt" style="flex:0 0 auto;width:auto;margin:0;padding:6px 12px" onclick="addSOPart(\''+p.id+'\',\''+x.o.id+'\','+x.i+','+x.j+')">\u2795 Add</button></div>'}).join('')+'</div>';
+    h+='<button class="btn" onclick="markOrdered(\''+p.id+'\')">\ud83d\udce8 Mark as ordered</button>'+
+      (poDel?'<p class="mu">Delete this draft PO?</p><div class="row"><button class="btn alt" onclick="poDel=false;render()">Cancel</button><button class="btn" style="background:#e03131" onclick="delPO(\''+p.id+'\')">Yes, delete</button></div>':'<button class="btn alt" style="color:#e03131" onclick="poDel=true;render()">\ud83d\uddd1 Delete draft</button>');
+  }else if(p.status!='received'){
+    h+='<p class="mu" style="margin:10px 0 0">Type how many arrived on each line, then tap Receive.</p><button class="btn" style="background:var(--ok)" onclick="receivePO(\''+p.id+'\')">\ud83d\udce6 Receive</button>';
+  }else h+='<div style="color:var(--ok);font-weight:700;margin-top:8px">\u2713 Everything received</div>';
+  h+='</div><div class="card"><label>Notes</label><textarea id="po_nt" rows="2">'+esc(p.notes)+'</textarea><button class="btn alt" onclick="savePONotes(\''+p.id+'\')">Save notes</button></div>';
+  return h;
+}
+function poFill(){var v=$('po_pn').value.trim(),m=docs('parts').find(function(x){return pname(x)===v||(x.no&&lc(x.no)===lc(v))});if(!m)return;$('po_pn').value=m.no||'';$('po_pd').value=m.d||''}
+function poGet(id){var p=poById(id);if(p)(p.lines||[]).forEach(function(l,k){var e=$('po_c_'+k);if(e)l.cost=parseFloat(e.value)||0});return p}
+function poCommit(){if(!poOpen)return;var a=poById(poOpen),p=poGet(poOpen);if(p&&JSON.stringify(a)!==JSON.stringify(p))saveDoc('pos',p)}
+function setPoVendor(id,v){var p=poGet(id);if(!p)return;p.vendor=v;saveDoc('pos',p)}
+function savePONotes(id){blurA();var p=poGet(id);if(!p)return;p.notes=$('po_nt').value;saveDoc('pos',p);toast('\u2713 Saved')}
+function addPOLine(id){
+  var no=$('po_pn').value.trim(),d=$('po_pd').value.trim();if(!no&&!d){$('po_pd').focus();$('po_pd').style.borderColor='#e03131';return}
+  var m=docs('parts').find(function(x){return no&&x.no&&lc(x.no)===lc(no)}),p=poGet(id);if(!p)return;blurA();
+  var l={no:m?m.no:no,d:d||(m?m.d:no),q:Math.max(1,parseFloat($('po_pq').value)||1),cost:parseFloat($('po_pc').value)||0,recv:0};if(m)l.pid=m.id;
+  p.lines=(p.lines||[]).concat([l]);saveDoc('pos',p);
+}
+function tagSO(items){var g={};items.forEach(function(t){(g[t.so]=g[t.so]||[]).push(t)});
+  Object.keys(g).forEach(function(so){var o=byId(so);if(!o)return;g[so].forEach(function(t){var x=o.actions[t.i]&&o.actions[t.i].parts[t.j];if(!x)return;if(t.num)x.po=t.num;else delete x.po});saveOrder(o)})}
+function setSOPartPO(so,i,j,num){tagSO([{so:so,i:i,j:j,num:num}])}
+function addSOPart(id,so,i,j){
+  var p=poGet(id),o=byId(so);if(!p||!o)return;var x=o.actions[i].parts[j];
+  var l={no:x.no||'',d:x.d,q:x.q,cost:+x.cost||0,recv:0,so:so,ai:i,pj:j};if(x.pid)l.pid=x.pid;
+  p.lines=(p.lines||[]).concat([l]);if(!p.vendor&&x.ven)p.vendor=x.ven;saveDoc('pos',p);setSOPartPO(so,i,j,p.num);
+}
+function rmPOLine(id,k){var p=poGet(id);if(!p)return;var l=p.lines.splice(k,1)[0];saveDoc('pos',p);if(l&&l.so)setSOPartPO(l.so,l.ai,l.pj,null)}
+function delPO(id){var p=poById(id);if(!p)return;tagSO((p.lines||[]).filter(function(l){return l.so}).map(function(l){return {so:l.so,i:l.ai,j:l.pj,num:null}}));delDoc('pos',id);poOpen=null;poDel=false;render()}
+function soStage(lines,st){var g={};lines.forEach(function(l){if(l.so)(g[l.so]=g[l.so]||[]).push(l)});Object.keys(g).forEach(function(so){var o=byId(so);if(!o)return;
+  g[so].forEach(function(l){var a=o.actions[l.ai];if(!a)return;if(st=='order'&&(a.pst||'quote')=='quote'){a.pst='order';a.orderAt=Date.now()}if(st=='recv'){a.pst='recv';a.recvAt=Date.now()}});saveOrder(o)})}
+function markOrdered(id){
+  var p=poGet(id);if(!p)return;if(!p.vendor){toast('Choose the vendor first.',true);return}if(!(p.lines||[]).length){toast('Add at least one line first.',true);return}
+  p.status='ordered';p.orderedAt=Date.now();saveDoc('pos',p);soStage(p.lines,'order');toast('\u2713 PO-'+p.num+' ordered');
+}
+function receivePO(id){
+  var p=poById(id);if(!p)return;blurA();var full=[],got=0;
+  p.lines.forEach(function(l,k){var e=$('po_r_'+k),rem=(+l.q||0)-(+l.recv||0);if(!e||rem<=0)return;var v=Math.min(rem,Math.max(0,parseFloat(e.value)||0));if(!v)return;
+    l.recv=(+l.recv||0)+v;got+=v;if(l.pid)stock(l,v);if(l.recv>=l.q)full.push(l)});
+  if(!got){toast('Type how many arrived first.',true);return}
+  var all_=p.lines.every(function(l){return (+l.recv||0)>=(+l.q||0)});p.status=all_?'received':'partial';if(all_)p.receivedAt=Date.now();
+  saveDoc('pos',p);soStage(full,'recv');toast(all_?'\u2713 PO-'+p.num+' fully received':'\u2713 Received '+got+' item(s)');
+}
+function poFromWaiting(){
+  var W=partsTodo().filter(function(x){return x.st=='quote'&&!x.p.po}),g={};W.forEach(function(x){var v=x.p.ven||'';(g[v]=g[v]||[]).push(x)});
+  var n=0,base=parseInt(nextPO()),tags=[];Object.keys(g).forEach(function(v,idx){var num=String(base+idx),o={id:'po'+Date.now().toString(36)+idx,num:num,vendor:v,status:'draft',notes:'',created:Date.now(),
+    lines:g[v].map(function(x){var l={no:x.p.no||'',d:x.p.d,q:x.p.q,cost:+x.p.cost||0,recv:0,so:x.o.id,ai:x.i,pj:x.j};if(x.p.pid)l.pid=x.p.pid;return l})};
+    saveDoc('pos',o);n++;g[v].forEach(function(x){tags.push({so:x.o.id,i:x.i,j:x.j,num:num})})});tagSO(tags);
+  poOpen=null;poF='open';dtab='po';tab=1;render();toast('\u2713 '+n+' draft PO'+(n>1?'s':'')+' created');
+}
 function pname(p){return (p.no?p.no+' – ':'')+p.d}
 function partList(){
   pvis=docs('parts').filter(function(p){return !pq||lc([p.no,p.d,p.loc].join(' ')).indexOf(lc(pq))>=0}).sort(function(a,b){return lc(pname(a))<lc(pname(b))?-1:1});
@@ -1173,7 +1358,7 @@ function pLabel(a){return !(a.parts||[]).length?'No parts':{quote:'Parts quoted'
 function isOpenA(o,i){return openA[o.id]!=null?openA[o.id]===i:i===acts(o).findIndex(function(x){return x.st!='done'})}
 function commit(){if(!cur)return;var o=byId(cur);if(!o)return;var b=JSON.stringify(o);readDetails(o);if(JSON.stringify(o)!==b)saveOrder(o)}
 function setJt(t){commit();jt=t;aMiss=null;render();scrollTo(0,0)}
-function vendors(){var s={};all().forEach(function(o){acts(o).forEach(function(a){(a.parts||[]).forEach(function(p){if(p.ven)s[p.ven]=1})})});return Object.keys(s).sort()}
+function vendors(){var s={};docs('vendors').forEach(function(v){if(v.name)s[v.name]=1});all().forEach(function(o){acts(o).forEach(function(a){(a.parts||[]).forEach(function(p){if(p.ven)s[p.ven]=1})})});return Object.keys(s).sort()}
 function fv(o,i,f,v){var on=(aMiss===o.id+':'+i+':'+f)||(missFor===o.id&&!lc(v));return on?' class="miss"':''}
 function actCard(o,a,i){
   var run=runAct(o)===a.id,ms=actMs(o,a.id),inv=+a.inv||0,diff=inv-ms/3600000,ex=isOpenA(o,i),N=i+1,lock=o.billed||o.status=='done';
@@ -1190,7 +1375,7 @@ function actCard(o,a,i){
      '<label>'+(a.noDiag?'Cause (optional)':'Cause *')+'</label>'+mic('ca')+'<textarea id="ac_ca_'+i+'" rows="2"'+fv(o,i,'cause',a.noDiag?'-':a.cause)+'>'+esc(a.cause)+'</textarea>'+
      '<label>Correction *</label>'+mic('co')+'<textarea id="ac_co_'+i+'" rows="2"'+fv(o,i,'corr',a.corr)+'>'+esc(a.corr)+'</textarea>';
   var P=a.parts||[],pt=P.reduce(function(s,p){return s+p.q*(p.pr||0)},0);
-  h+='<div class="box2"><b>Parts for Action '+N+'</b>'+P.map(function(p,j){return '<div class="row" style="align-items:center;padding:6px 0;border-top:1px solid var(--ln)"><span>'+p.q+' × '+esc((p.no?p.no+' ':'')+p.d)+(SP()?'<br><span class="mu">'+(p.ven?esc(p.ven)+' · ':'')+money(p.pr)+' each</span>':(p.ven?'<br><span class="mu">'+esc(p.ven)+'</span>':''))+'</span>'+(SP()?'<span style="flex:0 0 auto">'+money(p.q*(p.pr||0))+'</span>':'')+(lock?'':'<button class="btn alt" style="flex:0 0 auto;width:auto;margin:0;padding:6px 10px" onclick="rmAP(\''+o.id+'\','+i+','+j+')">✕</button>')+'</div>'}).join('')+
+  h+='<div class="box2"><b>Parts for Action '+N+'</b>'+P.map(function(p,j){return '<div class="row" style="align-items:center;padding:6px 0;border-top:1px solid var(--ln)"><span>'+p.q+' × '+esc((p.no?p.no+' ':'')+p.d)+(p.po?' <span class="tag working">PO-'+esc(p.po)+'</span>':'')+(SP()?'<br><span class="mu">'+(p.ven?esc(p.ven)+' · ':'')+money(p.pr)+' each</span>':(p.ven?'<br><span class="mu">'+esc(p.ven)+'</span>':''))+'</span>'+(SP()?'<span style="flex:0 0 auto">'+money(p.q*(p.pr||0))+'</span>':'')+(lock?'':'<button class="btn alt" style="flex:0 0 auto;width:auto;margin:0;padding:6px 10px" onclick="rmAP(\''+o.id+'\','+i+','+j+')">✕</button>')+'</div>'}).join('')+
     (P.length&&SP()?'<div class="row" style="padding-top:4px"><b>Parts total</b><b style="text-align:right">'+money(pt)+'</b></div>':'');
   if(!lock)h+='<div class="row"><input id="ac_pn_'+i+'" list="pcl" autocomplete="off" placeholder="Part #" onchange="fillPart('+i+')"><input id="ac_pd_'+i+'" placeholder="Description" style="flex:1.6"></div>'+
     '<div class="row"><input id="ac_pv_'+i+'" list="vel" autocomplete="off" placeholder="Vendor"><input id="ac_pq_'+i+'" inputmode="numeric" placeholder="Qty" style="flex:.5">'+(SP()?'<input id="ac_pp_'+i+'" inputmode="decimal" placeholder="$ Price" style="flex:.7">':'')+'</div>'+
@@ -1421,8 +1606,9 @@ function doSplit(id){blurA();
 function jobView(o){
   if(!o)return '<button class="btn alt" onclick="back()">Back</button>';
   var pend=queue().filter(function(p){return p.so===o.id});
-  var ph=(o.photos||[]).map(function(p){return '<div><img src="'+esc(p.url)+'">'+(p.from?'<span class="w">'+esc(p.from)+'</span>':'')+'</div>'}).join('')+
-    pend.map(function(p){return '<div><img src="'+p.data+'"><span class="w">waiting</span></div>'}).join('');
+  var np=(o.photos||[]).length;
+  var ph=(o.photos||[]).map(function(p,k){return '<div><img src="'+esc(p.url)+'" alt="Job photo" style="cursor:zoom-in" onclick="viewPh(\''+o.id+'\','+k+')">'+(p.from?'<span class="w">'+esc(p.from)+'</span>':'')+'</div>'}).join('')+
+    pend.map(function(p,k){return '<div><img src="'+p.data+'" alt="Job photo" style="cursor:zoom-in" onclick="viewPh(\''+o.id+'\','+(np+k)+')"><span class="w">waiting</span></div>'}).join('');
   var top='<i id="dtc" data-id="'+o.id+'" hidden></i><button class="btn alt" onclick="back()">← Back</button>'+headerCard(o)+
     '<div class="seg">'+[['act','Action items'],['parts','Parts list'],['est','Estimate'],['edit','Edit']].filter(function(x){return SP()||x[0]!='est'}).map(function(x){return '<button class="'+(jt==x[0]?'on':'')+'" onclick="setJt(\''+x[0]+'\')">'+x[1]+'</button>'}).join('')+'</div>';
   if(jt=='parts')return top+partsListTab(o);
