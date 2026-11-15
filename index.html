@@ -16,7 +16,8 @@
 header{background:var(--ac);color:var(--on-ac);padding:12px 16px;font-weight:700;display:flex;justify-content:space-between;align-items:center}
 #lng{font:inherit;font-size:13px;font-weight:700;padding:4px 10px;border-radius:99px;border:2px solid currentColor;background:transparent;color:inherit;cursor:pointer}
 #gear{font-size:17px;line-height:1;padding:3px 8px;border-radius:99px;border:2px solid currentColor;background:transparent;cursor:pointer}
-#net{font-size:12px;font-weight:600;background:rgba(0,0,0,.14);padding:3px 8px;border-radius:99px}
+#net{font-size:12px;font-weight:600;background:rgba(0,0,0,.14);padding:3px 8px;border-radius:99px;max-width:34vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#net.me{background:rgba(0,0,0,.22);font-weight:700}#net.me.off{background:#e03131;color:#fff}
 nav{display:none!important}
 .note{border-top:1px solid var(--ln);padding:8px 0;font-size:15px}.note:first-of-type{border-top:0}
 #geo{font-size:12px;font-weight:700;background:rgba(0,0,0,.14);padding:3px 8px;border-radius:99px;white-space:nowrap}#geo.off{background:#e03131;color:#fff}
@@ -319,7 +320,11 @@ async function init(){
   if(db)try{db.doc('settings/shop').onSnapshot(function(s){if(s.exists){cfg=s.data();sv('wm_settings',cfg)}render()},function(){})}catch(e){}
   render();sync();setTimeout(sbFlush,3000);
 }
-function setNet(){var n=$('net');n.textContent=navigator.onLine?'online':'offline';var q=queue().length;if(q)n.textContent+=' · '+q+' photo'+(q>1?'s':'')+' waiting';if(SB){var w=pend().length;if(w)n.textContent+=' · '+w+' to save'}tr(n)}
+function setNet(){var n=$('net');if(!n)return;var who=(((SB&&ME?ME.name:nm)||'').trim().split(/\s+/)[0])||'';
+  var q=queue().length,w=SB?pend().length:0,up=q+w;
+  if(who){n.textContent=who+(navigator.onLine?'':' · offline')+(up?' · '+up+'↑':'');n.className='me'+(navigator.onLine?'':' off')}
+  else{n.textContent=navigator.onLine?'online':'offline';if(q)n.textContent+=' · '+q+' photo'+(q>1?'s':'')+' waiting';if(w)n.textContent+=' · '+w+' to save';n.className=''}
+  tr(n)}
 addEventListener('online',function(){setNet();sync();sbFlush();if(SB)dbFlush()});addEventListener('offline',setNet);
 
 // photos: shrink to ~200-400 KB, queue, upload when signal returns
@@ -634,7 +639,7 @@ function render(){
   dc=$('dtc');if(keep&&dc&&dc.dataset.id===cur)Object.keys(keep).forEach(function(k){var e=$(k);if(e&&e!==document.activeElement)e.value=keep[k]});
   $('lng').textContent=lang=='es'?'English':'Español';document.documentElement.lang=lang;
   tr(document.body);
-  if(SB)geoSync();
+  setNet();if(SB)geoSync();
   if(dtab=='map'&&tab==1&&!cur&&!setOpen)mapMount();
 }
 function render0(){
