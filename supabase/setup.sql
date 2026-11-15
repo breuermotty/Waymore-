@@ -53,6 +53,15 @@ drop trigger if exists on_auth_user_created on auth.users;
 create trigger on_auth_user_created after insert on auth.users
   for each row execute function public.handle_new_user();
 
+-- Accounts created before this setup ran also get a profile; the earliest becomes admin if there is none.
+insert into public.profiles (user_id, email, name, role)
+select u.id, u.email, coalesce(nullif(u.raw_user_meta_data->>'name', ''), split_part(u.email, '@', 1)), 'pending'
+from auth.users u
+where not exists (select 1 from public.profiles p where p.user_id = u.id);
+update public.profiles set role = 'admin'
+where user_id = (select user_id from public.profiles order by created_at, user_id limit 1)
+  and not exists (select 1 from public.profiles where role = 'admin');
+
 -- Only an admin can change someone's role.
 create or replace function public.protect_role() returns trigger
 language plpgsql security definer set search_path = public as $$
