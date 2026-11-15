@@ -18,6 +18,7 @@ header{background:var(--ac);color:var(--on-ac);padding:12px 16px;font-weight:700
 #gear{font-size:17px;line-height:1;padding:3px 8px;border-radius:99px;border:2px solid currentColor;background:transparent;cursor:pointer}
 #net{font-size:12px;font-weight:600;background:rgba(0,0,0,.14);padding:3px 8px;border-radius:99px}
 nav{display:none!important}
+.note{border-top:1px solid var(--ln);padding:8px 0;font-size:15px}.note:first-of-type{border-top:0}
 #geo{font-size:12px;font-weight:700;background:rgba(0,0,0,.14);padding:3px 8px;border-radius:99px;white-space:nowrap}#geo.off{background:#e03131;color:#fff}
 .lmap{height:55vh;min-height:260px;border-radius:12px;overflow:hidden;border:1px solid var(--ln);background:var(--card)}
 .lpin{display:inline-block;transform:translate(-50%,-120%);background:var(--ac);color:#1a1a1a;font:700 13px/1 system-ui,sans-serif;padding:6px 9px;border-radius:99px;border:2px solid #1a1a1a;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,.35)}
@@ -497,7 +498,7 @@ var ES={
 'This plate is not in your records yet. Type the VIN or scan it with the camera and the truck info fills in.':'Esta placa todavía no está en tus registros. Escribe el VIN o escanéalo con la cámara y se llenan los datos del camión.',
 'Could not read a VIN in the photo. Try again closer, or type it.':'No se pudo leer un VIN en la foto. Intenta más de cerca o escríbelo.',
 'Scanning needs Claude, which is not available here.':'Escanear necesita a Claude, que no está disponible aquí.','Claude was not allowed, so the photo could not be read.':'Claude no fue permitido, así que no se pudo leer la foto.',
-'Add an item':'Agregar una tarea','Live map':'Mapa en vivo','📍 Location on':'📍 Ubicación activa','⚠️ Location off':'⚠️ Ubicación apagada','⚠️ Location is off':'⚠️ La ubicación está apagada','Allow location for this website: iPhone Settings → Privacy & Security → Location Services → Safari Websites → While Using. Then tap Try again.':'Permite la ubicación para esta página: Ajustes del iPhone → Privacidad y seguridad → Localización → Sitios web de Safari → Cuando se use. Luego toca Intentar otra vez.','Your phone could not get a location. Check that Location Services is on.':'Tu teléfono no pudo obtener la ubicación. Revisa que la Localización esté activada.','Try again':'Intentar otra vez','📍 Your location is shared with the shop while you are clocked in. Keep this app open for live updates.':'📍 Tu ubicación se comparte con el taller mientras estás en turno. Mantén la app abierta para actualizaciones en vivo.','Sharing location now':'Compartiendo ubicación ahora','Clocked in, location off':'En turno, ubicación apagada','Updates about every minute while each phone has the app open. Map © OpenStreetMap.':'Se actualiza cada minuto mientras cada teléfono tenga la app abierta. Mapa © OpenStreetMap.','Show on map':'Ver en el mapa',"Today's route":'Ruta de hoy','Open in Maps ↗':'Abrir en Mapas ↗','Nobody has clocked in on the website yet.':'Nadie ha marcado entrada en la página todavía.','No route recorded today yet.':'Todavía no hay ruta hoy.','The map could not load. Check your signal.':'El mapa no pudo cargar. Revisa la señal.','📍 Live map':'📍 Mapa en vivo','just now':'justo ahora','Purchase orders':'Órdenes de compra','Vendors':'Proveedores','⬆︎ Share':'⬆︎ Compartir','Open full size ↗':'Ver en tamaño completo ↗','✓ Photo link copied':'✓ Enlace de la foto copiado',
+'Add an item':'Agregar una tarea','Work log':'Bitácora de trabajo','Add a note':'Agregar una nota','No notes yet.':'Aún no hay notas.','Type a note and tap Add':'Escribe una nota y toca Agregar','Add note':'Agregar nota','✓ Note added':'✓ Nota agregada','Live map':'Mapa en vivo','📍 Location on':'📍 Ubicación activa','⚠️ Location off':'⚠️ Ubicación apagada','⚠️ Location is off':'⚠️ La ubicación está apagada','Allow location for this website: iPhone Settings → Privacy & Security → Location Services → Safari Websites → While Using. Then tap Try again.':'Permite la ubicación para esta página: Ajustes del iPhone → Privacidad y seguridad → Localización → Sitios web de Safari → Cuando se use. Luego toca Intentar otra vez.','Your phone could not get a location. Check that Location Services is on.':'Tu teléfono no pudo obtener la ubicación. Revisa que la Localización esté activada.','Try again':'Intentar otra vez','📍 Your location is shared with the shop while you are clocked in. Keep this app open for live updates.':'📍 Tu ubicación se comparte con el taller mientras estás en turno. Mantén la app abierta para actualizaciones en vivo.','Sharing location now':'Compartiendo ubicación ahora','Clocked in, location off':'En turno, ubicación apagada','Updates about every minute while each phone has the app open. Map © OpenStreetMap.':'Se actualiza cada minuto mientras cada teléfono tenga la app abierta. Mapa © OpenStreetMap.','Show on map':'Ver en el mapa',"Today's route":'Ruta de hoy','Open in Maps ↗':'Abrir en Mapas ↗','Nobody has clocked in on the website yet.':'Nadie ha marcado entrada en la página todavía.','No route recorded today yet.':'Todavía no hay ruta hoy.','The map could not load. Check your signal.':'El mapa no pudo cargar. Revisa la señal.','📍 Live map':'📍 Mapa en vivo','just now':'justo ahora','Purchase orders':'Órdenes de compra','Vendors':'Proveedores','⬆︎ Share':'⬆︎ Compartir','Open full size ↗':'Ver en tamaño completo ↗','✓ Photo link copied':'✓ Enlace de la foto copiado',
 'Sharing is not available here. Tap Open full size, then share from there.':'Compartir no está disponible aquí. Toca Ver en tamaño completo y comparte desde ahí.','Sharing is not available here.':'Compartir no está disponible aquí.',
 'Add vendor':'Agregar proveedor','Cost $':'Costo $','each':'c/u','Edit vendor':'Editar proveedor','Contact person':'Persona de contacto','Account #':'Cuenta #','Delete this vendor? Their purchase orders stay.':'¿Eliminar este proveedor? Sus órdenes de compra se quedan.','Delete vendor':'Eliminar proveedor',
 '← All vendors':'← Todos los proveedores','Ordered from this vendor:':'Comprado a este proveedor:','➕ New PO':'➕ Nueva orden de compra','No purchase orders yet.':'Todavía no hay órdenes de compra.','➕ Add vendor':'➕ Agregar proveedor',
@@ -732,7 +733,7 @@ function billBox(o){
   return '<div class="card" style="margin-top:12px"><b>Billing</b><div class="mu">'+(o.status=='done'?n+' is done and ready to bill.':n+' is not marked done yet.')+'</div>'+hoursTable([o])+partsSum([o])+estSum([o])+'<button class="btn" style="background:var(--ok)" onclick="bill(\''+o.id+'\',true)">💲 Mark '+n+' billed</button></div>';
 }
 function bill(id,v){
-  var o=byId(id);if(!o)return;o.notes=($('nt')||{}).value||o.notes;
+  var o=byId(id);if(!o)return;
   if(v){o.billed=true;o.billedAt=Date.now();delete o.billedWith;saveOrder(o).then(render);return}
   var g=o.billedWith?parts(o).filter(function(p){return p.billed&&p.billedAt===o.billedAt}):[o];
   g.reduce(function(pr,p){var c=p.id===o.id?o:p;delete c.billed;delete c.billedAt;delete c.billedWith;return pr.then(function(){return saveOrder(c)})},Promise.resolve()).then(render);
@@ -748,8 +749,8 @@ function billAllBtn(ps){
 }
 function billAll(id){
   var o=byId(id);if(!o)return;
-  var un=parts(o).filter(function(p){return !p.billed}),t=Date.now(),names=un.map(sonum),cn=($('nt')||{}).value;
-  un.reduce(function(pr,p){var c=JSON.parse(JSON.stringify(p));if(c.id===cur&&cn!=null)c.notes=cn;c.billed=true;c.billedAt=t;c.billedWith=names;return pr.then(function(){return saveOrder(c)})},Promise.resolve()).then(render);
+  var un=parts(o).filter(function(p){return !p.billed}),t=Date.now(),names=un.map(sonum);
+  un.reduce(function(pr,p){var c=JSON.parse(JSON.stringify(p));c.billed=true;c.billedAt=t;c.billedWith=names;return pr.then(function(){return saveOrder(c)})},Promise.resolve()).then(render);
 }
 // hours worked on SOs, by day and mechanic, from the job timers
 function ymd(t){var d=new Date(t);return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2)}
@@ -801,7 +802,6 @@ function applyVals(o,get){
   [['dt_cu','customer'],['dt_un','unit'],['dt_mi','mileage'],['dt_de','desc'],['dt_vin','vin'],['dt_pl','plate'],['dt_ps','plateState'],['dt_rq','contact'],['dt_loc','location'],['dt_back','backBy'],['dt_po','po'],['dt_dn','deskNotes']].forEach(function(p){var x=get(p[0]);if(x!=null)o[p[1]]=/^(vin|plate|plateState)$/.test(p[1])?x.trim().toUpperCase():x.trim()});
   var pa=get('dt_pam');if(pa!=null)o.preAmt=parseFloat(pa)||0;
   var r=get('dt_rt');if(r!=null){o.rate=parseFloat(r)||0;if(o.rate)sv('wm_rate',o.rate)}
-  var n=get('nt');if(n!=null)o.notes=n;
   (o.actions||[]).forEach(function(a,i){var x;if((x=get('ac_c_'+i))!=null)a.c=x.trim();if((x=get('ac_ca_'+i))!=null)a.cause=x.trim();if((x=get('ac_co_'+i))!=null)a.corr=x.trim();if((x=get('ac_m_'+i))!=null)a.mech=x.trim();if((x=get('ac_iv_'+i))!=null)a.inv=parseFloat(x)||0});
   return o;
 }
@@ -856,7 +856,7 @@ function schedCard(o){
     '<div class="row">'+(o.schedDate?'<button class="btn alt" onclick="saveSched(\''+o.id+'\',true)">Unschedule</button>':'')+'<button class="btn" onclick="saveSched(\''+o.id+'\')">Save schedule</button></div></div>';
 }
 function saveSched(id,clear){
-  blurA();var o=byId(id);if(!o)return;o.notes=($('nt')||{}).value||o.notes;
+  blurA();var o=byId(id);if(!o)return;
   if(clear){o.schedDate='';o.schedTime='';o.estH=0}
   else{var d=$('sc_dt').value;if(!d){$('sc_dt').focus();$('sc_dt').style.borderColor='#e03131';return}o.schedDate=d;o.schedTime=$('sc_tm').value||'';o.estH=parseFloat($('sc_h').value)||0;o.mechanic=$('sc_m').value.trim();sd=d}
   saveOrder(o).then(render);
@@ -1391,12 +1391,12 @@ function addPU(id){
   var s=$('pu_s').value.trim(),q=Math.max(1,parseInt($('pu_q').value)||1);if(!s){$('pu_s').focus();return}
   var o=byId(id);if(!o)return;blurA();
   var m=docs('parts').find(function(p){return pname(p)===s||(p.no&&lc(p.no)===lc(s))});
-  o.partsUsed=(o.partsUsed||[]).concat([m?{pid:m.id,no:m.no||'',d:m.d,q:q,pr:+m.pr||0}:{d:s,q:q,pr:0}]);o.notes=($('nt')||{}).value||o.notes;
+  o.partsUsed=(o.partsUsed||[]).concat([m?{pid:m.id,no:m.no||'',d:m.d,q:q,pr:+m.pr||0}:{d:s,q:q,pr:0}]);
   saveOrder(o).then(render);
   if(m){var c=JSON.parse(JSON.stringify(m));c.q=(+c.q||0)-q;saveDoc('parts',c)}
 }
 function rmPU(id,i){
-  var o=byId(id);if(!o||!o.partsUsed)return;var x=o.partsUsed.splice(i,1)[0];o.notes=($('nt')||{}).value||o.notes;saveOrder(o).then(render);
+  var o=byId(id);if(!o||!o.partsUsed)return;var x=o.partsUsed.splice(i,1)[0];saveOrder(o).then(render);
   var m=x&&x.pid&&docs('parts').find(function(p){return p.id===x.pid});if(m){var c=JSON.parse(JSON.stringify(m));c.q=(+c.q||0)+x.q;saveDoc('parts',c)}
 }
 function partsSum(list){
@@ -1419,25 +1419,25 @@ function checklistCard(o){
   }
   return h+'</div>';
 }
-function tick(id,i,v){var o=byId(id);if(!o||!o.items||!o.items[i])return;o.items[i].done=v;if(v)o.items[i].by=nm;else delete o.items[i].by;o.notes=($('nt')||{}).value||o.notes;saveOrder(o)}
-function addItem(id){var e=$('cka'),v=e.value.trim();if(!v){e.focus();return}var o=byId(id);if(!o)return;o.items=(o.items||[]).concat([{t:v,done:false}]);o.notes=($('nt')||{}).value||o.notes;e.value='';e.blur();saveOrder(o).then(render)}
+function tick(id,i,v){var o=byId(id);if(!o||!o.items||!o.items[i])return;o.items[i].done=v;if(v)o.items[i].by=nm;else delete o.items[i].by;saveOrder(o)}
+function addItem(id){var e=$('cka'),v=e.value.trim();if(!v){e.focus();return}var o=byId(id);if(!o)return;o.items=(o.items||[]).concat([{t:v,done:false}]);e.value='';e.blur();saveOrder(o).then(render)}
 function doRevisit(id){blurA();
   var ck=readDetails(byId(id));if(ck){if(!ck.mechanic&&nm)ck.mechanic=nm;if(missing(ck,true).length){missFor=id;missRev=true;revisit=null;saveOrder(ck).then(function(){render();var b=$('missbox');if(b)b.scrollIntoView({block:'center'})});return}}
   var o=byId(id);if(!o)return;
   var ps=parts(o),nx=nextPart(ps);if(ps.length>=MAXP){revisit=null;render();return}
-  var g=grp(o),notes=($('nt')||{}).value||o.notes||'',me=$('rvm').value.trim(),saves=[],self;
+  var g=grp(o),me=$('rvm').value.trim(),saves=[],self;
   ps.forEach(function(p,i){var c=JSON.parse(JSON.stringify(p));c.group=g;c.part=c.part||i+1;delete c.of;if(c.id===o.id)self=c;else saves.push(c)});
   readDetails(self);if(!self.mechanic&&nm)self.mechanic=nm;var from=sonum(self);
   var useA=acts(self).length>0,it=self.items||[],un=useA?self.actions.filter(function(a){return a.st!='done'}):it.filter(function(x){return !x.done});
   if(!un.length)return;
-  self.notes=notes;self.status='done';if(useA)self.actions=self.actions.filter(function(a){return a.st=='done'});else self.items=it.filter(function(x){return x.done});
+  self.status='done';if(useA)self.actions=self.actions.filter(function(a){return a.st=='done'});else self.items=it.filter(function(x){return x.done});
   var l=(self.sessions||[])[(self.sessions||[]).length-1];if(l&&!l.end)l.end=Date.now();
   saves.push(self);
   var nid='so'+String(o.so).replace(/\W/g,'')+'_'+Date.now().toString(36);
   saves.push({id:nid,so:o.so,customer:self.customer,unit:self.unit,vin:self.vin||'',rate:self.rate||0,mechanic:me||o.mechanic,
     desc:'Revisit from SO '+from+': '+un.map(function(x){return useA?(x.c||''):x.t}).join(', '),items:useA?[]:un.map(function(x){return {t:x.t,done:false}}),
     actions:useA?un.map(function(a){var c=JSON.parse(JSON.stringify(a));if(me)c.mech=me;return c}):[],
-    notes:notes?'From SO '+from+':\n'+notes:'',photos:(o.photos||[]).map(function(p){return {url:p.url,t:p.t,from:p.from||from}}),
+    notes:'',noteLog:noteEntries(o).map(function(n){return {t:n.t,by:n.by,at:n.at}}).concat([{t:'Revisit from SO '+from,by:nm||'',at:Date.now()}]),photos:(o.photos||[]).map(function(p){return {url:p.url,t:p.t,from:p.from||from}}),
     sessions:[],status:'open',created:Date.now(),group:g,part:nx,revisitOf:o.id});
   var q=queue(),add=q.filter(function(p){return p.so===o.id}).map(function(p){return {so:nid,data:p.data,t:p.t,from:from}});if(add.length)sv(Q,q.concat(add));
   revisit=null;
@@ -1698,7 +1698,7 @@ function doSplit(id){blurA();
   var ps=parts(o),n=ps.length,nx=nextPart(ps);if(n>=MAXP){splitting=null;render();return}
   var g=grp(o),d=$('spd').value.trim(),me=$('spm').value.trim(),saves=[];
   if(!d){$('spd').focus();$('spd').style.borderColor='#e03131';return}
-  ps.forEach(function(p,i){var c=JSON.parse(JSON.stringify(p));c.group=g;c.part=c.part||i+1;delete c.of;if(c.id===o.id)c.notes=($('nt')||{}).value||c.notes;saves.push(c)});
+  ps.forEach(function(p,i){var c=JSON.parse(JSON.stringify(p));c.group=g;c.part=c.part||i+1;delete c.of;saves.push(c)});
   saves.push({id:'so'+String(o.so).replace(/\W/g,'')+'_'+Date.now().toString(36),so:o.so,customer:o.customer,unit:o.unit,mechanic:me||o.mechanic,
     desc:d,notes:'',status:'open',photos:[],sessions:[],created:Date.now(),group:g,part:nx});
   splitting=null;
@@ -1716,8 +1716,7 @@ function jobView(o){
   if(jt=='est'&&SP())return top+estimateTab(o);
   if(jt=='edit')return top+detailsCard(o)+schedCard(o)+partsCard(o)+delBox(o);
   return top+actionsTab(o)+
-  '<div class="card"><label>Work notes</label><textarea id="nt" rows="5" placeholder="Optional">'+esc(o.notes)+'</textarea>'+
-  '<div class="row">'+(dict?'<button class="btn alt" id="mic" onclick="mic()">🎤 Dictate</button>':'')+'<button class="btn alt" onclick="saveNotes(\''+o.id+'\')">Save notes</button></div></div>'+
+  notesCard(o)+
   '<div class="card"><b'+(ownPhotos(o)<NP()&&missFor===o.id?' style="color:#e03131"':'')+'>'+photoHead(o)+'</b><div class="ph">'+(ph||'')+'</div>'+
   '<input type="file" id="cam" accept="image/*" capture="environment" class="hide" onchange="addPhotos(\''+o.id+'\',this.files)">'+
   '<input type="file" id="gal" accept="image/*" multiple class="hide" onchange="addPhotos(\''+o.id+'\',this.files)">'+
@@ -1726,8 +1725,23 @@ function jobView(o){
   '<div class="card'+(running(o)?' on':'')+'"><b>'+(running(o)?'⏱ TIMING – ':'')+'Time on '+(o.part?'this part':'this job')+'</b><div style="font-size:28px;font-weight:700" id="tick">'+fmt(soMs(o))+'</div><div class="mu">'+(running(o)?'Timer running':'Timer stopped')+'</div>'+nameBox()+'</div>'+
   '<div id="mbw">'+missBox(o,true)+'</div><div class="row">'+(running(o)?'<button class="btn alt" onclick="timer(\''+o.id+'\',\'stop\')">Pause</button>':'<button class="btn alt" onclick="timer(\''+o.id+'\',\'start\')">Start work</button>')+'<button class="btn" onclick="timer(\''+o.id+'\',\'done\')">'+(o.part?'Mark Part '+o.part+' done':'Mark done')+'</button></div>';
 }
-function saveNotes(id){blurA();var o=byId(id);if(!o)return;o.notes=$('nt').value;saveOrder(o);alert('Saved')}
-function setSt(id,s){var o=byId(id);if(!o)return;o.notes=($('nt')||{}).value||o.notes;o.status=s;saveOrder(o).then(function(){if(s=='done')cur=null;render()})}
+function noteEntries(o){var L=(o.noteLog||[]).slice();if(o.notes&&lc(o.notes))L.unshift({t:o.notes,by:'',at:o.created||0,legacy:true});return L}
+function noteStamp(n){var who=n.by?esc(n.by):'—';return who+' · '+new Date(n.at||Date.now()).toLocaleString(LOC(),{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'})}
+function notesCard(o){
+  var L=noteEntries(o).slice().sort(function(a,b){return (b.at||0)-(a.at||0)});
+  return '<div class="card"><b>Work log</b>'+
+    (L.map(function(n){return '<div class="note"><div style="white-space:pre-wrap">'+esc(n.t)+'</div><div class="mu">'+noteStamp(n)+'</div></div>'}).join('')||'<div class="mu" style="margin:6px 0">No notes yet.</div>')+
+    '<label style="display:block;margin-top:10px">Add a note</label><textarea id="nt" rows="3" placeholder="Type a note and tap Add"></textarea>'+
+    '<div class="row">'+(dict?'<button class="btn alt" id="mic" onclick="mic()">🎤 Dictate</button>':'')+'<button class="btn" onclick="addNote(\''+o.id+'\')">Add note</button></div></div>';
+}
+function addNote(id){
+  var e=$('nt'),v=e?e.value.trim():'';if(!v){if(e)e.focus();return}
+  if(SB&&!nm&&ME)nm=ME.name;
+  var o=byId(id);if(!o)return;blurA();
+  o.noteLog=(o.noteLog||[]).concat([{t:v,by:nm||'',at:Date.now()}]);if(e)e.value='';
+  saveOrder(o).then(render);toast('✓ Note added');
+}
+function setSt(id,s){var o=byId(id);if(!o)return;o.status=s;saveOrder(o).then(function(){if(s=='done')cur=null;render()})}
 // time tracking
 function fmt(ms){var m=Math.floor((ms||0)/60000);return Math.floor(m/60)+'h '+('0'+m%60).slice(-2)+'m'}
 function tm(t){return new Date(t).toLocaleTimeString(LOC(),{hour:'numeric',minute:'2-digit'})}
