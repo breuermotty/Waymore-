@@ -1,0 +1,1451 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Waymore Jobs</title>
+<style>
+:root{--bg:#f4f5f7;--card:#fff;--tx:#14181f;--mu:#66707f;--ac:#f5b700;--act:#8a5b00;--on-ac:#1a1a1a;--ln:#dde1e7;--ok:#2b8a3e;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14171c;--card:#1e232b;--tx:#eef0f3;--mu:#98a2b0;--ln:#323945;--ac:#ffc61a;--act:#ffd659;--on-ac:#1a1a1a;--ok:#51cf66}}
+:root[data-theme="dark"]{--bg:#14171c;--card:#1e232b;--tx:#eef0f3;--mu:#98a2b0;--ln:#323945;--ac:#ffc61a;--act:#ffd659;--on-ac:#1a1a1a;--ok:#51cf66}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.4 system-ui,-apple-system,Segoe UI,sans-serif}
+header{background:var(--ac);color:var(--on-ac);padding:12px 16px;font-weight:700;display:flex;justify-content:space-between;align-items:center}
+#lng{font:inherit;font-size:13px;font-weight:700;padding:4px 10px;border-radius:99px;border:2px solid currentColor;background:transparent;color:inherit;cursor:pointer}
+#gear{font-size:17px;line-height:1;padding:3px 8px;border-radius:99px;border:2px solid currentColor;background:transparent;cursor:pointer}
+#net{font-size:12px;font-weight:600;background:rgba(0,0,0,.14);padding:3px 8px;border-radius:99px}
+nav{display:flex;gap:8px;padding:12px 16px 0}
+nav button{flex:1;padding:10px;border:1px solid var(--ln);background:var(--card);color:var(--tx);border-radius:10px;font:inherit;font-weight:600}
+nav button.on{background:var(--tx);color:var(--bg)}
+main{padding:12px 16px 40px;max-width:640px;margin:auto}
+.card{background:var(--card);border:1px solid var(--ln);border-radius:12px;padding:14px;margin-bottom:12px}
+.so{cursor:pointer}.so b{font-size:18px}.mu{color:var(--mu);font-size:14px}
+.tag{display:inline-block;font-size:12px;font-weight:700;padding:2px 8px;border-radius:99px;border:1px solid var(--ln)}
+.tag.open{color:var(--act)}.tag.working{color:#1c7ed6}.tag.done{color:var(--ok)}
+.ck{display:flex;gap:10px;align-items:center;padding:9px 0;border-top:1px solid var(--ln);font-size:16px;font-weight:400;color:var(--tx)}.ck input{width:22px;height:22px;margin:0;flex:none}.ck.dn span{text-decoration:line-through;color:var(--mu)}
+.hrs{margin:6px 0;font-size:14px}.hrs .row{padding:3px 0}.hrs .row span:last-child{text-align:right}
+.sub{display:flex;flex-wrap:wrap;gap:6px;padding:0 0 12px}
+.sub button{flex:none;padding:8px 13px;border:1px solid var(--ln);background:var(--card);color:var(--tx);border-radius:99px;font:inherit;font-size:14px;font-weight:600;white-space:nowrap}
+.sub button.on{background:var(--ac);border-color:var(--ac);color:var(--on-ac)}.sub.sm button.on{background:var(--tx);border-color:var(--tx);color:var(--bg)}
+.wk{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin:8px 0 12px}
+.wk button{padding:6px 0;border:1px solid var(--ln);background:var(--card);color:var(--tx);border-radius:10px;font:inherit;font-size:12px;display:flex;flex-direction:column;align-items:center;min-width:0}
+.wk button b{font-size:17px}.wk button.td{border:2px solid var(--ac)}.wk button.on{background:var(--ac);border-color:var(--ac);color:var(--on-ac)}.wk button.on .mu{color:var(--on-ac)}
+.mh{display:flex;justify-content:space-between;align-items:baseline;margin:14px 0 6px}
+input.miss,textarea.miss{border:2px solid #e03131}
+#toast{display:none;position:fixed;left:16px;right:16px;bottom:calc(20px + env(safe-area-inset-bottom,0px));z-index:50;background:var(--ok);color:#fff;font-weight:700;padding:14px 16px;border-radius:12px;box-shadow:0 6px 20px rgba(0,0,0,.25);text-align:center}#toast.bad{background:#e03131}
+.row>*{min-width:0}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.tile{border-radius:12px;padding:10px 12px;border:1px solid var(--ln);background:var(--card)}.tile b{display:block;font-size:20px}.tile span{font-size:12px;color:var(--mu)}
+.trow{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-top:1px solid var(--ln);cursor:pointer;font-size:15px}
+details.card>summary{font-weight:700;cursor:pointer;font-size:16px;padding:2px 0 6px}
+.vz{--s1:#2a78d6}.vbar{fill:var(--s1)}.vb{cursor:pointer}.vb:hover .vbar{opacity:.8}.vg{stroke:var(--ln);stroke-width:1}.vt{fill:var(--mu);font-size:10px;font-family:inherit}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .vz{--s1:#3987e5}}
+:root[data-theme="dark"] .vz{--s1:#3987e5}
+.acbox{display:none;border:1px solid var(--ln);border-radius:10px;background:var(--card);margin:-6px 0 10px;box-shadow:0 6px 16px rgba(0,0,0,.14);overflow:hidden;position:relative;z-index:5}
+.aci{padding:13px 12px;border-top:1px solid var(--ln);cursor:pointer}.aci:first-child{border-top:0}.aci b{color:var(--act)}
+.chip{display:inline-block;margin:4px 6px 4px 0;padding:8px 12px;border:1px solid var(--ln);border-radius:99px;background:var(--bg);color:var(--tx);font:inherit;font-size:14px;cursor:pointer}
+.seg{display:flex;border:1px solid var(--ln);border-radius:10px;overflow:hidden;margin:0 0 12px}
+.seg button{flex:1;padding:10px 2px;border:0;border-right:1px solid var(--ln);background:var(--card);color:var(--tx);font:inherit;font-size:13px;font-weight:600}
+.seg button:last-child{border-right:0}.seg button.on{background:var(--tx);color:var(--bg)}
+.ah{display:flex;justify-content:space-between;align-items:center;gap:8px;cursor:pointer}.ah b{font-size:18px}
+.pill{font-size:12px;font-weight:700;padding:3px 10px;border-radius:99px;background:var(--bg);color:var(--tx);border:1px solid var(--ln);white-space:nowrap}
+.hr3{display:flex;gap:14px;font-size:14px;margin:6px 0;flex-wrap:wrap}.neg b{color:#e03131}.card.on .neg b{color:#ffe3e3}
+.steps{display:flex;position:relative;margin:6px 0 4px}.steps:before{content:'';position:absolute;left:10%;right:10%;top:14px;height:2px;background:var(--ln)}
+.st{flex:1;text-align:center;font-size:11px;color:var(--mu);position:relative;min-width:0}
+.st i{display:flex;align-items:center;justify-content:center;width:30px;height:30px;margin:0 auto 3px;border-radius:50%;border:2px solid var(--ln);background:var(--card);font-style:normal;font-size:14px}
+.st.ok i{background:var(--ok);border-color:var(--ok);color:#fff}.st.cur i{border-color:var(--ac);box-shadow:0 0 0 3px rgba(245,183,0,.4)}.st.cur{color:var(--tx);font-weight:700}
+.trk{font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--mu);margin-top:10px}
+.box2{background:var(--bg);border:1px solid var(--ln);border-radius:10px;padding:10px;margin:10px 0;color:var(--tx)}
+.mirow{display:flex;align-items:center;gap:10px;margin-top:10px}.mirow input{margin:0;flex:1}
+.ml{cursor:pointer;text-decoration:underline}
+.card.run{border:3px solid var(--ok);box-shadow:0 0 0 4px rgba(43,138,62,.18)}
+.runb{background:var(--ok);color:#fff;font-weight:700;font-size:13px;border-radius:8px;padding:4px 10px;margin:-4px 0 8px;display:inline-block}
+@media print{header,nav,.btn,.seg,.sub,#mbw{display:none!important}body{background:#fff}.card{border:0}}
+.tag.billed{background:var(--ok);border-color:var(--ok);color:#fff}.tag.tobill{color:var(--act);border-color:var(--act)}
+.pt{display:inline-block;font-size:12px;font-weight:700;padding:2px 8px;border-radius:99px;background:var(--tx);color:var(--bg);margin-left:4px;vertical-align:2px}
+.prt{display:flex;gap:8px;align-items:center;padding:10px 0;border-top:1px solid var(--ln);cursor:pointer}
+.prt:first-of-type{border-top:0}.prt.me{font-weight:700}.prt>span:first-child{flex:1}
+input,textarea,select{width:100%;padding:11px;margin:4px 0 10px;border:1px solid var(--ln);border-radius:8px;background:var(--bg);color:var(--tx);font:inherit}
+label{font-size:13px;font-weight:600;color:var(--mu)}
+.btn{display:block;width:100%;padding:13px;border:0;border-radius:10px;background:var(--ac);color:var(--on-ac);font:inherit;font-weight:700;margin-top:6px}
+.btn[style*="--ok"],.btn[style*="#e03131"]{color:#fff}
+.btn.alt{background:var(--card);color:var(--tx);border:1px solid var(--ln)}
+.row{display:flex;gap:8px}.row>*{flex:1}
+.ph{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:8px 0}
+.ph div{position:relative}.ph img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px;display:block}
+.ph .w{position:absolute;left:4px;bottom:4px;background:rgba(0,0,0,.7);color:#fff;font-size:11px;padding:1px 6px;border-radius:6px}
+.hide{display:none}
+header.in{background:#2b8a3e;color:#fff}
+.card.on{background:#2b8a3e;border-color:#2b8a3e;color:#fff}.card.on .mu{color:#e6f4ea}
+</style></head><body>
+<header><span id="shopnm">Waymore Jobs</span><span style="display:flex;gap:8px;align-items:center"><button id="lng" onclick="setLang()">Español</button><button id="gear" onclick="openSettings()" aria-label="Settings">⚙️</button><span id="net">online</span></span></header>
+<nav><button id="t1" class="on">Shop desk</button><button id="t2">Mechanic</button></nav>
+<main id="app"></main>
+<script>
+var db=null,assets=null,dict=null,orders=[],tab=1,cur=null,local=[];
+var tcAll=[],day=null,uid='local',nm=lg('wm_name')||'';
+var Q='wm_queue',LS='wm_local',MAXP=3,splitting=null;
+function $(id){return document.getElementById(id)}
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function lg(k){try{return JSON.parse(localStorage.getItem(k)||'null')}catch(e){return null}}
+function sv(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){return false}}
+function queue(){return lg(Q)||[]}
+
+// ---- website mode: Supabase database, logins and photos (inside Claude this stays off) ----
+var SB=window.WAYMORE_SB||null,sbc=null,ME=null,ROLE=null,WORKERS=[],loginMode='wait',LMSG='',PENDING=null;
+var DB={cache:{},ready:{},subs:[]},PEND='wm_pend';
+function isMech(){return !!SB&&ROLE==='mechanic'}
+function cacheSave(col){try{localStorage.setItem('wm_c_'+col,JSON.stringify(DB.cache[col]||{}))}catch(e){}}
+function pend(){return lg(PEND)||[]}
+function applyPend(col){pend().forEach(function(p){if(p.col!==col)return;if(p.data===null)delete DB.cache[col][p.id];else DB.cache[col][p.id]=p.data})}
+function dbNotify(col){DB.subs.slice().forEach(function(s){if(s.col===col)s.fire()})}
+function dbLoad(col){
+  if(DB.ready[col])return DB.ready[col];
+  if(!DB.cache[col]){DB.cache[col]=lg('wm_c_'+col)||{};applyPend(col)}
+  DB.ready[col]=sbc.from('docs').select('id,data').eq('col',col).then(function(r){
+    if(r.error)throw r.error;var m={};(r.data||[]).forEach(function(x){m[x.id]=x.data});DB.cache[col]=m;applyPend(col);cacheSave(col);dbNotify(col);
+  }).catch(function(){delete DB.ready[col]});
+  return DB.ready[col];
+}
+function dbReloadAll(){Object.keys(DB.cache).forEach(function(c){delete DB.ready[c];dbLoad(c)})}
+function copyOf(d){return d==null?d:JSON.parse(JSON.stringify(d))}
+function dbList(q){
+  var m=DB.cache[q.col]||{},L=Object.keys(m).map(function(id){return {id:id,data:function(){return copyOf(m[id])}}});
+  if(q.ord){var f=q.ord[0],dn=q.ord[1]=='desc';L.sort(function(a,b){var x=(m[a.id]||{})[f],y=(m[b.id]||{})[f];if(x==y)return 0;return ((x>y)?1:-1)*(dn?-1:1)})}
+  return q.lim?L.slice(0,q.lim):L;
+}
+function dbWrite(col,id,data){
+  if(!DB.cache[col])DB.cache[col]={};
+  if(data===null)delete DB.cache[col][id];else DB.cache[col][id]=copyOf(data);
+  cacheSave(col);
+  var P=pend().filter(function(p){return !(p.col===col&&p.id===id)});P.push({col:col,id:id,data:data===null?null:DB.cache[col][id],s:Date.now()+Math.random()});sv(PEND,P);
+  dbNotify(col);setTimeout(dbFlush,0);setNet();return Promise.resolve();
+}
+var flushing=false;
+async function dbFlush(){
+  if(flushing||!sbc||!ME)return;flushing=true;
+  try{
+    while(true){
+      var P=pend();if(!P.length)break;var p=P[0],r;
+      r=p.data===null?await sbc.from('docs').delete().eq('col',p.col).eq('id',p.id):await sbc.from('docs').upsert({col:p.col,id:p.id,data:p.data},{onConflict:'col,id'});
+      if(r.error&&!r.error.code)break;
+      sv(PEND,pend().filter(function(x){return x.s!==p.s}));
+      if(r.error){toast(r.error.message||'Could not save',true);delete DB.ready[p.col];dbLoad(p.col)}
+    }
+  }catch(e){}
+  flushing=false;setNet();
+}
+function dbLive(){
+  sbc.channel('docs-live').on('postgres_changes',{event:'*',schema:'public',table:'docs'},function(ev){
+    var r=ev.eventType==='DELETE'?ev.old:ev.new;if(!r||!r.col||!DB.cache[r.col])return;
+    if(pend().some(function(p){return p.col===r.col&&p.id===r.id}))return;
+    if(ev.eventType==='DELETE')delete DB.cache[r.col][r.id];else DB.cache[r.col][r.id]=r.data;
+    cacheSave(r.col);dbNotify(r.col);
+  }).subscribe(function(st){if(st==='SUBSCRIBED'){if(dbLive.was)dbReloadAll();dbLive.was=1}});
+}
+function dbDoc(col,id){
+  var snap=function(){var d=(DB.cache[col]||{})[id];return {exists:!!d,data:function(){return copyOf(d)}}};
+  return {
+    set:function(d){return dbWrite(col,id,d)},
+    update:function(p){return dbWrite(col,id,Object.assign({},(DB.cache[col]||{})[id]||{},p))},
+    delete:function(){return dbWrite(col,id,null)},
+    get:function(){return dbLoad(col).then(snap)},
+    onSnapshot:function(cb){var s={col:col,fire:function(){cb(snap())}};DB.subs.push(s);dbLoad(col);s.fire();return function(){var i=DB.subs.indexOf(s);if(i>=0)DB.subs.splice(i,1)}}
+  };
+}
+var SBDB={
+  collection:function(col){var q={col:col,ord:null,lim:null};
+    q.orderBy=function(f,d){q.ord=[f,d];return q};q.limit=function(n){q.lim=n;return q};q.doc=function(id){return dbDoc(col,id)};
+    q.onSnapshot=function(cb){var s={col:col,fire:function(){cb({docs:dbList(q)})}};DB.subs.push(s);dbLoad(col);s.fire();return function(){}};return q},
+  doc:function(path){var p=path.split('/');return dbDoc(p[0],p[1])}
+};
+var SBASSETS={upload:async function(blob){
+  var path=(ME?ME.id:'x')+'/'+Date.now().toString(36)+Math.random().toString(36).slice(2,7)+'.jpg';
+  var r=await sbc.storage.from('photos').upload(path,blob,{contentType:blob.type||'image/jpeg'});if(r.error)throw r.error;
+  return {id:path,url:sbc.storage.from('photos').getPublicUrl(path).data.publicUrl};
+}};
+function webDict(){
+  var R=window.SpeechRecognition||window.webkitSpeechRecognition;if(!R)return null;var fin=null,rec=null;
+  return {onFinal:function(cb){fin=cb},stop:function(){try{rec&&rec.stop()}catch(e){}return Promise.resolve()},
+    start:function(){return new Promise(function(res,rej){try{rec=new R();rec.lang=lang=='es'?'es-MX':'en-US';rec.interimResults=false;
+      rec.onresult=function(e){for(var i=e.resultIndex;i<e.results.length;i++)if(e.results[i].isFinal&&fin)fin({text:e.results[i][0].transcript})};rec.start();res()}catch(x){rej(x)}})}};
+}
+function roleName(r){return {pending:'Waiting for approval',mechanic:'Mechanic',desk:'Shop desk',admin:'Admin'}[r]||r}
+function loadWorkers(){return sbc.from('profiles').select('*').order('created_at').then(function(r){if(!r.error){WORKERS=r.data||[];render()}})}
+function lgo(m,msg){loginMode=m;LMSG=msg||'';render()}
+function loginHtml(){
+  var M=LMSG?'<div class="box2" style="font-weight:600'+(/^✓/.test(LMSG)?';color:var(--ok)':';color:#e03131')+'">'+esc(LMSG)+'</div>':'';
+  var card=function(t,b){return '<div class="card" style="margin-top:12px"><b style="font-size:20px">'+t+'</b><br>'+M+b+'</div>'};
+  var lk=function(m,t){return '<button class="btn alt" onclick="lgo(\''+m+'\')">'+t+'</button>'};
+  if(loginMode=='wait')return card('Signing in…','');
+  if(loginMode=='nop')return card('No worker profile','<p>This login has no worker profile yet. Ask the shop owner to run the Supabase setup.</p><button class="btn alt" onclick="sbc.auth.signOut()">Sign out</button>');
+  if(loginMode=='pending')return card('Waiting for approval','<p>Hi '+esc(PENDING&&PENDING.name||'')+'! Your account is waiting for the shop owner to approve it.</p><p class="mu">Ask them to open ⚙️ Settings → Workers and choose your role for '+esc(PENDING&&PENDING.email||'')+'.</p><button class="btn" onclick="location.reload()">Check again</button><button class="btn alt" onclick="sbc.auth.signOut()">Sign out</button>');
+  if(loginMode=='up')return card('Create an account','<label>Your name</label><input id="lg_n" autocomplete="name"><label>Email</label><input id="lg_e" type="email" autocomplete="email"><label>Password (at least 6 characters)</label><input id="lg_p" type="password" autocomplete="new-password"><button class="btn" onclick="doSignup()">Create account</button>'+lk('in','I already have an account'));
+  if(loginMode=='forgot')return card('Reset password','<label>Email</label><input id="lg_e" type="email" autocomplete="email"><button class="btn" onclick="doForgot()">Send reset link</button>'+lk('in','Back to sign in'));
+  if(loginMode=='reset')return card('Choose a new password','<label>New password (at least 6 characters)</label><input id="lg_p" type="password" autocomplete="new-password"><button class="btn" onclick="doReset()">Save new password</button>');
+  return card('Sign in','<label>Email</label><input id="lg_e" type="email" autocomplete="email"><label>Password</label><input id="lg_p" type="password" autocomplete="current-password"><button class="btn" onclick="doLogin()">Sign in</button>'+lk('up','Create an account')+lk('forgot','Forgot password?'));
+}
+function lv(id){var e=$(id);return e?e.value.trim():''}
+async function doLogin(){blurA();var e=lv('lg_e'),p=$('lg_p').value;if(!e||!p){lgo('in','Enter your email and password.');return}
+  var r=await sbc.auth.signInWithPassword({email:e,password:p});if(r.error){lgo('in',/confirm/i.test(r.error.message)?'Confirm your email first: open the link Supabase sent you.':'Wrong email or password.');return}afterLogin(r.data.user)}
+async function doSignup(){blurA();var n=lv('lg_n'),e=lv('lg_e'),p=$('lg_p').value;if(!n||!e||p.length<6){lgo('up','Fill in your name, email and a password of at least 6 characters.');return}
+  var r=await sbc.auth.signUp({email:e,password:p,options:{data:{name:n},emailRedirectTo:location.origin+location.pathname}});
+  if(r.error){lgo('up',r.error.message);return}if(r.data.session){afterLogin(r.data.user);return}lgo('in','✓ Account created. Check your email, tap the confirm link, then sign in.')}
+async function doForgot(){blurA();var e=lv('lg_e');if(!e){lgo('forgot','Enter your email.');return}
+  var r=await sbc.auth.resetPasswordForEmail(e,{redirectTo:location.origin+location.pathname});lgo('in',r.error?r.error.message:'✓ Check your email for the reset link.')}
+async function doReset(){blurA();var p=$('lg_p').value;if(p.length<6){lgo('reset','Use at least 6 characters.');return}
+  var r=await sbc.auth.updateUser({password:p});if(r.error){lgo('reset',r.error.message);return}history.replaceState(null,'',location.pathname);location.reload()}
+async function boot(){
+  document.querySelector('nav').style.display='none';render();
+  sbc=supabase.createClient(SB.url,SB.key,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+  var recov=/type=recovery/.test(location.hash);
+  sbc.auth.onAuthStateChange(function(ev){if(ev==='PASSWORD_RECOVERY')lgo('reset');if(ev==='SIGNED_OUT'){try{localStorage.removeItem(PEND)}catch(e){}location.reload()}});
+  var r=await sbc.auth.getSession(),s=r.data&&r.data.session;
+  if(recov){lgo('reset');return}
+  if(!s){lgo('in');return}
+  afterLogin(s.user);
+}
+async function afterLogin(user){
+  lgo('wait');
+  var r=await sbc.from('profiles').select('*').eq('user_id',user.id).maybeSingle(),p=r.data;
+  if(r.error){lgo('in','Could not reach the shop database. Check your signal and try again.');return}
+  if(!p){lgo('nop');return}
+  if(p.role==='pending'){PENDING=p;lgo('pending');return}
+  ME={id:user.id,email:user.email,name:p.name||user.email,role:p.role};ROLE=p.role;nm=ME.name;sv('wm_name',nm);uid=ME.id;
+  document.querySelector('nav').style.display='';
+  if(ROLE==='mechanic'){tab=2;$('t1').style.display='none'}
+  dbLive();loadWorkers();init();setInterval(function(){if(pend().length&&navigator.onLine)dbFlush()},15000);
+}
+function accountBox(){
+  if(!SB||!ME)return '';
+  return '<div class="card"><b>👤 Account</b><div style="margin-top:4px">'+esc(ME.name)+' · '+esc(ME.email)+'</div><div class="mu">Role: '+roleName(ROLE)+'</div><button class="btn alt" onclick="sbc.auth.signOut()">Sign out</button></div>';
+}
+function workersBox(){
+  if(!SB||ROLE!=='admin')return '';
+  var opts=function(r){return ['pending','mechanic','desk','admin'].map(function(x){return '<option value="'+x+'"'+(x==r?' selected':'')+'>'+roleName(x)+'</option>'}).join('')};
+  var L=WORKERS.slice().sort(function(a,b){return (a.role=='pending'?0:1)-(b.role=='pending'?0:1)});
+  return '<div class="card"><b>👷 Workers</b><p class="mu" style="margin:4px 0 8px">New workers open the website and tap Create an account. They show up here as Waiting for approval: choose their role and tap Save.</p>'+
+    (L.map(function(w){var i=WORKERS.indexOf(w);return '<div style="border-top:1px solid var(--ln);padding:8px 0">'+(w.role=='pending'?'<span class="tag open">NEW</span> ':'')+'<span class="mu">'+esc(w.email||'')+'</span>'+
+      '<div class="row"><input id="wr_n_'+i+'" value="'+esc(w.name||'')+'" style="margin:4px 0"><select id="wr_r_'+i+'" style="margin:4px 0">'+opts(w.role)+'</select><button class="btn alt" style="flex:0 0 auto;width:auto;margin:4px 0;padding:8px 12px" onclick="saveWorker('+i+')">Save</button></div></div>'}).join('')||'<div class="mu">No workers yet.</div>')+'</div>';
+}
+async function saveWorker(i){
+  var w=WORKERS[i];if(!w)return;var n=lv('wr_n_'+i),r=$('wr_r_'+i).value;
+  if(w.user_id===ME.id&&r!=='admin'){toast('You cannot remove your own admin role.',true);return}
+  blurA();var x=await sbc.from('profiles').update({name:n||w.name,role:r}).eq('user_id',w.user_id);
+  if(x.error){toast(x.error.message,true);return}toast('✓ Saved');loadWorkers();
+}
+
+// shared data (live when db is available, otherwise this device only)
+function all(){return db?orders:(lg(LS)||[])}
+function saveOrder(o){
+  if(o&&o.id===cur&&typeof readDetails=='function')readDetails(o);
+  sbPush('serviceOrders',o.id,o);
+  if(db){return db.collection('serviceOrders').doc(o.id).set(JSON.parse(JSON.stringify(o))).catch(function(e){toast('Could not save. Check your signal and try again.',true)})}
+  var a=lg(LS)||[],i=a.findIndex(function(x){return x.id===o.id});
+  if(i<0)a.unshift(o);else a[i]=o;sv(LS,a);render();return Promise.resolve();
+}
+function byId(id){var o=all().find(function(o){return o.id===id});return o?JSON.parse(JSON.stringify(o)):o}
+
+// split service orders: every part shares the SO number and a group id
+function grp(o){return o.group||o.id}
+function parts(o){var g=grp(o);return all().filter(function(x){return grp(x)===g}).sort(function(a,b){return (a.part||1)-(b.part||1)})}
+function sonum(o){return o.part?o.so+'_'+o.part:o.so}
+function plabel(o){return o.part?'<span class="pt">Part '+o.part+'</span>':''}
+function nextPart(ps){return ps.reduce(function(m,p){return Math.max(m,p.part||1)},0)+1}
+function btag(o){return o.billed?' <span class="tag billed">BILLED</span>':(o.status=='done'?' <span class="tag tobill">READY TO BILL</span>':'')}
+
+async function init(){
+  setNet();
+  if(SB){db=SBDB;assets=SBASSETS;dict=webDict();uid=ME.id;
+    db.collection('serviceOrders').orderBy('created','desc').limit(5000).onSnapshot(function(s){orders=s.docs.map(function(d){var x=d.data();x.id=d.id;return x});render()});
+  }else{
+  try{
+    var c=window.claude&&await claude.use('db');
+    if(c){db=c;db.collection('serviceOrders').orderBy('created','desc').limit(100).onSnapshot(function(s){orders=s.docs.map(function(d){var x=d.data();x.id=d.id;return x});render()},function(){db=null;render()})}
+  }catch(e){db=null}
+  try{assets=window.claude?await claude.use('assets'):null}catch(e){assets=null}
+  try{dict=window.claude?await claude.use('dictation'):null}catch(e){dict=null}
+  try{var u=window.claude&&await claude.use('user');if(u&&u.id)uid=await u.id()}catch(e){}
+  }
+  loadDay();
+  if(db)try{db.collection('timeclock').orderBy('date','desc').limit(200).onSnapshot(function(s){tcAll=s.docs.map(function(d){var x=d.data();x._id=d.id;return x});render()},function(){})}catch(e){}
+  if(db){
+    try{db.collection('customers').orderBy('created','desc').limit(500).onSnapshot(function(s){custs=s.docs.map(function(d){var x=d.data();x.id=d.id;return x});render()},function(){})}catch(e){}
+    try{db.collection('parts').orderBy('created','desc').limit(500).onSnapshot(function(s){pcat=s.docs.map(function(d){var x=d.data();x.id=d.id;return x});render()},function(){})}catch(e){}
+  }
+  if(db)try{db.doc('settings/shop').onSnapshot(function(s){if(s.exists){cfg=s.data();sv('wm_settings',cfg)}render()},function(){})}catch(e){}
+  render();sync();setTimeout(sbFlush,3000);
+}
+function setNet(){var n=$('net');n.textContent=navigator.onLine?'online':'offline';var q=queue().length;if(q)n.textContent+=' · '+q+' photo'+(q>1?'s':'')+' waiting';if(SB){var w=pend().length;if(w)n.textContent+=' · '+w+' to save'}tr(n)}
+addEventListener('online',function(){setNet();sync();sbFlush();if(SB)dbFlush()});addEventListener('offline',setNet);
+
+// photos: shrink to ~200-400 KB, queue, upload when signal returns
+function shrink(file){return new Promise(function(res,rej){
+  var im=new Image(),u=URL.createObjectURL(file);
+  im.onload=function(){var m=1600,s=Math.min(1,m/Math.max(im.width,im.height)),c=document.createElement('canvas');
+    c.width=Math.round(im.width*s);c.height=Math.round(im.height*s);c.getContext('2d').drawImage(im,0,0,c.width,c.height);
+    URL.revokeObjectURL(u);res(c.toDataURL('image/jpeg',0.7))};
+  im.onerror=rej;im.src=u})}
+async function addPhotos(id,files){
+  var q=queue();
+  for(var i=0;i<files.length;i++){try{q.push({so:id,data:await shrink(files[i]),t:Date.now()})}catch(e){}}
+  if(!sv(Q,q)){alert('Phone storage is full for waiting photos. Connect to upload first.')}
+  setNet();render();sync();
+}
+var syncing=false;
+async function sync(){
+  if(syncing||!navigator.onLine||!assets||!db)return;syncing=true;
+  try{
+    var q=queue();
+    while(q.length){
+      var p=q[0],blob=await (await fetch(p.data)).blob();
+      var r=await assets.upload(blob);
+      var snap=await db.collection('serviceOrders').doc(p.so).get(),d=snap.data()||{},ph=(d.photos||[]).slice();
+      ph.push(p.from?{url:r.url,t:p.t,from:p.from}:{url:r.url,t:p.t});await db.collection('serviceOrders').doc(p.so).update({photos:ph});
+      q=queue().slice(1);sv(Q,q);setNet();
+    }
+  }catch(e){}
+  syncing=false;setNet();render();
+}
+
+// ---- language: English / Spanish ----
+var lang=lg('wm_lang')||'en';
+function LOC(){return lang=='es'?'es':[]}
+// ---- settings: this phone + shared shop settings ----
+var cfg=lg('wm_settings')||{},setOpen=false,setMsg='';
+// ---- Supabase backup: every change is also added to the shop_backup table ----
+var SBDEF={url:'https://onyjozzlyxknodhmfhte.supabase.co',key:'sb_publishable_MO1SPIG19eRAfwz3a6hU6w_mO__2MdN'};
+var sbQ=lg('wm_sbq')||[],sbBusy=false,sbStat=lg('wm_sbstat')||{};
+function sbUrl(){return cfg.sbUrl||SBDEF.url}
+function sbKey(){return cfg.sbKey||SBDEF.key}
+function sbOn(){return !SB&&cfg.sb!==false&&!!sbUrl()&&!!sbKey()}
+async function sbSend(rows,u,k){
+  var r=await fetch((u||sbUrl())+'/rest/v1/shop_backup',{method:'POST',headers:{'apikey':k||sbKey(),'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify(rows)});
+  if(!r.ok){var t='';try{t=await r.text()}catch(e){}var er=new Error(t.slice(0,200));er.status=r.status;throw er}
+}
+function sbErr(e){
+  if(e&&e.status==404||/shop_backup/.test(e&&e.message||''))return 'The shop_backup table is missing. Run the setup SQL in Supabase.';
+  if(e&&(e.status==401||e.status==403))return 'Supabase refused it. Check the key and the insert policy.';
+  if(e&&e.status)return 'Supabase error '+e.status+': '+(e.message||'');
+  return 'Could not reach Supabase. Claude may be blocking the connection, or there is no signal.';
+}
+function sbStatText(){var q=sbQ.length;return (sbStat.ok?'✓ Last backup '+new Date(sbStat.ok).toLocaleString(LOC()):sbStat.err?'✕ '+sbStat.err:'Not backed up yet.')+(q?' · '+q+' waiting':'')}
+function sbShow(){var e=$('sb_st');if(e){e.textContent=sbStatText();e.style.color=sbStat.err&&!sbStat.ok?'#e03131':'';tr(e)}}
+function sbPush(col,id,data,del){
+  if(!sbOn()||!id)return;var d=null;try{d=data?JSON.parse(JSON.stringify(data)):null}catch(e){}
+  sbQ.push({collection:col,doc_id:String(id),data:d,deleted:!!del});if(sbQ.length>800)sbQ=sbQ.slice(-800);sv('wm_sbq',sbQ);setTimeout(sbFlush,50);
+}
+async function sbFlush(){
+  if(sbBusy||!sbQ.length||!navigator.onLine||!sbOn())return;sbBusy=true;var n=Math.min(50,sbQ.length);
+  try{await sbSend(sbQ.slice(0,n));sbQ=sbQ.slice(n);sbStat={ok:Date.now()}}catch(e){sbStat={err:sbErr(e),at:Date.now()}}
+  sv('wm_sbq',sbQ);sv('wm_sbstat',sbStat);sbBusy=false;sbShow();if(sbStat.ok&&sbQ.length)sbFlush();
+}
+async function sbTest(){
+  var u=$('s_sbu').value.trim().replace(/\/+$/,''),k=$('s_sbk').value.trim(),e=$('sb_st');e.textContent='Testing…';e.style.color='';tr(e);
+  try{await sbSend([{collection:'_test',doc_id:'ping',data:{at:new Date().toISOString(),by:nm||''},deleted:false}],u,k);e.textContent='✓ Connected. Supabase saved a test row.';e.style.color='var(--ok)'}
+  catch(x){e.textContent='✕ '+sbErr(x);e.style.color='#e03131'}tr(e);
+}
+function sbAll(){
+  if(!sbOn()){toast('Turn on the Supabase backup and save shop settings first.',true);return}
+  all().forEach(function(o){sbQ.push({collection:'serviceOrders',doc_id:o.id,data:JSON.parse(JSON.stringify(o)),deleted:false})});
+  docs('customers').forEach(function(o){sbQ.push({collection:'customers',doc_id:o.id,data:o,deleted:false})});
+  docs('parts').forEach(function(o){sbQ.push({collection:'parts',doc_id:o.id,data:o,deleted:false})});
+  tcAll.forEach(function(d){var c=JSON.parse(JSON.stringify(d));delete c._id;sbQ.push({collection:'timeclock',doc_id:d._id,data:c,deleted:false})});
+  sbQ.push({collection:'settings',doc_id:'shop',data:cfg,deleted:false});
+  sv('wm_sbq',sbQ);sbShow();sbFlush();toast('Backing up '+sbQ.length+' records…');
+}
+function NP(){var n=parseInt(cfg.photos);return isNaN(n)?3:Math.max(0,n)}
+function applyTheme(){var t=lg('wm_theme')||'auto';if(t=='auto')document.documentElement.removeAttribute('data-theme');else document.documentElement.setAttribute('data-theme',t)}
+applyTheme();
+function openSettings(){if(SB&&!ME)return;commit();setOpen=!setOpen;setMsg='';render();scrollTo(0,0)}
+function settingsView(){
+  var th=lg('wm_theme')||'auto',ck=function(v){return v?' checked':''};
+  return '<button class="btn alt" onclick="openSettings()">← Back</button>'+
+   '<div class="card" style="margin-top:12px"><b>📱 This phone</b><br>'+
+    '<label>Language</label><select id="s_lang"><option value="en"'+(lang=='en'?' selected':'')+'>English</option><option value="es"'+(lang=='es'?' selected':'')+'>Español</option></select>'+
+    '<label>Your name (for the time clock and job timers)</label><input id="s_nm" value="'+esc(nm)+'">'+
+    '<label>Screen</label><select id="s_th"><option value="auto"'+(th=='auto'?' selected':'')+'>Automatic</option><option value="light"'+(th=='light'?' selected':'')+'>Light</option><option value="dark"'+(th=='dark'?' selected':'')+'>Dark</option></select>'+
+    '<button class="btn" onclick="savePhone()">Save phone settings</button></div>'+
+   accountBox()+(isMech()?'':
+   '<div class="card"><b>🏢 Shop (shared with everyone)</b><br>'+
+    '<label>Shop name</label><input id="s_shop" value="'+esc(cfg.shop||'')+'" placeholder="Waymore Jobs">'+
+    '<div class="row"><span><label>Default labor rate ($/h)</label><input id="s_rate" inputmode="decimal" value="'+(cfg.rate||'')+'"></span><span><label>Photos required to finish</label><input id="s_ph" inputmode="numeric" value="'+NP()+'"></span></div>'+
+    '<label class="ck"><input type="checkbox" id="s_auth"'+ck(cfg.auth!==false)+'><span>Shop must authorize each repair</span></label>'+
+    '<label class="ck"><input type="checkbox" id="s_mp"'+ck(cfg.mechPrices)+'><span>Mechanics can see prices</span></label>'+
+    '<label style="display:block;margin-top:10px">Mechanics (one name per line)</label><textarea id="s_me" rows="4">'+esc((cfg.mechs||[]).join('\n'))+'</textarea>'+
+    (SB?'<div class="box2"><b>🗄 Supabase</b><div class="mu">All shop data is saved in Supabase. Every change is also kept in the shop_backup history.</div></div>':'<div class="box2"><b>🗄 Supabase backup</b>'+
+     '<label class="ck" style="border:0"><input type="checkbox" id="s_sb"'+ck(cfg.sb!==false)+'><span>Copy every change to Supabase</span></label>'+
+     '<label>Project URL</label><input id="s_sbu" autocomplete="off" value="'+esc(sbUrl())+'">'+
+     '<label>Publishable key</label><input id="s_sbk" autocomplete="off" value="'+esc(sbKey())+'">'+
+     '<div class="row"><button class="btn alt" style="margin-top:0" onclick="sbTest()">🔌 Test connection</button><button class="btn alt" style="margin-top:0" onclick="sbAll()">⬆️ Back up everything now</button></div>'+
+     '<div id="sb_st" class="mu" style="margin-top:6px">'+esc(sbStatText())+'</div></div>')+
+    '<button class="btn" onclick="saveShop()">Save shop settings</button></div>')+workersBox()+
+   (setMsg?'<p style="color:var(--ok);font-weight:700">'+esc(setMsg)+'</p>':'');
+}
+function savePhone(){
+  blurA();var l=$('s_lang').value;if(l!==lang){lang=l;sv('wm_lang',lang);setNet()}
+  var n=$('s_nm').value.trim();if(n){nm=n;sv('wm_name',nm);if(SB&&ME&&n!==ME.name){ME.name=n;sbc.from('profiles').update({name:n}).eq('user_id',ME.id).then(loadWorkers)}}
+  sv('wm_theme',$('s_th').value);applyTheme();loadDay();setMsg='✓ Saved';render();
+}
+function saveShop(){
+  blurA();var c={shop:$('s_shop').value.trim(),rate:parseFloat($('s_rate').value)||0,photos:Math.max(0,parseInt($('s_ph').value)||0),auth:$('s_auth').checked,mechPrices:$('s_mp').checked,
+    mechs:$('s_me').value.split('\n').map(function(s){return s.trim()}).filter(Boolean),sb:$('s_sb')?$('s_sb').checked:cfg.sb,sbUrl:$('s_sbu')?$('s_sbu').value.trim().replace(/\/+$/,''):(cfg.sbUrl||''),sbKey:$('s_sbk')?$('s_sbk').value.trim():(cfg.sbKey||''),updated:Date.now()};
+  if(isNaN(parseInt($('s_ph').value)))c.photos=3;
+  cfg=c;sv('wm_settings',c);sbPush('settings','shop',c);if(db)db.doc('settings/shop').set(c).catch(function(){$('net').textContent='Could not save'});
+  setMsg='✓ Saved';render();
+}
+function setLang(){lang=lang=='es'?'en':'es';sv('wm_lang',lang);document.documentElement.lang=lang;setNet();render()}
+var UN=function(n){return n=='Unassigned'?'Sin asignar':n};
+var ES={
+'Shop desk':'Taller','Mechanic':'Mecánico','online':'en línea','offline':'sin conexión','Back':'Volver','← Back':'← Volver',
+'New service order':'Nueva orden de servicio','SO number':'Número de SO','Customer':'Cliente','Truck / unit':'Camión / unidad','Complaint / description':'Queja / descripción',
+'Checklist (one item per line)':'Lista de tareas (una por línea)','Schedule date':'Fecha programada','Time':'Hora','Est. hrs':'Hrs est.','Est. hours':'Horas est.',
+'Send to mechanic':'Enviar al mecánico','Date':'Fecha','Name':'Nombre','Unassigned':'Sin asignar',
+'OPEN':'ABIERTA','WORKING':'EN TRABAJO','DONE':'TERMINADA','BILLED':'FACTURADA','READY TO BILL':'LISTA PARA FACTURAR',
+'Add':'Agregar','Add customer':'Agregar cliente','Add part':'Agregar pieza','Address':'Dirección','All open jobs':'Todos los trabajos abiertos',
+'All parts billed.':'Todas las partes facturadas.','Billing':'Facturación','CLOCKED IN':'ENTRADA MARCADA','Cancel':'Cancelar','Checklist':'Lista de tareas',
+'Clock in':'Marcar entrada','Clock out':'Marcar salida','Delete customer':'Eliminar cliente','Delete this customer? Their SOs stay.':'¿Eliminar este cliente? Sus SO se quedan.',
+'Delete this part from the list?':'¿Eliminar esta pieza de la lista?','Delete part':'Eliminar pieza','Description':'Descripción','Edit':'Editar','Edit part':'Editar pieza',
+'Email':'Correo','Every open ticket is scheduled.':'Todas las órdenes abiertas están programadas.','Gallery':'Galería','Hours this week':'Horas esta semana',
+'Hours to bill together':'Horas a facturar juntas','Location (shelf / bin)':'Ubicación (estante / caja)','Mark done':'Marcar terminada',
+'Mechanic for the revisit':'Mecánico para la revisita','No SOs yet.':'Todavía no hay SO.','No customers found.':'No se encontraron clientes.','No parts found.':'No se encontraron piezas.',
+'No work time recorded on the timer yet.':'Todavía no hay tiempo registrado en el cronómetro.','Not clocked in':'Sin entrada marcada','Notes':'Notas',
+'Nothing scheduled for you today.':'No tienes nada programado hoy.','Nothing scheduled this day.':'Nada programado este día.','No tickets here.':'No hay órdenes aquí.',
+'Open a ticket to give it a date, time and mechanic.':'Abre una orden para darle fecha, hora y mecánico.','Or open a part to bill it separately.':'O abre una parte para facturarla por separado.',
+'Part number':'Número de pieza','Parts to bill':'Piezas a facturar','Parts total':'Total de piezas','Parts used':'Piezas usadas','Pause':'Pausar','Phone':'Teléfono','Photos':'Fotos',
+'Photos are shrunk automatically and upload when you have signal.':'Las fotos se reducen solas y se suben cuando hay señal.','Price each ($)':'Precio c/u ($)','Qty in stock':'Cant. en inventario',
+'Save':'Guardar','Save notes':'Guardar notas','Save schedule':'Guardar horario','Save customer details':'Guardar datos del cliente','Start work':'Empezar trabajo',
+'Time on this job':'Tiempo en este trabajo','Time on this part':'Tiempo en esta parte','Time sheet (tap Edit to fix a punch)':'Hoja de tiempo (toca Editar para corregir)',
+'Timer running':'Cronómetro corriendo','Timer stopped':'Cronómetro detenido','Today':'Hoy',"Today's hours":'Horas de hoy','Total to bill':'Total a facturar',
+'Undo billed':'Deshacer facturado','Unschedule':'Quitar del horario','Work notes':'Notas de trabajo','Yes, delete':'Sí, eliminar','Your name (first time only)':'Tu nombre (solo la primera vez)',
+'in stock':'en inventario','← All customers':'← Todos los clientes','➕ Add customer':'➕ Agregar cliente','➕ Add part':'➕ Agregar pieza','➕ Create SO':'➕ Crear SO','➕ New SO':'➕ Nueva SO',
+'👤 Customers':'👤 Clientes','🔧 Parts':'🔧 Piezas','⏱ Workers hours':'⏱ Horas de trabajadores','📅 Schedule':'📅 Horario',"📅 Today's schedule":'📅 Horario de hoy',
+'📷 Take photo':'📷 Tomar foto','🎤 Dictate':'🎤 Dictar','(not saved yet)':'(aún no guardado)','waiting':'esperando','Saved':'Guardado',
+'This job becomes Part 1. It keeps its notes, photos and time, so it can be finished and billed on its own.':'Este trabajo pasa a ser la Parte 1. Conserva sus notas, fotos y tiempo, así se puede terminar y facturar por separado.',
+'This removes its notes, photos and time for everyone. It cannot be undone.':'Esto borra sus notas, fotos y tiempo para todos. No se puede deshacer.',
+'In':'Entrada','Out (blank if still working)':'Salida (vacío si sigue trabajando)','No hours yet this week.':'Todavía no hay horas esta semana.','No punches yet.':'Todavía no hay marcas.',
+"Workers' hours show here once the shared data is connected.":'Las horas de los trabajadores aparecen aquí cuando los datos compartidos están conectados.',
+'Nothing else open. New SOs from the desk show up here right away.':'Nada más abierto. Las SO nuevas del taller aparecen aquí al instante.',
+'Nothing open. New SOs from the desk show up here right away.':'Nada abierto. Las SO nuevas del taller aparecen aquí al instante.',
+'Enter the SO number':'Escribe el número de SO','Phone storage is full for waiting photos. Connect to upload first.':'El teléfono está lleno de fotos en espera. Conéctate para subirlas primero.',
+'Fix times: out must be after in':'Corrige las horas: la salida debe ser después de la entrada','Could not save':'No se pudo guardar','Could not delete':'No se pudo eliminar',
+'Action items':'Tareas','Parts list':'Lista de piezas','Estimate':'Presupuesto','Actual':'Real','Diff':'Dif.','Invoiced':'Facturado','Invoiced hours':'Horas facturadas',
+'Assign':'Asignar','Diagnose':'Diagnosticar','Authorize':'Autorizar','Repair':'Reparar','Invoice':'Facturar','Quote':'Cotizar','Order':'Pedir','Receive':'Recibir',
+'SERVICE':'SERVICIO','PARTS':'PIEZAS','Parts':'Piezas','Complaint':'Queja','Cause *':'Causa *','Correction *':'Corrección *','Repaired':'Reparada','✓ Repaired':'✓ Reparada',
+'Waiting for authorization':'Esperando autorización','QUOTED':'COTIZADA','ORDERED':'PEDIDA','RECEIVED':'RECIBIDA','Miles':'Millas','Lower than the last reading':'Menor que la última lectura',
+'Invoice total':'Total de factura','Labor rate ($ per hour)':'Tarifa de mano de obra ($ por hora)','Save rate':'Guardar tarifa','🖨 Print':'🖨 Imprimir',
+'Labor uses the invoiced hours on each action item. Set them on the Shop desk.':'La mano de obra usa las horas facturadas de cada tarea. Se ponen en el Taller.',
+'▶ Start work on this item':'▶ Empezar esta tarea','↩ Back one step':'↩ Regresar un paso','➕ Add action item':'➕ Agregar tarea','🗑 Delete action item':'🗑 Eliminar tarea',
+'🛒 Mark ordered':'🛒 Marcar pedida','📦 Mark received':'📦 Marcar recibida','Action items: one complaint per line':'Tareas: una queja por línea',
+'Truck / unit (year, make, model, unit #)':'Camión / unidad (año, marca, modelo, unidad #)','No parts':'Sin piezas','Parts quoted':'Piezas cotizadas','Parts ordered':'Piezas pedidas','Parts received':'Piezas recibidas',
+'No complaint written':'Sin queja escrita','(no complaint)':'(sin queja)','⏳ Waiting for the shop to authorize this repair.':'⏳ Esperando que el taller autorice esta reparación.',
+'No action items yet. Add one for each complaint.':'Todavía no hay tareas. Agrega una por cada queja.','No parts yet. Add parts inside each action item.':'Todavía no hay piezas. Agrégalas dentro de cada tarea.',
+'$ Price':'$ Precio','Part #':'Pieza #','Qty':'Cant.','Vendor':'Proveedor','Check engine light\nBrakes grinding\nPM service':'Luz de motor encendida\nFrenos rechinan\nServicio PM',
+'🚚 Truck':'🚚 Camión','On AutoZone tap Add Vehicle, choose License Plate, paste it and pick the state. Then come back and type or scan the VIN here.':'En AutoZone toca Agregar vehículo, elige Placa, pégala y escoge el estado. Luego regresa y escribe o escanea el VIN aquí.','Plate #':'Placa #','State':'Estado','🔍 Look up plate':'🔍 Buscar placa','🔎 Decode VIN':'🔎 Decodificar VIN','📷 Scan VIN':'📷 Escanear VIN',
+'Looking up VIN…':'Buscando VIN…','Reading the photo…':'Leyendo la foto…','A VIN has 17 letters and numbers (no I, O or Q).':'Un VIN tiene 17 letras y números (sin I, O ni Q).',
+'Could not look up this VIN right now. Type the year, make and model.':'No se pudo buscar este VIN ahora. Escribe el año, marca y modelo.',
+'This plate is not in your records yet. Type the VIN or scan it with the camera and the truck info fills in.':'Esta placa todavía no está en tus registros. Escribe el VIN o escanéalo con la cámara y se llenan los datos del camión.',
+'Could not read a VIN in the photo. Try again closer, or type it.':'No se pudo leer un VIN en la foto. Intenta más de cerca o escríbelo.',
+'Scanning needs Claude, which is not available here.':'Escanear necesita a Claude, que no está disponible aquí.','Claude was not allowed, so the photo could not be read.':'Claude no fue permitido, así que no se pudo leer la foto.',
+'Add an item':'Agregar una tarea','Signing in…':'Entrando…','No worker profile':'Sin perfil de trabajador','This login has no worker profile yet. Ask the shop owner to run the Supabase setup.':'Esta cuenta aún no tiene perfil de trabajador. Pide al dueño del taller que haga la configuración de Supabase.',
+'Sign out':'Cerrar sesión','Waiting for approval':'Esperando aprobación','Check again':'Revisar otra vez','Create an account':'Crear una cuenta','Your name':'Tu nombre','Email':'Correo','Password (at least 6 characters)':'Contraseña (mínimo 6 caracteres)',
+'Create account':'Crear cuenta','I already have an account':'Ya tengo una cuenta','Reset password':'Restablecer contraseña','Send reset link':'Enviar enlace','Back to sign in':'Volver a entrar','Choose a new password':'Elige una contraseña nueva',
+'New password (at least 6 characters)':'Contraseña nueva (mínimo 6 caracteres)','Save new password':'Guardar contraseña nueva','Sign in':'Entrar','Password':'Contraseña','Forgot password?':'¿Olvidaste tu contraseña?',
+'Enter your email and password.':'Escribe tu correo y contraseña.','Confirm your email first: open the link Supabase sent you.':'Primero confirma tu correo: abre el enlace que te envió Supabase.','Wrong email or password.':'Correo o contraseña incorrectos.',
+'Fill in your name, email and a password of at least 6 characters.':'Escribe tu nombre, correo y una contraseña de mínimo 6 caracteres.','✓ Account created. Check your email, tap the confirm link, then sign in.':'✓ Cuenta creada. Revisa tu correo, toca el enlace de confirmación y luego entra.',
+'Enter your email.':'Escribe tu correo.','✓ Check your email for the reset link.':'✓ Revisa tu correo para el enlace.','Use at least 6 characters.':'Usa mínimo 6 caracteres.','Could not reach the shop database. Check your signal and try again.':'No se pudo conectar con la base de datos. Revisa la señal e intenta otra vez.',
+'👤 Account':'👤 Cuenta','Admin':'Administrador','👷 Workers':'👷 Trabajadores','New workers open the website and tap Create an account. They show up here as Waiting for approval: choose their role and tap Save.':'Los trabajadores nuevos abren la página y tocan Crear una cuenta. Aparecen aquí como Esperando aprobación: elige su rol y toca Guardar.',
+'NEW':'NUEVO','No workers yet.':'Aún no hay trabajadores.','You cannot remove your own admin role.':'No puedes quitarte tu propio rol de administrador.','🗄 Supabase':'🗄 Supabase','All shop data is saved in Supabase. Every change is also kept in the shop_backup history.':'Todos los datos del taller se guardan en Supabase. Cada cambio también queda en el historial shop_backup.','🗄 Supabase backup':'🗄 Respaldo en Supabase','Copy every change to Supabase':'Copiar cada cambio a Supabase','Project URL':'URL del proyecto','Publishable key':'Clave publicable',
+'🔌 Test connection':'🔌 Probar conexión','⬆️ Back up everything now':'⬆️ Respaldar todo ahora','Not backed up yet.':'Todavía sin respaldo.','Testing…':'Probando…','✓ Connected. Supabase saved a test row.':'✓ Conectado. Supabase guardó una fila de prueba.',
+'The shop_backup table is missing. Run the setup SQL in Supabase.':'Falta la tabla shop_backup. Ejecuta el SQL de configuración en Supabase.','Supabase refused it. Check the key and the insert policy.':'Supabase lo rechazó. Revisa la clave y la política de inserción.',
+'Could not reach Supabase. Claude may be blocking the connection, or there is no signal.':'No se pudo conectar con Supabase. Claude puede estar bloqueando la conexión, o no hay señal.','Turn on the Supabase backup and save shop settings first.':'Activa el respaldo en Supabase y guarda los ajustes del taller primero.','SO number':'Número de SO','Could not save. Check your signal and try again.':'No se pudo guardar. Revisa la señal e intenta otra vez.','Scheduled hours today':'Horas programadas hoy','Authorized hours':'Horas autorizadas','Work in progress hours':'Horas en proceso','Completed but not invoiced':'Terminadas sin facturar','Invoiced hours today':'Horas facturadas hoy',
+'List':'Lista','By mechanic':'Por mecánico','By status':'Por estado','Ready to invoice':'Lista para facturar','Waiting for payment':'Esperando pago','Paid':'Pagada','Open':'Abierta',
+'Parts to price':'Piezas sin precio','Parts to order':'Piezas por pedir','Parts to receive':'Piezas por recibir','Parts on open SOs':'Piezas en SO abiertas','Nothing here.':'Nada aquí.','Ordered':'Pedida','Received':'Recibida','📚 Parts list (inventory)':'📚 Lista de piezas (inventario)',
+'Avg time to get paid (90 days)':'Tiempo promedio de pago (90 días)','Paid in the last 30 days':'Pagado en los últimos 30 días','💲 Mark invoiced':'💲 Marcar facturada','✓ Mark paid':'✓ Marcar pagada','Undo':'Deshacer',
+'Nothing waiting to be invoiced.':'Nada esperando factura.','No unpaid invoices.':'No hay facturas sin pagar.','No payments yet.':'Todavía no hay pagos.','From':'Desde','To':'Hasta','Group by':'Agrupar por','Week':'Semana','Month':'Mes','Go':'Ver',
+'Counts SOs marked invoiced in these dates.':'Cuenta las SO facturadas en estas fechas.','Average per order':'Promedio por orden','Revenue by week':'Ingresos por semana','Revenue by month':'Ingresos por mes','Invoiced hours by week':'Horas facturadas por semana','Invoiced hours by month':'Horas facturadas por mes',
+'Tap a bar to see its value.':'Toca una barra para ver su valor.','👤 Mechanics in these dates':'👤 Mecánicos en estas fechas','Clocked on SOs':'En SO','Efficiency':'Eficiencia','Table view':'Ver tabla','Week of':'Semana del','Revenue':'Ingresos','Invoiced h':'Horas fact.',
+'No work recorded in these dates.':'No hay trabajo en estas fechas.','🧾 Office':'🧾 Oficina','📈 Reports':'📈 Reportes','SO number *':'Número de SO *','Customer *':'Cliente *','Who is requesting service?':'¿Quién pide el servicio?','Contact name or phone':'Nombre o teléfono del contacto',
+'🚚 Which unit needs service? *':'🚚 ¿Qué unidad necesita servicio? *','Pick the customer first':'Primero elige el cliente','➕ New unit':'➕ Unidad nueva','Choose unit':'Elegir unidad','No units yet for this customer':'Este cliente aún no tiene unidades',
+'🔧 Action items *':'🔧 Tareas *','Customer complaint, or the repair / service to do':'Queja del cliente, o la reparación / servicio a hacer','No action items yet. Type a complaint and tap Add.':'Aún no hay tareas. Escribe una queja y toca Agregar.',
+'Skip diagnosis (go straight to Repair)':'Saltar diagnóstico (directo a Reparar)','📅 Scheduling':'📅 Horario','Unit location':'Ubicación de la unidad','e.g. Shop, customer yard, roadside':'ej. Taller, patio del cliente, en carretera',
+'When will the unit be available?':'¿Cuándo estará disponible la unidad?','Unit MUST be accessed at that date and time':'La unidad DEBE atenderse en esa fecha y hora','When would they like it back?':'¿Cuándo la quieren de regreso?','Start work date':'Fecha para empezar',
+'👍 Authorization':'👍 Autorización','Customer purchase order (PO) #':'Orden de compra (PO) del cliente #','Blanket authorization for this customer: go straight to Repair after diagnosis':'Autorización general para este cliente: directo a Reparar después del diagnóstico',
+'How much has the customer pre-authorized? ($)':'¿Cuánto pre-autorizó el cliente? ($)','Lead technician':'Técnico principal','Notes for the shop and the mechanic':'Notas para el taller y el mecánico','Create SO and send to mechanic':'Crear SO y enviar al mecánico',
+'📝 Notes from the desk':'📝 Notas del taller','Notes from the desk':'Notas del taller','Wanted back':'Lo quieren de regreso','Customer PO #':'PO del cliente #','Pre-authorized ($)':'Pre-autorizado ($)','Customer pre-authorized up to':'El cliente pre-autorizó hasta','✓ Within the pre-authorized amount':'✓ Dentro del monto pre-autorizado','New service order':'Nueva orden de servicio','Skip diagnosis: go straight to Repair (for known jobs like PM or tires)':'Saltar diagnóstico: pasar directo a Reparar (para trabajos conocidos como PM o llantas)','🔧 STRAIGHT TO REPAIR':'🔧 DIRECTO A REPARAR','Cause (optional)':'Causa (opcional)','Customer pre-authorized repairs: go straight to Repair after diagnosis':'Cliente pre-autorizó las reparaciones: pasar directo a Reparar después del diagnóstico','👍 PRE-AUTHORIZED':'👍 PRE-AUTORIZADA','Start typing a name or phone':'Escribe un nombre o teléfono','Their trucks: tap to fill in':'Sus camiones: toca para llenar','Choose mechanic':'Elegir mecánico','Save your mechanics in ⚙️ Settings to pick them from a list.':'Guarda tus mecánicos en ⚙️ Ajustes para elegirlos de una lista.','📱 This phone':'📱 Este teléfono','Language':'Idioma','Your name (for the time clock and job timers)':'Tu nombre (para el reloj y los cronómetros)','Screen':'Pantalla','Automatic':'Automática','Light':'Clara','Dark':'Oscura',
+'Save phone settings':'Guardar ajustes del teléfono','🏢 Shop (shared with everyone)':'🏢 Taller (compartido con todos)','Shop name':'Nombre del taller','Default labor rate ($/h)':'Tarifa de mano de obra ($/h)','Photos required to finish':'Fotos requeridas para terminar',
+'Shop must authorize each repair':'El taller debe autorizar cada reparación','Mechanics can see prices':'Los mecánicos pueden ver precios','Mechanics (one name per line)':'Mecánicos (un nombre por línea)','Save shop settings':'Guardar ajustes del taller','✓ Saved':'✓ Guardado','← Back':'← Volver','✅ Finished – waiting to be invoiced':'✅ Terminadas – esperando factura','Optional':'Opcional','Mileage':'Millaje','Odometer reading':'Lectura del odómetro','Job details':'Datos del trabajo','Save details':'Guardar datos',
+"Can't finish yet. Please complete:":'Todavía no se puede terminar. Falta completar:','✓ Everything is filled out. You can finish now.':'✓ Todo está completo. Ya puedes terminar.','Part # or name':'Pieza # o nombre','Type your name, then tap the button':'Escribe tu nombre y toca el botón','Unit #, make, plate':'Unidad #, marca, placa',
+'e.g. 10452':'ej. 10452','e.g. Come back to install parts when they arrive':'ej. Volver a instalar piezas cuando lleguen','🔍 Search name, phone, email':'🔍 Buscar nombre, teléfono, correo',
+'🔍 Search part #, name, location':'🔍 Buscar pieza #, nombre, ubicación','Replace front pads\nCheck rotors\nAdjust slack adjusters':'Cambiar balatas delanteras\nRevisar rotores\nAjustar matracas'
+};
+var CH={'All':'Todas','Open':'Abiertas','Ready to bill':'Listas para facturar','Billed':'Facturadas'};
+var AX={'complaint':'queja','cause':'causa','correction':'corrección','not marked repaired':'no marcada como reparada'};
+var PAT=[
+[/^Hi (.*)! Your account is waiting for the shop owner to approve it\.$/,'¡Hola $1! Tu cuenta está esperando que el dueño del taller la apruebe.'],
+[/^Ask them to open ⚙️ Settings → Workers and choose your role for (.*)\.$/,'Pídele que abra ⚙️ Ajustes → Trabajadores y elija tu rol para $1.'],
+[/^Role: (.+)$/,function(m,a){return 'Rol: '+trS(a)}],[/^(online|offline)((?: · \d+ photos? waiting)?) · (\d+) to save$/,function(m,a,b,c){return trS(a+b)+' · '+c+' por guardar'}],
+[/^✓ Last backup (.+?)( · (\d+) waiting)?$/,function(m,a,b,c){return '✓ Último respaldo '+a+(c?' · '+c+' en espera':'')}],[/^✕ (.+)$/,function(m,a){return '✕ '+trS(a)}],[/^Backing up (\d+) records…$/,'Respaldando $1 registros…'],[/^Supabase error (\d+): (.*)$/,'Error de Supabase $1: $2'],
+[/^Automatic: (.+)$/,'Automático: $1'],[/^✓ SO (.+) created$/,'✓ SO $1 creada'],[/^SO (.+) already exists\. Use another number or leave it empty\.$/,'La SO $1 ya existe. Usa otro número o déjalo vacío.'],
+[/^🔧 Parts \((\d+)\)$/,'🔧 Piezas ($1)'],[/^🧾 Office \((\d+)\)$/,'🧾 Oficina ($1)'],[/^(\d+) ready to invoice$/,'$1 listas para facturar'],[/^Waiting for payment \((\d+)\)$/,'Esperando pago ($1)'],
+[/^💲 Ready to invoice \((\d+)\)$/,'💲 Listas para facturar ($1)'],[/^⏳ Waiting for payment \((\d+)\)$/,'⏳ Esperando pago ($1)'],[/^✅ Recently paid \((\d+)\)$/,'✅ Pagadas recientemente ($1)'],
+[/^🏷 Price parts \((\d+)\)$/,'🏷 Poner precio ($1)'],[/^🛒 Order parts \((\d+)\)$/,'🛒 Pedir piezas ($1)'],[/^📦 Receive parts \((\d+)\)$/,'📦 Recibir piezas ($1)'],
+[/^Invoiced (\d+) days? ago$/,'Facturada hace $1 día(s)'],[/^Paid (.+)$/,'Pagada $1'],[/^All revenue · (\d+) orders$/,'Ingresos totales · $1 órdenes'],[/^Labor · (\d+) orders$/,'Mano de obra · $1 órdenes'],[/^Parts · (\d+) orders$/,'Piezas · $1 órdenes'],
+[/^(\d+) SOs? · (.+) h authorized$/,'$1 SO · $2 h autorizadas'],[/^(.+) days$/,'$1 días'],
+[/^Requested by: (.*)$/,'Pidió: $1'],[/^PO #: (.*)$/,'PO #: $1'],[/^Available: (.*)$/,'Disponible: $1'],[/^⚠️ Must access at: (.*)$/,'⚠️ Atender a las: $1'],[/^Wanted back: (.*)$/,'De regreso: $1'],
+[/^Pre-authorized up to (.*)$/,'Pre-autorizado hasta $1'],[/^Over by (.+)\. Get the customer's approval\.$/,'Excede por $1. Pide la aprobación del cliente.'],[/^Plate (.+?) · (.*)$/,function(m,a,b){return 'Placa '+a+' · '+b}],
+[/^✓ Found in your records: SO (.+)$/,'✓ Encontrado en tus registros: SO $1'],[/^Plate (.+) copied\. (.+)$/,function(m,a,b){return 'Placa '+a+' copiada. '+trS(b)}],[/^Plate (.+)$/,'Placa $1'],
+[/^✓ (.+?)( \(read by Claude, please double-check\))?( · VIN check digit does not match, double-check the VIN)?$/,function(m,a,b,c){return '✓ '+a+(b?' (leído por Claude, revísalo)':'')+(c?' · el dígito de control del VIN no coincide, revisa el VIN':'')}],
+[/^Action Item (\d+)$/,'Tarea $1'],
+[/^Action (\d+): (.*)$/,function(m,a,b){return 'Tarea '+a+': '+(AX[b]||b)}],
+[/^Action (\d+) · (.+)$/,function(m,a,b){return 'Tarea '+a+' · '+b.replace(/ each$/,' c/u')}],
+[/^Mark Action (\d+) as Diagnosed$/,'Marcar Tarea $1 como diagnosticada'],[/^Mark Action (\d+) as Repaired$/,'Marcar Tarea $1 como reparada'],
+[/^👍 Customer authorized Action (\d+)$/,'👍 Cliente autorizó Tarea $1'],[/^Parts for Action (\d+)$/,'Piezas para Tarea $1'],
+[/^(No parts|Parts quoted|Parts ordered|Parts received) · Assigned: (.*)$/,function(m,a,b){return ES[a]+' · Asignado: '+UN(b)}],
+[/^Cause: (.*)$/,'Causa: $1'],[/^Correction: (.*)$/,'Corrección: $1'],[/^Estimate · SO (.+)$/,'Presupuesto · SO $1'],
+[/^Labor \((.+) invoiced h\)$/,'Mano de obra ($1 h facturadas)'],[/^Labor \((.+) h\)$/,'Mano de obra ($1 h)'],[/^Labor (.+) h × (.+)$/,'Mano de obra $1 h × $2'],
+[/^Labor rate: (.+) \/ h$/,'Tarifa: $1 / h'],[/^Last: (.+)$/,'Última: $1'],[/^Tap again to delete Action (\d+)$/,'Toca otra vez para eliminar la Tarea $1'],
+[/^These action items move to SO (.+) with their cause and parts\. It also gets a copy of this part's notes and photos\. This part \((.+)\) is marked done with the repaired items, ready to bill\.$/,'Estas tareas pasan a la SO $1 con su causa y piezas. También recibe una copia de las notas y fotos de esta parte. Esta parte ($2) queda terminada con las tareas reparadas, lista para facturar.'],
+[/^↪ Needs a revisit: move (\d+) unfinished action items? to SO (.+)$/,'↪ Necesita revisita: pasar $1 tarea(s) sin terminar a SO $2'],
+[/^⏱ TIMING · (.+)$/,'⏱ CORRIENDO · $1'],[/^🔧 (\d+) of (\d+) action items repaired$/,'🔧 $1 de $2 tareas reparadas'],
+[/^Checklist: (\d+) items? not checked$/,'Lista de tareas: $1 sin marcar'],[/^Photos: (\d+) of (\d+) taken$/,'Fotos: $1 de $2 tomadas'],
+[/^Photos \((\d+) of (\d+) required\)$/,'Fotos ($1 de $2 requeridas)'],[/^Photos ✓ (\d+)$/,'Fotos ✓ $1'],[/^• (.+)$/,function(m,a){return '• '+trS(a)}],
+[/^(.*) · (\d+) photos · (.+)$/,function(m,a,b,c){return UN(a)+' · '+b+' fotos · '+c}],
+[/^(\d+) of (\d+) done$/,'$1 de $2 hechas'],
+[/^(\d+) jobs? · (.+)h booked( \(over 8h\))?$/,function(m,a,b,c){return a+' trabajo'+(a>1?'s':'')+' · '+b+'h reservadas'+(c?' (más de 8h)':'')}],
+[/^(\d+) jobs?$/,function(m,a){return a+' trabajo'+(a>1?'s':'')}],
+[/^(\d+) parts? out of stock$/,function(m,a){return a+(a>1?' piezas':' pieza')+' sin inventario'}],
+[/^(.+) not on an SO$/,'$1 fuera de una SO'],[/^on SOs (.+)$/,'en SO $1'],[/^IN · (.+)$/,'DENTRO · $1'],
+[/^(\d+) of these (?:are|is) not marked done yet\.$/,'$1 de estas todavía no están terminadas.'],
+[/^Add Part (\d+): SO (.+)$/,'Agregar Parte $1: SO $2'],
+[/^(All|Open|Ready to bill|Billed) \((\d+)\)$/,function(m,a,b){return CH[a]+' ('+b+')'}],
+[/^All parts together: (.+)$/,'Todas las partes juntas: $1'],[/^Billed together: SO (.+)$/,'Facturadas juntas: SO $1'],
+[/^Clocked in since (.+)$/,'Entrada desde $1'],[/^Clocked out at (.+)$/,'Salida a las $1'],
+[/^Clock not saved: (.+)$/,'Entrada no guardada: $1'],[/^Clock error: (.+)$/,'Error del reloj: $1'],
+[/^Create SO (.+)$/,'Crear SO $1'],[/^Delete SO (.+)\?$/,'¿Eliminar SO $1?'],[/^🗑 Delete SO (.+)$/,'🗑 Eliminar SO $1'],
+[/^Mark Part (\d+) done$/,'Marcar Parte $1 terminada'],[/^Mechanic: (.*)$/,function(m,a){return 'Mecánico: '+UN(a)}],
+[/^Not scheduled yet \((\d+)\)$/,'Sin programar ($1)'],[/^Part (\d+)$/,'Parte $1'],[/^Parts of SO (.+)$/,'Partes de SO $1'],
+[/^Revisit from SO (.+?): (.*)$/,'Revisita de SO $1: $2'],[/^Revisit: new SO (.+)$/,'Revisita: nueva SO $1'],
+[/^SO (.+) is not marked done yet\.$/,'SO $1 todavía no está terminada.'],[/^SO (.+) is done and ready to bill\.$/,'SO $1 está terminada y lista para facturar.'],
+[/^SO (.+) billed on (.+)$/,'SO $1 facturada el $2'],
+[/^SO (\S+) · Part (\d+)( \(this one\))?$/,function(m,a,b,c){return 'SO '+a+' · Parte '+b+(c?' (esta)':'')}],
+[/^Service orders \((\d+)\)$/,'Órdenes de servicio ($1)'],
+[/^These items move to SO (.+)\. It also gets a copy of this part's notes and photos\. This part \((.+)\) is marked done with the checked items, ready to bill\.$/,'Estas tareas pasan a la SO $1. También recibe una copia de las notas y fotos de esta parte. Esta parte ($2) queda terminada con las tareas marcadas, lista para facturar.'],
+[/^This SO has the most parts allowed \((\d+)\)\.$/,'Esta SO ya tiene el máximo de partes ($1).'],
+[/^(\d+) items? not done\. This SO already has (\d+) parts, so a revisit SO cannot be added\.$/,'$1 tarea(s) sin terminar. Esta SO ya tiene $2 partes, no se puede agregar una revisita.'],
+[/^Today · (.+)$/,'Hoy · $1'],[/^Undo billing for all (\d+) parts$/,'Deshacer facturación de las $1 partes'],[/^What Part (\d+) covers$/,'Qué cubre la Parte $1'],
+[/^↪ Needs a revisit: move (\d+) unchecked items? to SO (.+)$/,'↪ Necesita revisita: pasar $1 tarea(s) sin marcar a SO $2'],
+[/^⏱ TIMING – (.+)$/,function(m,a){return '⏱ CORRIENDO – '+trS(a)}],
+[/^✂️ Split this SO: add (.+)$/,'✂️ Dividir esta SO: agregar $1'],[/^💲 Bill together: SO (.+)$/,'💲 Facturar juntas: SO $1'],
+[/^💲 Mark SO (.+) billed$/,'💲 Marcar SO $1 facturada'],[/^📅 Schedule \((\d+) today\)$/,'📅 Horario ($1 hoy)'],
+[/^📋 Open tickets(?: \((\d+)\))?$/,function(m,a){return '📋 Órdenes abiertas'+(a?' ('+a+')':'')}],
+[/^📅 (.*)$/,function(m,a){return '📅 '+a.replace(/^Today/,'Hoy').replace(' · est ',' · est. ')}],
+[/^(.*?)(\d+) SOs?(?: · (\d+) open)?$/,function(m,a,b,c){return a+b+' SO'+(c?' · '+c+' abiertas':'')}],
+[/^\$(.+) each$/,'$$$1 c/u'],[/^Edit (.+)$/,'Editar $1'],
+[/^(online|offline) · (\d+) photos? waiting$/,function(m,a,b){return (a=='online'?'en línea':'sin conexión')+' · '+b+' foto'+(b>1?'s':'')+' en espera'}]
+];
+function trS(s){if(lang!='es')return s;if(Object.prototype.hasOwnProperty.call(ES,s))return ES[s];for(var i=0;i<PAT.length;i++){var m=s.match(PAT[i][0]);if(m)return typeof PAT[i][1]=='function'?PAT[i][1].apply(null,m):s.replace(PAT[i][0],PAT[i][1])}return s}
+function tr(root){
+  if(lang!='es'||!root)return;
+  var w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT),n,list=[];while(n=w.nextNode())list.push(n);
+  list.forEach(function(n){var p=n.parentNode;if(!p||(p.closest&&p.closest('textarea,script,style')))return;var t=n.nodeValue,s=t.trim();if(!s)return;var r=trS(s);if(r!==s)n.nodeValue=t.replace(s,r)});
+  if(root.querySelectorAll)root.querySelectorAll('[placeholder]').forEach(function(e){var r=trS(e.placeholder);if(r!==e.placeholder)e.placeholder=r});
+}
+window.alert=function(s){toast(s)};
+
+// views
+function render(){
+  $('shopnm').textContent=cfg.shop||'Waymore Jobs';$('gear').style.background=setOpen?'rgba(0,0,0,.25)':'transparent';
+  $('t1').textContent='Shop desk';$('t2').textContent='Mechanic';
+  var keep=null,dc=$('dtc');
+  if(cur&&dc&&dc.dataset.id===cur&&!skipKeep)keep=grabVals();skipKeep=false;
+  keepV=keep?Object.assign({id:cur},keep):null;
+  render0();
+  dc=$('dtc');if(keep&&dc&&dc.dataset.id===cur)Object.keys(keep).forEach(function(k){var e=$(k);if(e&&e!==document.activeElement)e.value=keep[k]});
+  $('lng').textContent=lang=='es'?'English':'Español';document.documentElement.lang=lang;
+  tr(document.body);
+}
+function render0(){
+  var ae=document.activeElement;if(ae&&ae.id&&ae.type!='checkbox'&&/^(nt|ei|eo|nmi|sp|ck|rv|f_|cu_|pa_|pu_|sc_|dt_|ac_|s_|rp_|lg_|wr_)/.test(ae.id)){pendR=true;return}
+  if(SB&&!ME){$('app').innerHTML=loginHtml();return}
+  $('t1').className=tab==1?'on':'';$('t2').className=tab==2?'on':'';
+  var cl=day&&day.punches&&day.punches[day.punches.length-1];document.querySelector('header').className=(cl&&!cl.out)?'in':'';
+  var a=$('app');
+  if(setOpen){a.innerHTML=settingsView();return}
+  if(tab==1&&!cur){a.innerHTML=deskView();return}
+  if(cur){a.innerHTML=jobView(byId(cur));return}
+  a.innerHTML=listView();
+}
+function deskView(){
+  return subNav()+(dtab=='new'?newView():dtab=='sched'?schedView():dtab=='hrs'?hoursView():dtab=='open'?ticketsView():dtab=='cust'?custView():dtab=='office'?officeView():dtab=='rep'?reportsView():partsView());
+}
+var nItems=[];
+function nowLocal(){var d=new Date();d.setMinutes(d.getMinutes()-d.getTimezoneOffset());return d.toISOString().slice(0,16)}
+function niList(){
+  return nItems.map(function(x,i){return '<div class="row" style="align-items:center;border-top:1px solid var(--ln);padding:6px 0"><span><b>'+(i+1)+'.</b> '+esc(x.t)+
+    '<label class="ck" style="border:0;padding:4px 0;font-size:14px"><input type="checkbox"'+(x.skip?' checked':'')+' onchange="nItems['+i+'].skip=this.checked"><span>Skip diagnosis (go straight to Repair)</span></label></span>'+
+    '<button class="btn alt" style="flex:0 0 auto;width:auto;margin:0;padding:6px 10px" onclick="nItems.splice('+i+',1);drawNI()">✕</button></div>'}).join('')||'<div class="mu">No action items yet. Type a complaint and tap Add.</div>';
+}
+function drawNI(){var w=$('f_nis');if(w){w.innerHTML=niList();tr(w)}}
+function addNI(quiet){var e=$('f_cc'),v=e.value.trim();if(!v){if(!quiet)e.focus();return}nItems.push({t:v,skip:false});e.value='';drawNI();if(!quiet)e.focus()}
+function nextSO(){var m=0;all().forEach(function(o){var n=parseInt(String(o.so).replace(/\D/g,''));if(n>m&&n<1e9)m=n});return String(m?m+1:(+cfg.soStart||1001))}
+function toast(msg,bad){var t=$('toast');if(!t){t=document.createElement('div');t.id='toast';document.body.appendChild(t)}t.textContent=trS(String(msg));t.className=bad?'bad':'';t.style.display='block';clearTimeout(toast.h);toast.h=setTimeout(function(){t.style.display='none'},3500)}
+function unitPick(v){
+  var s=$('f_usel');if(!s)return;if(v==='new'&&!s.querySelector('option[value=new]'))s.insertAdjacentHTML('beforeend','<option value="new">➕ New unit</option>');s.value=v;
+  var nu=$('f_nu'),sum=$('f_usum'),la=$('f_last');
+  if(v==='new'||v===''){['f_un','f_vi','f_pl','f_ps'].forEach(function(k){$(k).value=''});$('f_vi').dataset.done='';nu.style.display=v==='new'?'block':'none';sum.textContent='';la.textContent='';return}
+  var o=trks[+v];if(!o)return;$('f_un').value=o.unit||'';$('f_vi').value=o.vin||'';$('f_pl').value=o.plate||'';$('f_ps').value=o.plateState||'';$('f_vi').dataset.done=o.vin||'';nu.style.display='none';
+  sum.textContent=[o.unit,o.plate?'Plate '+o.plate+(o.plateState?' '+o.plateState:''):'',o.vin?'VIN '+o.vin:''].filter(Boolean).join(' · ');
+  var lm=lastMiles({id:'_new',group:'_new',vin:o.vin,plate:o.plate,unit:o.unit});la.textContent=lm?'Last: '+lm.mi.toLocaleString(LOC())+' ('+new Date(lm.t).toLocaleDateString(LOC())+')':'';tr(sum.parentNode);
+}
+function newView(){
+  var H=function(t){return '<div class="box2"><b style="display:block;margin-bottom:6px;font-size:17px">'+t+'</b>'};
+  return '<div class="card"><b style="font-size:20px">New service order</b><br>'+
+  '<label>SO number</label><input id="f_so" inputmode="numeric" placeholder="Automatic: '+nextSO()+'">'+
+  '<label>Customer *</label><input id="f_cu" autocomplete="off" placeholder="Start typing a name or phone" value="'+esc(preCu)+'"><div id="f_trk"></div>'+
+  '<label>Who is requesting service?</label><input id="f_rq" autocomplete="off" placeholder="Contact name or phone">'+
+  H('🚚 Which unit needs service? *')+
+   '<div class="row" style="align-items:center"><select id="f_usel" onchange="unitPick(this.value)"><option value="">Pick the customer first</option></select><button class="btn alt" style="flex:0 0 auto;width:auto;margin:4px 0 10px;padding:11px 12px" onclick="unitPick(\'new\')">➕ New unit</button></div>'+
+   '<div id="f_usum" style="font-weight:600"></div><div id="f_nu" style="display:none">'+truckBox('f',{},'')+'</div>'+
+   '<div class="mirow"><b>Miles</b><input id="f_mi" inputmode="numeric" placeholder="Odometer reading"></div><div id="f_last" class="mu"></div></div>'+
+  H('🔧 Action items *')+
+   '<div class="row" style="align-items:flex-start"><textarea id="f_cc" rows="2" placeholder="Customer complaint, or the repair / service to do"></textarea><button class="btn" style="flex:0 0 auto;width:auto;margin:4px 0 10px;padding:11px 16px" onclick="addNI()">Add</button></div>'+
+   '<div id="f_nis">'+niList()+'</div></div>'+
+  H('📅 Scheduling')+
+   '<label>Unit location</label><input id="f_loc" placeholder="e.g. Shop, customer yard, roadside">'+
+   '<label>When will the unit be available?</label><input id="f_av" type="datetime-local" value="'+nowLocal()+'">'+
+   '<label class="ck" style="border:0;padding-top:0"><input type="checkbox" id="f_must"><span>Unit MUST be accessed at that date and time</span></label>'+
+   '<label>When would they like it back?</label><input id="f_back" value="ASAP">'+
+   '<label>Start work date</label><input id="f_sd" type="date">'+
+   '<div class="row"><span><label>Time</label><input id="f_st" type="time"></span><span><label>Est. hrs</label><input id="f_eh" inputmode="decimal"></span></div></div>'+
+  H('👍 Authorization')+
+   '<label>Customer purchase order (PO) #</label><input id="f_po" autocomplete="off">'+
+   '<label class="ck" style="border:0"><input type="checkbox" id="f_pa"><span>Blanket authorization for this customer: go straight to Repair after diagnosis</span></label>'+
+   '<label>How much has the customer pre-authorized? ($)</label><input id="f_pam" inputmode="decimal" placeholder="0.00"></div>'+
+  '<label>Lead technician</label>'+mechSel('f_me','')+
+  '<label>Notes</label><textarea id="f_nt" rows="3" placeholder="Notes for the shop and the mechanic"></textarea>'+
+  '<button class="btn" onclick="createSO()">Create SO and send to mechanic</button></div>'+custDatalist();
+}
+function createSO(){blurA();
+  var so=$('f_so').value.trim()||nextSO();
+  if(all().some(function(x){return String(x.so)===so})){toast('SO '+so+' already exists. Use another number or leave it empty.',true);$('f_so').focus();return}
+  if($('f_cc').value.trim())addNI(true);blurA();
+  var me=$('f_me').value.trim();
+  var o={id:'so'+so.replace(/\W/g,'')+'_'+Date.now().toString(36),so:so,customer:$('f_cu').value.trim(),contact:$('f_rq').value.trim(),unit:$('f_un').value.trim(),
+    mechanic:me,desc:nItems.map(function(x){return x.t}).join(', '),mileage:$('f_mi').value.trim(),location:$('f_loc').value.trim(),availAt:$('f_av').value||'',mustAccess:$('f_must').checked,backBy:$('f_back').value.trim(),
+    schedDate:$('f_sd').value||'',schedTime:$('f_st').value||'',estH:parseFloat($('f_eh').value)||0,po:$('f_po').value.trim(),preAuth:$('f_pa').checked,preAmt:parseFloat($('f_pam').value)||0,deskNotes:$('f_nt').value.trim(),
+    vin:$('f_vi').value.trim().toUpperCase(),plate:$('f_pl').value.trim().toUpperCase(),plateState:$('f_ps').value.trim().toUpperCase(),items:[],
+    actions:nItems.map(function(x){var a=newAct(x.t,me);if(x.skip){a.st='repair';a.noDiag=true}return a}),rate:+cfg.rate||+lg('wm_rate')||0,notes:'',status:'open',photos:[],created:Date.now()};
+  nItems=[];toast('✓ SO '+so+' created');
+  if(o.customer&&!docs('customers').some(function(c){return lc(c.name)===lc(o.customer)}))saveDoc('customers',{id:'c'+Date.now().toString(36),name:o.customer,created:Date.now()});
+  preCu='';dtab='open';tf='open';
+  saveOrder(o).then(render);
+}
+function card(o){
+  return '<div class="card so'+(running(o)?' on':'')+'" onclick="openSO(\''+o.id+'\')"><span class="tag '+o.status+'">'+o.status.toUpperCase()+'</span> <b>SO '+esc(sonum(o))+'</b>'+plabel(o)+btag(o)+
+  '<div>'+esc(o.customer)+' · '+esc(o.unit)+(o.mileage?' · '+esc(o.mileage)+' mi':'')+'</div><div class="mu">'+esc(o.mechanic||'Unassigned')+' · '+(o.photos||[]).length+' photos · '+fmt(soMs(o))+'</div>'+(acts(o).length?'<div class="mu">🔧 '+acts(o).filter(function(a){return a.st=='done'}).length+' of '+acts(o).length+' action items repaired</div>':'')+schedLine(o)+'</div>';
+}
+function listView(){
+  var op=all().filter(function(o){return o.status!='done'}),td=today();
+  var mine=function(o){return !nm||!o.mechanic||lc(o.mechanic)===lc(nm)};
+  var t=op.filter(function(o){return o.schedDate===td&&mine(o)}).sort(bySched);
+  var rest=op.filter(function(o){return t.indexOf(o)<0}).sort(bySched);
+  var fin=all().filter(function(o){return o.status=='done'&&!o.billed&&mine(o)}).sort(function(a,b){return (b.created||0)-(a.created||0)});
+  return clockCard()+'<h3 style="margin:8px 0">📅 Today\'s schedule</h3>'+(t.map(card).join('')||'<p class="mu">Nothing scheduled for you today.</p>')+
+    '<h3 style="margin:16px 0 8px">All open jobs</h3>'+(rest.map(card).join('')||'<p class="mu">Nothing else open. New SOs from the desk show up here right away.</p>')+
+    (fin.length?'<h3 style="margin:16px 0 8px">✅ Finished – waiting to be invoiced</h3>'+fin.map(card).join(''):'');
+}
+function billBox(o){
+  if(tab!=1)return '';
+  var n='SO '+esc(sonum(o));
+  if(o.billed)return '<div class="card" style="margin-top:12px"><b>Billing</b> <span class="tag billed">BILLED</span><div class="mu">'+n+' billed on '+new Date(o.billedAt).toLocaleDateString(LOC())+(o.billedWith&&o.billedWith.length>1?'<br>Billed together: SO '+esc(o.billedWith.join(' + ')):'')+'</div>'+hoursTable([o])+partsSum([o])+estSum([o])+'<button class="btn alt" onclick="bill(\''+o.id+'\',false)">'+(o.billedWith&&o.billedWith.length>1?'Undo billing for all '+o.billedWith.length+' parts':'Undo billed')+'</button></div>';
+  return '<div class="card" style="margin-top:12px"><b>Billing</b><div class="mu">'+(o.status=='done'?n+' is done and ready to bill.':n+' is not marked done yet.')+'</div>'+hoursTable([o])+partsSum([o])+estSum([o])+'<button class="btn" style="background:var(--ok)" onclick="bill(\''+o.id+'\',true)">💲 Mark '+n+' billed</button></div>';
+}
+function bill(id,v){
+  var o=byId(id);if(!o)return;o.notes=($('nt')||{}).value||o.notes;
+  if(v){o.billed=true;o.billedAt=Date.now();delete o.billedWith;saveOrder(o).then(render);return}
+  var g=o.billedWith?parts(o).filter(function(p){return p.billed&&p.billedAt===o.billedAt}):[o];
+  g.reduce(function(pr,p){var c=p.id===o.id?o:p;delete c.billed;delete c.billedAt;delete c.billedWith;return pr.then(function(){return saveOrder(c)})},Promise.resolve()).then(render);
+}
+function billAllBtn(ps){
+  if(tab!=1)return '';
+  var un=ps.filter(function(p){return !p.billed});
+  if(un.length<2)return un.length?'':'<div class="mu" style="margin-top:6px">All parts billed.</div>';
+  var nd=un.filter(function(p){return p.status!='done'}).length;
+  return '<div style="margin-top:10px"><b>Hours to bill together</b>'+hoursTable(un)+partsSum(un)+estSum(un)+'</div><button class="btn" style="background:var(--ok);margin-top:10px" onclick="billAll(\''+un[0].id+'\')">💲 Bill together: SO '+esc(un.map(sonum).join(' + '))+'</button>'+
+    (nd?'<div class="mu">'+nd+' of these '+(nd>1?'are':'is')+' not marked done yet.</div>':'')+
+    '<div class="mu">Or open a part to bill it separately.</div>';
+}
+function billAll(id){
+  var o=byId(id);if(!o)return;
+  var un=parts(o).filter(function(p){return !p.billed}),t=Date.now(),names=un.map(sonum),cn=($('nt')||{}).value;
+  un.reduce(function(pr,p){var c=JSON.parse(JSON.stringify(p));if(c.id===cur&&cn!=null)c.notes=cn;c.billed=true;c.billedAt=t;c.billedWith=names;return pr.then(function(){return saveOrder(c)})},Promise.resolve()).then(render);
+}
+// hours worked on SOs, by day and mechanic, from the job timers
+function ymd(t){var d=new Date(t);return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2)}
+function dlabel(s){var p=s.split('-');return new Date(+p[0],+p[1]-1,+p[2]).toLocaleDateString(LOC(),{weekday:'short',month:'short',day:'numeric'})}
+function hoursTable(list){
+  var m={},tot=0;
+  list.forEach(function(p){(p.sessions||[]).forEach(function(s){var k=ymd(s.start)+'|'+(s.who||'?')+'|'+sonum(p),ms=(s.end||Date.now())-s.start;m[k]=(m[k]||0)+ms;tot+=ms})});
+  var ks=Object.keys(m).sort();
+  if(!ks.length)return '<div class="mu" style="margin:6px 0">No work time recorded on the timer yet.</div>';
+  return '<div class="hrs">'+ks.map(function(k){var a=k.split('|');return '<div class="row mu"><span>'+dlabel(a[0])+'</span><span>'+esc(a[1])+(list.length>1?' · '+esc(a[2]):'')+'</span><span>'+fmt(m[k])+'</span></div>'}).join('')+
+    '<div class="row"><b>Total to bill</b><span></span><b style="text-align:right">'+fmt(tot)+'</b></div></div>';
+}
+function onSOs(name,date){var t=0;all().forEach(function(o){(o.sessions||[]).forEach(function(s){if((s.who||'')===name&&ymd(s.start)===date)t+=(s.end||Date.now())-s.start})});return t}
+function gapHtml(d){var j=onSOs(d.name,d.date),g=dayMs(d)-j;return '<br>on SOs '+fmt(j)+(g>15*60000?'<br><b style="color:#e03131">'+fmt(g)+' not on an SO</b>':'')}
+
+// checklist + revisit
+var revisit=null;
+
+// ---- job details + what is required to finish ----
+var missFor=null,missRev=false,keepV=null;
+var KEEPRE=/^(dt_|nt$|ac_(c|ca|co|m|iv)_)/,skipKeep=false;
+function grabVals(){var k={};document.querySelectorAll('#app input,#app textarea,#app select').forEach(function(e){if(e.id&&KEEPRE.test(e.id)&&e.type!='file'&&e.type!='checkbox')k[e.id]=e.value});return k}
+document.addEventListener('change',function(e){
+  if(!missFor||!e.target||!KEEPRE.test(e.target.id||'')||missFor!==cur)return;
+  var w=$('mbw'),o=byId(cur);if(!w||!o)return;
+  keepV=grabVals();keepV.id=cur;
+  w.innerHTML=missBox(o,true);tr(w);
+});
+function ownPhotos(o){return (o.photos||[]).filter(function(p){return !p.from}).length+queue().filter(function(p){return p.so===o.id&&!p.from}).length}
+function photoHead(o){var n=ownPhotos(o),r=NP();return n>=r?'Photos ✓ '+n:'Photos ('+n+' of '+r+' required)'}
+function missing(o,skipItems){
+  var m=[],ph=ownPhotos(o),un=(o.items||[]).filter(function(x){return !x.done}).length,A=o.actions||[];
+  if(!lc(o.customer))m.push('Customer');if(!lc(o.unit))m.push('Truck / unit');if(!lc(o.mileage))m.push('Mileage');
+  if(!lc(o.desc)&&!A.some(function(a){return lc(a.c)}))m.push('Complaint / description');if(!lc(o.mechanic))m.push('Mechanic');
+  if(!skipItems){A.forEach(function(a,i){var n='Action '+(i+1)+': ';if(!lc(a.c))m.push(n+'complaint');if(!lc(a.cause)&&!a.noDiag)m.push(n+'cause');if(!lc(a.corr))m.push(n+'correction');if(a.st!='done')m.push(n+'not marked repaired')});
+    if(un)m.push('Checklist: '+un+' item'+(un>1?'s':'')+' not checked')}
+  if(ph<NP())m.push('Photos: '+ph+' of '+NP()+' taken');
+  return m;
+}
+function missTab(s){return /^(Customer|Truck|Complaint)/.test(s)?'edit':'act'}
+function missBox(o){
+  if(missFor!==o.id)return '';var oo=o;
+  if(keepV&&keepV.id===o.id){oo=JSON.parse(JSON.stringify(o));applyVals(oo,function(k){return k in keepV?keepV[k]:null})}
+  var mm=missing(oo,missRev);
+  if(!mm.length)return '<div class="card" style="border:2px solid var(--ok)"><b style="color:var(--ok)">✓ Everything is filled out. You can finish now.</b></div>';
+  return '<div class="card" id="missbox" style="border:2px solid #e03131"><b style="color:#e03131">Can\'t finish yet. Please complete:</b>'+mm.map(function(x){var t=missTab(x);return '<div'+(t!=jt?' class="ml" onclick="setJt(\''+t+'\')"':'')+'>• '+esc(x)+'</div>'}).join('')+'</div>';
+}
+function applyVals(o,get){
+  [['dt_cu','customer'],['dt_un','unit'],['dt_mi','mileage'],['dt_de','desc'],['dt_vin','vin'],['dt_pl','plate'],['dt_ps','plateState'],['dt_rq','contact'],['dt_loc','location'],['dt_back','backBy'],['dt_po','po'],['dt_dn','deskNotes']].forEach(function(p){var x=get(p[0]);if(x!=null)o[p[1]]=/^(vin|plate|plateState)$/.test(p[1])?x.trim().toUpperCase():x.trim()});
+  var pa=get('dt_pam');if(pa!=null)o.preAmt=parseFloat(pa)||0;
+  var r=get('dt_rt');if(r!=null){o.rate=parseFloat(r)||0;if(o.rate)sv('wm_rate',o.rate)}
+  var n=get('nt');if(n!=null)o.notes=n;
+  (o.actions||[]).forEach(function(a,i){var x;if((x=get('ac_c_'+i))!=null)a.c=x.trim();if((x=get('ac_ca_'+i))!=null)a.cause=x.trim();if((x=get('ac_co_'+i))!=null)a.corr=x.trim();if((x=get('ac_m_'+i))!=null)a.mech=x.trim();if((x=get('ac_iv_'+i))!=null)a.inv=parseFloat(x)||0});
+  return o;
+}
+function readDetails(o){
+  var c=$('dtc');if(!o||!c||c.dataset.id!==o.id)return o;
+  return applyVals(o,function(k){var e=$(k);return e?e.value:null});
+}
+function detailsCard(o){
+  var on=missFor===o.id,cl=function(v){return on&&!lc(v)?' class="miss"':''};
+  return '<div class="card"><b>Job details</b><br>'+
+    '<label>Customer</label><input id="dt_cu" autocomplete="off"'+cl(o.customer)+' value="'+esc(o.customer)+'">'+
+    truckBox('dt',o,cl(o.unit))+
+    '<label>Complaint / description</label><textarea id="dt_de" rows="2"'+cl(o.desc)+'>'+esc(o.desc)+'</textarea>'+
+    '<label>Who is requesting service?</label><input id="dt_rq" value="'+esc(o.contact)+'">'+
+    '<div class="row"><span><label>Unit location</label><input id="dt_loc" value="'+esc(o.location)+'"></span><span><label>Wanted back</label><input id="dt_back" value="'+esc(o.backBy)+'"></span></div>'+
+    '<div class="row"><span><label>Customer PO #</label><input id="dt_po" value="'+esc(o.po)+'"></span>'+(SP()?'<span><label>Pre-authorized ($)</label><input id="dt_pam" inputmode="decimal" value="'+(o.preAmt||'')+'"></span>':'')+'</div>'+
+    '<label>Notes from the desk</label><textarea id="dt_dn" rows="2">'+esc(o.deskNotes)+'</textarea>'+
+    '<label class="ck"><input type="checkbox"'+(o.skipDiag?' checked':'')+' onchange="setSkip(\''+o.id+'\',this.checked)"><span>Skip diagnosis: go straight to Repair (for known jobs like PM or tires)</span></label>'+
+    '<label class="ck"><input type="checkbox"'+(o.preAuth?' checked':'')+' onchange="setPA(\''+o.id+'\',this.checked)"><span>Customer pre-authorized repairs: go straight to Repair after diagnosis</span></label>'+
+    '<button class="btn alt" onclick="saveDetails(\''+o.id+'\')">Save details</button>'+custDatalist()+'</div>';
+}
+function soInfo(o){
+  var L=[];if(o.contact)L.push('Requested by: '+esc(o.contact));if(o.po)L.push('PO #: '+esc(o.po));if(o.location)L.push('📍 '+esc(o.location));
+  if(o.availAt)L.push((o.mustAccess?'⚠️ Must access at: ':'Available: ')+esc(new Date(o.availAt).toLocaleString(LOC(),{weekday:'short',month:'short',day:'numeric',hour:'numeric',minute:'2-digit'})));
+  if(o.backBy)L.push('Wanted back: '+esc(o.backBy));if(+o.preAmt>0&&SP())L.push('Pre-authorized up to '+money(o.preAmt));
+  return L.map(function(x){return '<div class="mu">'+x+'</div>'}).join('');
+}
+function setSkip(id,v){var o=readDetails(byId(id));if(!o)return;o.skipDiag=v;acts(o).forEach(function(a){if(v&&a.st=='diag'){a.st='repair';a.noDiag=true}else if(!v&&a.noDiag&&a.st=='repair'&&!lc(a.cause)){a.st='diag';delete a.noDiag}});saveOrder(o).then(render)}
+function setPA(id,v){var o=readDetails(byId(id));if(!o)return;o.preAuth=v;if(v)acts(o).forEach(function(a){if(a.st=='auth'){a.st='repair';a.authAt=Date.now();a.authBy='pre'}});saveOrder(o).then(render)}
+function saveDetails(id){blurA();var o=readDetails(byId(id));if(o)saveOrder(o).then(render)}
+
+// ---- scheduling ----
+var sd=today();
+function addDays(s,n){var p=s.split('-');return ymd(new Date(+p[0],+p[1]-1,+p[2]+n).getTime())}
+function weekOf(s){var p=s.split('-'),d=new Date(+p[0],+p[1]-1,+p[2]);d.setDate(d.getDate()-((d.getDay()+6)%7));return ymd(d.getTime())}
+function t12(hm){var p=String(hm).split(':');return new Date(2000,0,1,+p[0],+p[1]).toLocaleTimeString(LOC(),{hour:'numeric',minute:'2-digit'})}
+function bySched(a,b){var x=(a.schedDate||'9')+(a.schedTime||'99'),y=(b.schedDate||'9')+(b.schedTime||'99');return x<y?-1:x>y?1:0}
+function schedLine(o){return o.schedDate?'<div class="mu">📅 '+(o.schedDate===today()?'Today':dlabel(o.schedDate))+(o.schedTime?' · '+t12(o.schedTime):'')+(o.estH?' · est '+o.estH+'h':'')+'</div>':''}
+function mechNames(){var s={};(cfg.mechs||[]).forEach(function(n){s[n]=1});all().forEach(function(o){if(o.mechanic)s[o.mechanic]=1});tcAll.forEach(function(d){if(d.name)s[d.name]=1});return Object.keys(s).sort()}
+function mechList(v){var L=(cfg.mechs||[]).slice();WORKERS.forEach(function(w){if(w.role=='mechanic'&&w.name&&L.indexOf(w.name)<0)L.push(w.name)});if(!L.length)L=mechNames();if(v&&L.indexOf(v)<0)L.push(v);return L}
+function mechSel(id,v){
+  var L=mechList(v);
+  if(!L.length)return '<input id="'+id+'" autocomplete="off" placeholder="Name" value="'+esc(v)+'"><div class="mu" style="margin:-6px 0 8px">Save your mechanics in ⚙️ Settings to pick them from a list.</div>';
+  return '<select id="'+id+'"><option value="">Choose mechanic</option>'+L.map(function(n){return '<option value="'+esc(n)+'"'+(n===v?' selected':'')+'>'+esc(n)+'</option>'}).join('')+'</select>';
+}
+function mechDatalist(){return '<datalist id="mel">'+mechNames().map(function(n){return '<option value="'+esc(n)+'">'}).join('')+'</datalist>'}
+function schedCard(o){
+  if(tab!=1)return '';
+  return '<div class="card"><b>📅 Schedule</b>'+
+    '<div class="row"><span><label>Date</label><input id="sc_dt" type="date" value="'+esc(o.schedDate)+'"></span><span><label>Time</label><input id="sc_tm" type="time" value="'+esc(o.schedTime)+'"></span></div>'+
+    '<div class="row"><span style="flex:.6"><label>Est. hours</label><input id="sc_h" inputmode="decimal" value="'+(o.estH||'')+'"></span><span><label>Mechanic</label>'+mechSel('sc_m',o.mechanic)+'</span></div>'+mechDatalist()+
+    '<div class="row">'+(o.schedDate?'<button class="btn alt" onclick="saveSched(\''+o.id+'\',true)">Unschedule</button>':'')+'<button class="btn" onclick="saveSched(\''+o.id+'\')">Save schedule</button></div></div>';
+}
+function saveSched(id,clear){
+  blurA();var o=byId(id);if(!o)return;o.notes=($('nt')||{}).value||o.notes;
+  if(clear){o.schedDate='';o.schedTime='';o.estH=0}
+  else{var d=$('sc_dt').value;if(!d){$('sc_dt').focus();$('sc_dt').style.borderColor='#e03131';return}o.schedDate=d;o.schedTime=$('sc_tm').value||'';o.estH=parseFloat($('sc_h').value)||0;o.mechanic=$('sc_m').value.trim();sd=d}
+  saveOrder(o).then(render);
+}
+function schedView(){
+  var a=all(),ws=weekOf(sd),td=today(),days=[0,1,2,3,4,5,6].map(function(i){return addDays(ws,i)});
+  var strip='<div class="wk">'+days.map(function(d){var n=a.filter(function(o){return o.schedDate===d}).length,p=d.split('-'),dt=new Date(+p[0],+p[1]-1,+p[2]);
+    return '<button class="'+(d===sd?'on':'')+(d===td?' td':'')+'" onclick="sd=\''+d+'\';render()"><span>'+dt.toLocaleDateString(LOC(),{weekday:'short'})+'</span><b>'+dt.getDate()+'</b><span class="mu">'+(n?n+' job'+(n>1?'s':''):' ')+'</span></button>'}).join('')+'</div>';
+  var nav='<div class="row" style="align-items:center"><button class="btn alt" style="flex:0 0 auto;width:auto;margin:0;padding:10px 14px" onclick="sd=addDays(sd,-7);render()">‹</button>'+
+    '<input id="sc_d" type="date" value="'+sd+'" style="margin:0" onchange="if(this.value){sd=this.value};blurA();render()">'+
+    '<button class="btn alt" style="flex:0 0 auto;width:auto;margin:0;padding:10px 14px" onclick="sd=addDays(sd,7);render()">›</button>'+
+    '<button class="btn alt" style="flex:0 0 auto;width:auto;margin:0;padding:10px 12px" onclick="sd=today();render()">Today</button></div>';
+  var jobs=a.filter(function(o){return o.schedDate===sd}).sort(bySched),g={};
+  jobs.forEach(function(o){var k=o.mechanic||'Unassigned';(g[k]=g[k]||[]).push(o)});
+  var day='<h3 style="margin:4px 0">'+(sd===td?'Today · ':'')+dlabel(sd)+'</h3>'+(jobs.length?Object.keys(g).sort().map(function(k){
+    var h=g[k].reduce(function(s,o){return s+(+o.estH||0)},0);
+    return '<div class="mh"><b>👤 '+esc(k)+'</b><span class="mu"'+(h>8?' style="color:#e03131;font-weight:700"':'')+'>'+g[k].length+' job'+(g[k].length>1?'s':'')+(h?' · '+h+'h booked'+(h>8?' (over 8h)':''):'')+'</span></div>'+g[k].map(card).join('')}).join(''):'<p class="mu">Nothing scheduled this day.</p>');
+  var un=a.filter(function(o){return o.status!='done'&&!o.schedDate});
+  return nav+strip+day+'<h3 style="margin:20px 0 4px">Not scheduled yet ('+un.length+')</h3><p class="mu" style="margin:0 0 8px">Open a ticket to give it a date, time and mechanic.</p>'+(un.map(card).join('')||'<p class="mu">Every open ticket is scheduled.</p>');
+}
+
+// ---- shop desk tabs, customers, parts ----
+var dtab='new',tf='open',cq='',pq='',copen=null,cedit=null,cdel=false,pedit=null,pdel=false,preCu='',custs=[],pcat=[],pendR=false,cvis=[],pvis=[];
+document.addEventListener('focusout',function(){if(pendR){pendR=false;setTimeout(render,500)}});
+function blurA(){var a=document.activeElement;if(a&&a.blur&&a!==document.body)a.blur()}
+function lc(s){return String(s||'').trim().toLowerCase()}
+function SP(){if(isMech())return !!cfg.mechPrices;return tab==1||!!cfg.mechPrices}
+function money(n){return '$'+(+n||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}
+function docs(col){return db?(col=='customers'?custs:pcat):(lg('wm_'+col)||[])}
+function saveDoc(col,o){sbPush(col,o.id,o);if(db)return db.collection(col).doc(o.id).set(o).catch(function(){});var a=lg('wm_'+col)||[],i=a.findIndex(function(x){return x.id===o.id});if(i<0)a.push(o);else a[i]=o;sv('wm_'+col,a);render();return Promise.resolve()}
+function delDoc(col,id){sbPush(col,id,null,true);if(db)return db.collection(col).doc(id).delete().catch(function(){});sv('wm_'+col,(lg('wm_'+col)||[]).filter(function(x){return x.id!==id}));render();return Promise.resolve()}
+function subNav(){
+  var op=all().filter(function(o){return o.status!='done'}).length;
+  var t=[['new','➕ Create SO'],['sched','📅 Schedule'+(function(){var n=all().filter(function(o){return o.schedDate===today()}).length;return n?' ('+n+' today)':''})()],['hrs','⏱ Workers hours'],['open','📋 Open tickets'+(op?' ('+op+')':'')],['cust','👤 Customers'],['parts','🔧 Parts'+(function(){var n=partsTodo().length;return n?' ('+n+')':''})()],['office','🧾 Office'+(function(){var n=all().filter(function(o){return o.status=='done'&&!o.billed}).length;return n?' ('+n+')':''})()],['rep','📈 Reports']];
+  return '<div class="sub">'+t.map(function(x){return '<button class="'+(dtab==x[0]?'on':'')+'" onclick="dtab=\''+x[0]+'\';copen=null;cedit=null;pedit=null;cdel=false;pdel=false;render();scrollTo(0,0)">'+x[1]+'</button>'}).join('')+'</div>';
+}
+function hoursView(){return deskClock()||'<div class="card mu">Workers\' hours show here once the shared data is connected.</div>'}
+function tfOk(o,f){return f=='open'?o.status!='done':f=='bill'?(o.status=='done'&&!o.billed):f=='billed'?!!o.billed:true}
+function ticketsView(){
+  var f=[['open','Open'],['bill','Ready to bill'],['billed','Billed'],['all','All']],a=all();
+  var l=a.filter(function(o){return tfOk(o,tf)});
+  return svcTiles()+'<div class="sub sm">'+f.map(function(x){var n=a.filter(function(o){return tfOk(o,x[0])}).length;return '<button class="'+(tf==x[0]?'on':'')+'" onclick="tf=\''+x[0]+'\';render()">'+x[1]+' ('+n+')</button>'}).join('')+'</div>'+
+    '<div class="seg" style="margin-bottom:10px">'+[['list','List'],['tech','By mechanic'],['stat','By status']].map(function(x){return '<button class="'+(tview==x[0]?'on':'')+'" onclick="tview=\''+x[0]+'\';render()">'+x[1]+'</button>'}).join('')+'</div>'+
+    (!l.length?'<p class="mu">No tickets here.</p>':tview=='list'?l.map(card).join(''):groupRows(l,tview));
+}
+// ---- service board, parts to-do, office, reports ----
+var tview='list',rpF=null,rpT=null,rpG='week';
+function tiles(a){return '<div class="tiles">'+a.map(function(t){return '<div class="tile"><b>'+t[0]+'</b><span>'+t[1]+'</span></div>'}).join('')+'</div>'}
+function invH(o){return acts(o).reduce(function(s,a){return s+(+a.inv||0)},0)}
+function h2(n){return (Math.round(n*100)/100).toFixed(2)}
+function soStatus(o){if(o.billed)return o.paid?'Paid':'Waiting for payment';if(o.status=='done')return 'Ready to invoice';var a=acts(o).find(function(x){return x.st!='done'});return a?stLabel(a,o):'Open'}
+function svcTiles(){
+  var a=all(),td=today(),open=a.filter(function(o){return o.status!='done'});
+  var sch=a.filter(function(o){return o.schedDate===td}).reduce(function(s,o){return s+(+o.estH||0)},0);
+  var auth=0;open.forEach(function(o){acts(o).forEach(function(x){if(x.st=='repair')auth+=+x.inv||0})});
+  var wip=open.reduce(function(s,o){return s+soMs(o)},0)/3600000;
+  var cni=a.filter(function(o){return o.status=='done'&&!o.billed}).reduce(function(s,o){return s+invH(o)},0);
+  var inv=a.filter(function(o){return o.billed&&o.billedAt&&ymd(o.billedAt)===td}).reduce(function(s,o){return s+invH(o)},0);
+  return tiles([[h2(sch)+' h','Scheduled hours today'],[h2(auth)+' h','Authorized hours'],[h2(wip)+' h','Work in progress hours'],[h2(cni)+' h','Completed but not invoiced'],[h2(inv)+' h','Invoiced hours today']]);
+}
+function trow(o,extra){
+  var a=acts(o)[0],e=est(o);
+  return '<div class="trow" onclick="openSO(\''+o.id+'\')"><span style="flex:0 0 auto;min-width:70px"><b>SO '+esc(sonum(o))+'</b><br><span class="pill" style="display:inline-block;margin-top:3px">'+soStatus(o)+'</span></span>'+
+    '<span style="flex:1"><b>'+esc(o.customer||'')+'</b>'+(o.unit?' · '+esc(o.unit):'')+'<br><span class="mu">'+esc(a?a.c:o.desc||'')+'</span>'+(extra||'')+'</span>'+
+    (SP()?'<span style="flex:0 0 auto;text-align:right;font-weight:700">'+money(e.tot)+'</span>':'')+'</div>';
+}
+function groupRows(l,by){
+  var g={},order=[];l.forEach(function(o){var k=by=='tech'?(o.mechanic||'Unassigned'):soStatus(o);if(!g[k]){g[k]=[];order.push(k)}g[k].push(o)});
+  var so=['Diagnose','Waiting for authorization','Repair','Open','Ready to invoice','Waiting for payment','Paid'];
+  order.sort(function(x,y){return by=='stat'?so.indexOf(x)-so.indexOf(y):(x=='Unassigned')-(y=='Unassigned')||(x<y?-1:1)});
+  return order.map(function(k){var L=g[k],au=0;L.forEach(function(o){acts(o).forEach(function(x){if(x.st=='repair')au+=+x.inv||0})});
+    return '<div class="card"><div class="mh" style="margin:0 0 4px"><b>'+(by=='tech'?'👤 ':'')+esc(k)+'</b><span class="mu">'+L.length+' SO'+(L.length>1?'s':'')+(by=='tech'&&au?' · '+h2(au)+' h authorized':'')+'</span></div>'+L.map(function(o){return trow(o)}).join('')+'</div>'}).join('');
+}
+function partsTodo(){var r=[];all().forEach(function(o){if(o.billed)return;acts(o).forEach(function(a,i){(a.parts||[]).forEach(function(p,j){r.push({o:o,a:a,i:i,j:j,p:p,st:a.pst||'quote'})})})});return r}
+function partsFlow(){
+  var r=partsTodo(),price=r.filter(function(x){return !(+x.p.pr)}),ord=r.filter(function(x){return x.st=='quote'}),rec=r.filter(function(x){return x.st=='order'});
+  var row=function(x,btn){return '<div class="trow"><span style="flex:1" onclick="openSO(\''+x.o.id+'\')"><b>SO '+esc(sonum(x.o))+'</b> · '+esc(x.o.customer||'')+'<br>'+x.p.q+' × '+esc((x.p.no?x.p.no+' ':'')+x.p.d)+'<span class="mu">'+(x.p.ven?' · '+esc(x.p.ven):'')+' · Action '+(x.i+1)+'</span></span>'+btn+'</div>'};
+  var sec=function(t,L,f){return '<details class="card"'+(L.length?' open':'')+'><summary>'+t+' ('+L.length+')</summary>'+(L.map(f).join('')||'<div class="mu">Nothing here.</div>')+'</details>'};
+  return tiles([[price.length,'Parts to price'],[ord.length,'Parts to order'],[rec.length,'Parts to receive'],[money(r.reduce(function(s,x){return s+x.p.q*(+x.p.pr||0)},0)),'Parts on open SOs']])+
+    sec('🏷 Price parts',price,function(x){var k=x.o.id+'_'+x.i+'_'+x.j;return row(x,'<span style="flex:0 0 auto;display:flex;gap:6px;align-items:center"><input id="pa_x'+k+'" inputmode="decimal" placeholder="$" style="width:70px;margin:0"><button class="btn alt" style="width:auto;margin:0;padding:8px 10px" onclick="setPrice(\''+x.o.id+'\','+x.i+','+x.j+')">Save</button></span>')})+
+    sec('🛒 Order parts',ord,function(x){return row(x,'<button class="btn alt" style="flex:0 0 auto;width:auto;margin:0;padding:8px 10px" onclick="advParts(\''+x.o.id+'\','+x.i+')">Ordered</button>')})+
+    sec('📦 Receive parts',rec,function(x){return row(x,'<button class="btn alt" style="flex:0 0 auto;width:auto;margin:0;padding:8px 10px" onclick="advParts(\''+x.o.id+'\','+x.i+')">Received</button>')})+
+    '<h3 style="margin:16px 0 8px">📚 Parts list (inventory)</h3>';
+}
+function setPrice(id,i,j){var e=$('pa_x'+id+'_'+i+'_'+j),v=parseFloat(e&&e.value);if(!(v>0)){if(e){e.focus();e.style.borderColor='#e03131'}return}blurA();var o=byId(id);if(!o||!o.actions[i]||!o.actions[i].parts[j])return;o.actions[i].parts[j].pr=v;saveOrder(o).then(render)}
+function payIt(id,v){var o=byId(id);if(!o)return;if(v){o.paid=true;o.paidAt=Date.now()}else{delete o.paid;delete o.paidAt}saveOrder(o).then(render)}
+function officeView(){
+  var a=all(),rdy=a.filter(function(o){return o.status=='done'&&!o.billed}),due=a.filter(function(o){return o.billed&&!o.paid}).sort(function(x,y){return (x.billedAt||0)-(y.billedAt||0)}),
+    paid=a.filter(function(o){return o.paid}).sort(function(x,y){return (y.paidAt||0)-(x.paidAt||0)}),D=86400000,now=Date.now();
+  var rec=paid.filter(function(o){return o.paidAt>now-90*D&&o.billedAt}),avg=rec.length?rec.reduce(function(s,o){return s+(o.paidAt-o.billedAt)},0)/rec.length/D:0;
+  var sum=function(L){return L.reduce(function(s,o){return s+est(o).tot},0)};
+  var p30=paid.filter(function(o){return o.paidAt>now-30*D});
+  return tiles([[money(sum(rdy)),rdy.length+' ready to invoice'],[money(sum(due)),'Waiting for payment ('+due.length+')'],[avg.toFixed(1)+' days','Avg time to get paid (90 days)'],[money(sum(p30)),'Paid in the last 30 days']])+
+    '<details class="card" open><summary>💲 Ready to invoice ('+rdy.length+')</summary>'+(rdy.map(function(o){return trow(o,'<br><button class="btn" style="width:auto;padding:8px 14px;background:var(--ok)" onclick="event.stopPropagation();bill(\''+o.id+'\',true)">💲 Mark invoiced</button>')}).join('')||'<div class="mu">Nothing waiting to be invoiced.</div>')+
+     (rdy.length?'<div class="row" style="padding-top:8px"><b>Total</b><b style="text-align:right">'+money(sum(rdy))+'</b></div>':'')+'</details>'+
+    '<details class="card" open><summary>⏳ Waiting for payment ('+due.length+')</summary>'+(due.map(function(o){var d=Math.floor((now-(o.billedAt||now))/D);return trow(o,'<br><span class="mu"'+(d>30?' style="color:#e03131;font-weight:700"':'')+'>Invoiced '+d+' day'+(d==1?'':'s')+' ago</span><br><button class="btn" style="width:auto;padding:8px 14px;background:var(--ok)" onclick="event.stopPropagation();payIt(\''+o.id+'\',true)">✓ Mark paid</button>')}).join('')||'<div class="mu">No unpaid invoices.</div>')+'</details>'+
+    '<details class="card"><summary>✅ Recently paid ('+Math.min(paid.length,20)+')</summary>'+(paid.slice(0,20).map(function(o){return trow(o,'<br><span class="mu">Paid '+new Date(o.paidAt).toLocaleDateString(LOC())+'</span> <button class="btn alt" style="display:inline;width:auto;padding:4px 10px;margin:4px 0 0" onclick="event.stopPropagation();payIt(\''+o.id+'\',false)">Undo</button>')}).join('')||'<div class="mu">No payments yet.</div>')+'</details>';
+}
+function bucketOf(t){var d=ymd(t);return rpG=='month'?d.slice(0,7):weekOf(d)}
+function bucketLabel(k){if(rpG=='month'){var p=k.split('-');return new Date(+p[0],+p[1]-1,1).toLocaleDateString(LOC(),{month:'short'})}var p2=k.split('-');return new Date(+p2[0],+p2[1]-1,+p2[2]).toLocaleDateString(LOC(),{month:'numeric',day:'numeric'})}
+function barChart(id,title,keys,vals,fm){
+  var W=360,H=170,L=46,B=22,T=10,mx=Math.max.apply(null,vals.concat([0])),top=niceTop(mx),n=keys.length,bw=(W-L-6)/Math.max(n,1),g=Math.min(10,bw*.25);
+  var y=function(v){return T+(H-T-B)*(1-v/top)},grid=[0,.5,1].map(function(f){var v=top*f;return '<line x1="'+L+'" x2="'+W+'" y1="'+y(v)+'" y2="'+y(v)+'" class="vg"/><text x="'+(L-5)+'" y="'+(y(v)+4)+'" text-anchor="end" class="vt">'+fm(v,true)+'</text>'}).join('');
+  var bars=vals.map(function(v,i){var x=L+i*bw+g/2,w=Math.max(2,bw-g),yy=y(v),h=Math.max(0,H-B-yy);
+    return '<g class="vb" onclick="vzShow(\''+id+'\',\''+esc(bucketLabel(keys[i]))+': '+esc(fm(v))+'\')"><rect x="'+(L+i*bw)+'" y="'+T+'" width="'+bw+'" height="'+(H-T-B)+'" fill="transparent"/>'+(h>0?'<path d="M'+x+' '+(H-B)+'V'+(yy+Math.min(4,h))+'q0 -4 4 -4h'+(w-8)+'q4 0 4 4V'+(H-B)+'Z" class="vbar"/>':'')+'<title>'+esc(bucketLabel(keys[i]))+': '+esc(fm(v))+'</title></g>'}).join('');
+  var lbl=keys.map(function(k,i){var step=Math.ceil(n/6);return i%step?'':'<text x="'+(L+i*bw+bw/2)+'" y="'+(H-6)+'" text-anchor="middle" class="vt">'+esc(bucketLabel(k))+'</text>'}).join('');
+  return '<div class="card vz"><b>'+title+'</b><svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto;display:block;margin-top:6px" role="img" aria-label="'+esc(title)+'">'+grid+bars+lbl+'</svg><div id="'+id+'" class="mu" style="min-height:20px">Tap a bar to see its value.</div></div>';
+}
+function niceTop(m){if(!(m>0))return 1;var p=Math.pow(10,Math.floor(Math.log10(m))),s=[1,2,2.5,5,10].map(function(k){return k*p}).find(function(x){return x*2>=m})||10*p;return s*2}
+function vzShow(id,t){var e=$(id);if(e){e.textContent=t;e.style.color='var(--tx)';e.style.fontWeight='700'}}
+function reportsView(){
+  if(!rpT)rpT=today();if(!rpF)rpF=addDays(weekOf(rpT),-49);
+  var t0=new Date(rpF+'T00:00').getTime(),t1=new Date(rpT+'T00:00').getTime()+86400000;
+  var L=all().filter(function(o){return o.billed&&o.billedAt>=t0&&o.billedAt<t1});
+  var tot={rev:0,lab:0,pp:0,lh:0,nl:0,np:0};L.forEach(function(o){var e=est(o);tot.rev+=e.tot;tot.lab+=e.lab;tot.pp+=e.pp;tot.lh+=e.lh;if(e.lab>0)tot.nl++;if(e.pp>0)tot.np++});
+  var keys=[],k=rpG=='month'?rpF.slice(0,7):weekOf(rpF),guard=0;
+  while(guard++<60){keys.push(k);if(rpG=='month'){var p=k.split('-').map(Number);var nm=p[1]==12?(p[0]+1)+'-01':p[0]+'-'+('0'+(p[1]+1)).slice(-2);if(nm>rpT.slice(0,7))break;k=nm}else{k=addDays(k,7);if(k>rpT)break}}
+  var rv={},hv={};keys.forEach(function(x){rv[x]=0;hv[x]=0});L.forEach(function(o){var b=bucketOf(o.billedAt),e=est(o);if(b in rv){rv[b]+=e.tot;hv[b]+=e.lh}});
+  var mon=function(v,short){return short?(v>=1000?'$'+(v/1000).toFixed(v>=10000?0:1)+'k':'$'+Math.round(v)):money(v)};
+  var M={};all().forEach(function(o){(o.sessions||[]).forEach(function(s){if(s.start>=t0&&s.start<t1){var w=s.who||'?';M[w]=M[w]||{a:0,i:0};M[w].a+=((s.end||Date.now())-s.start)/3600000}})});
+  L.forEach(function(o){acts(o).forEach(function(a){var w=a.mech||o.mechanic||'Unassigned';M[w]=M[w]||{a:0,i:0};M[w].i+=+a.inv||0})});
+  return '<div class="card"><div class="row"><span><label>From</label><input id="rp_f" type="date" value="'+rpF+'"></span><span><label>To</label><input id="rp_t" type="date" value="'+rpT+'"></span></div>'+
+     '<div class="row" style="align-items:flex-end"><span><label>Group by</label><select id="rp_g"><option value="week"'+(rpG=='week'?' selected':'')+'>Week</option><option value="month"'+(rpG=='month'?' selected':'')+'>Month</option></select></span><button class="btn" style="margin:0 0 10px" onclick="rpF=$(\'rp_f\').value||rpF;rpT=$(\'rp_t\').value||rpT;rpG=$(\'rp_g\').value;blurA();render()">Go</button></div>'+
+     '<div class="mu">Counts SOs marked invoiced in these dates.</div></div>'+
+    tiles([[money(tot.rev),'All revenue · '+L.length+' orders'],[money(tot.lab),'Labor · '+tot.nl+' orders'],[money(tot.pp),'Parts · '+tot.np+' orders'],[h2(tot.lh)+' h','Invoiced hours'],[money(L.length?tot.rev/L.length:0),'Average per order']])+
+    barChart('vz1','Revenue by '+(rpG=='month'?'month':'week'),keys,keys.map(function(x){return rv[x]}),mon)+
+    barChart('vz2','Invoiced hours by '+(rpG=='month'?'month':'week'),keys,keys.map(function(x){return hv[x]}),function(v,s){return s?(Math.round(v*10)/10)+'':h2(v)+' h'})+
+    '<div class="card"><b>👤 Mechanics in these dates</b>'+(Object.keys(M).length?'<div class="hrs"><div class="row mu"><span>Mechanic</span><span style="text-align:right">Clocked on SOs</span><span style="text-align:right">Invoiced</span><span style="text-align:right">Efficiency</span></div>'+
+      Object.keys(M).sort().map(function(w){var m=M[w],ef=m.a>0?Math.round(m.i/m.a*100)+'%':'–';return '<div class="row"><span>'+esc(w)+'</span><span style="text-align:right">'+h2(m.a)+' h</span><span style="text-align:right">'+h2(m.i)+' h</span><span style="text-align:right">'+ef+'</span></div>'}).join('')+'</div>':'<div class="mu">No work recorded in these dates.</div>')+'</div>'+
+    '<details class="card"><summary>Table view</summary><div class="hrs"><div class="row mu"><span>'+(rpG=='month'?'Month':'Week of')+'</span><span style="text-align:right">Revenue</span><span style="text-align:right">Invoiced h</span></div>'+keys.map(function(x){return '<div class="row"><span>'+esc(bucketLabel(x))+'</span><span style="text-align:right">'+money(rv[x])+'</span><span style="text-align:right">'+h2(hv[x])+'</span></div>'}).join('')+'</div></details>';
+}
+// customers
+function allCust(){
+  var cs=docs('customers').slice(),seen={};cs.forEach(function(c){seen[lc(c.name)]=1});
+  all().forEach(function(o){if(o.customer&&!seen[lc(o.customer)]){seen[lc(o.customer)]=1;cs.push({name:o.customer})}});
+  return cs.sort(function(a,b){return lc(a.name)<lc(b.name)?-1:1});
+}
+function soFor(n){return all().filter(function(o){return lc(o.customer)===lc(n)})}
+// customer pop-up while typing
+var trks=[];
+function hlq(s,q){var i=lc(s).indexOf(q);if(!q||i<0)return esc(s);return esc(s.slice(0,i))+'<b>'+esc(s.slice(i,i+q.length))+'</b>'+esc(s.slice(i+q.length))}
+function acUpd(inp){
+  var box=$(inp.id+'_ac');if(!box){box=document.createElement('div');box.id=inp.id+'_ac';box.className='acbox';inp.insertAdjacentElement('afterend',box)}
+  var q=lc(inp.value),L=q?allCust().filter(function(c){return lc(c.name).indexOf(q)>=0||(c.phone&&lc(c.phone).replace(/\D/g,'').indexOf(q.replace(/\D/g,'')||'~')>=0)}).slice(0,6):[];
+  if(!L.length||(L.length==1&&lc(L[0].name)===q)){box.style.display='none';box.innerHTML='';return}
+  box.innerHTML=L.map(function(c){var n=soFor(c.name).length;return '<div class="aci" data-n="'+esc(c.name)+'">'+hlq(c.name,q)+'<div class="mu">'+(c.phone?esc(c.phone)+' · ':'')+n+' SO'+(n==1?'':'s')+'</div></div>'}).join('');
+  box.style.display='block';tr(box);
+}
+function showTrucks(name){
+  var w=$('f_trk');if(!w)return;var seen={};trks=[];
+  soFor(name).sort(function(a,b){return (b.created||0)-(a.created||0)}).forEach(function(o){var k=lc(o.vin||o.unit||o.plate);if(!k||seen[k])return;seen[k]=1;trks.push(o)});
+  var s=$('f_usel');
+  if(s){s.innerHTML='<option value="">'+(trks.length?'Choose unit':'No units yet for this customer')+'</option>'+trks.map(function(o,i){return '<option value="'+i+'">'+esc([o.unit||o.vin,o.plate?'Plate '+o.plate:'',o.vin&&o.unit?'VIN …'+o.vin.slice(-6):''].filter(Boolean).join(' · '))+'</option>'}).join('')+'<option value="new">➕ New unit</option>';tr(s);
+    unitPick(trks.length==1?'0':trks.length?'':'new');return}
+  w.innerHTML='';
+}
+function pickTruck(i){var o=trks[i];if(!o)return;$('f_un').value=o.unit||'';$('f_vi').value=o.vin||'';$('f_pl').value=o.plate||'';$('f_ps').value=o.plateState||'';if($('f_vi').value)$('f_vi').dataset.done=$('f_vi').value;vst('f','✓ '+(o.unit||o.vin))}
+document.addEventListener('input',function(e){var t=e.target;if(t&&(t.id=='f_cu'||t.id=='dt_cu')){acUpd(t);if(t.id=='f_cu'&&$('f_trk'))$('f_trk').innerHTML=''}});
+document.addEventListener('pointerdown',function(e){
+  var it=e.target&&e.target.closest&&e.target.closest('.aci');if(!it)return;e.preventDefault();
+  var box=it.parentNode,inp=$(box.id.replace(/_ac$/,''));if(!inp)return;inp.value=it.dataset.n;box.style.display='none';box.innerHTML='';
+  if(inp.id=='f_cu')showTrucks(it.dataset.n);
+});
+document.addEventListener('focusout',function(e){var t=e.target;if(t&&(t.id=='f_cu'||t.id=='dt_cu'))setTimeout(function(){var b=$(t.id+'_ac');if(b&&document.activeElement!==t){b.style.display='none'}
+  if(t.id=='f_cu'&&document.activeElement!==t&&t.value.trim()&&t.dataset.shown!==lc(t.value)){t.dataset.shown=lc(t.value);showTrucks(t.value.trim())}},250)});
+document.addEventListener('keydown',function(e){if(e.key=='Enter'&&e.target&&e.target.id=='f_cc'&&!e.shiftKey){e.preventDefault();addNI()}});
+function autoAuth(o){return cfg.auth===false||!!o.preAuth||(+o.preAmt>0&&est(o).tot<=+o.preAmt)}
+function custDatalist(){return '<datalist id="cul">'+allCust().map(function(c){return '<option value="'+esc(c.name)+'">'}).join('')+'</datalist>'}
+function custList(){
+  cvis=allCust().filter(function(c){return !cq||lc([c.name,c.phone,c.email,c.address].join(' ')).indexOf(lc(cq))>=0});
+  return cvis.map(function(c,i){var s=soFor(c.name),op=s.filter(function(o){return o.status!='done'}).length;
+    return '<div class="card so" onclick="copen=cvis['+i+'].name;cedit=null;cdel=false;render();scrollTo(0,0)"><b>'+esc(c.name)+'</b>'+(c.id?'':' <span class="mu">(not saved yet)</span>')+
+      '<div class="mu">'+(c.phone?esc(c.phone)+' · ':'')+s.length+' SO'+(s.length==1?'':'s')+(op?' · '+op+' open':'')+'</div></div>'}).join('')||'<p class="mu">No customers found.</p>';
+}
+function custView(){
+  var c=copen!=null&&allCust().find(function(x){return lc(x.name)===lc(copen)});
+  if(cedit!==null){
+    var e=cedit=='new'?{}:(c||{});
+    return '<div class="card"><b>'+(cedit=='new'?'Add customer':'Edit '+esc(e.name))+'</b><br>'+
+      '<label>Name</label><input id="cu_n" value="'+esc(e.name)+'">'+
+      '<label>Phone</label><input id="cu_p" type="tel" value="'+esc(e.phone)+'">'+
+      '<label>Email</label><input id="cu_e" type="email" value="'+esc(e.email)+'">'+
+      '<label>Address</label><input id="cu_a" value="'+esc(e.address)+'">'+
+      '<label>Notes</label><textarea id="cu_no" rows="3">'+esc(e.notes)+'</textarea>'+
+      '<div class="row"><button class="btn alt" onclick="cedit=null;render()">Cancel</button><button class="btn" onclick="saveCust()">Save</button></div></div>';
+  }
+  if(c){
+    var s=soFor(c.name);
+    return '<button class="btn alt" onclick="copen=null;render()">← All customers</button><div class="card" style="margin-top:12px"><b style="font-size:20px">'+esc(c.name)+'</b>'+
+      (c.phone?'<div><a href="tel:'+esc(c.phone)+'" style="color:var(--act)">📞 '+esc(c.phone)+'</a></div>':'')+
+      (c.email?'<div><a href="mailto:'+esc(c.email)+'" style="color:var(--act)">✉️ '+esc(c.email)+'</a></div>':'')+
+      (c.address?'<div>📍 '+esc(c.address)+'</div>':'')+(c.notes?'<p class="mu">'+esc(c.notes)+'</p>':'')+
+      '<div class="row"><button class="btn alt" onclick="cedit=\'x\';render()">'+(c.id?'Edit':'Save customer details')+'</button><button class="btn" onclick="preCu=copen;dtab=\'new\';copen=null;render();scrollTo(0,0)">➕ New SO</button></div>'+
+      (c.id?(cdel?'<p class="mu">Delete this customer? Their SOs stay.</p><div class="row"><button class="btn alt" onclick="cdel=false;render()">Cancel</button><button class="btn" style="background:#e03131" onclick="delDoc(\'customers\',\''+c.id+'\');copen=null;cdel=false;render()">Yes, delete</button></div>':'<button class="btn alt" style="color:#e03131" onclick="cdel=true;render()">Delete customer</button>'):'')+'</div>'+
+      '<h3 style="margin:8px 0">Service orders ('+s.length+')</h3>'+(s.map(card).join('')||'<p class="mu">No SOs yet.</p>');
+  }
+  return '<button class="btn" onclick="cedit=\'new\';render()">➕ Add customer</button>'+
+    '<input id="cu_q" placeholder="🔍 Search name, phone, email" value="'+esc(cq)+'" oninput="cq=this.value;$(\'culist\').innerHTML=custList()" style="margin-top:12px"><div id="culist">'+custList()+'</div>';
+}
+function saveCust(){
+  blurA();var n=$('cu_n').value.trim();if(!n){$('cu_n').focus();$('cu_n').style.borderColor='#e03131';return}
+  var old=cedit=='new'?null:allCust().find(function(x){return lc(x.name)===lc(copen)});
+  var o={id:(old&&old.id)||'c'+Date.now().toString(36),name:n,phone:$('cu_p').value.trim(),email:$('cu_e').value.trim(),address:$('cu_a').value.trim(),notes:$('cu_no').value.trim(),created:(old&&old.created)||Date.now()};
+  if(old&&lc(old.name)!==lc(n))soFor(old.name).forEach(function(s){var c=JSON.parse(JSON.stringify(s));c.customer=n;saveOrder(c)});
+  saveDoc('customers',o);copen=n;cedit=null;render();
+}
+// parts catalog
+function pname(p){return (p.no?p.no+' – ':'')+p.d}
+function partList(){
+  pvis=docs('parts').filter(function(p){return !pq||lc([p.no,p.d,p.loc].join(' ')).indexOf(lc(pq))>=0}).sort(function(a,b){return lc(pname(a))<lc(pname(b))?-1:1});
+  return pvis.map(function(p,i){var q=+p.q||0;
+    return '<div class="card"><div class="row" style="align-items:center"><span><b>'+esc(p.no||'')+'</b> '+esc(p.d)+'<br><span class="mu">'+money(p.pr)+(p.loc?' · 📍 '+esc(p.loc):'')+'</span></span>'+
+      '<span style="flex:0 0 auto;text-align:center"><b style="font-size:22px;color:'+(q<=0?'#e03131':'inherit')+'">'+q+'</b><br><span class="mu">in stock</span></span></div>'+
+      '<div class="row"><button class="btn alt" onclick="adjQ('+i+',-1)">− 1</button><button class="btn alt" onclick="adjQ('+i+',1)">+ 1</button><button class="btn alt" onclick="pedit=pvis['+i+'].id;pdel=false;render();scrollTo(0,0)">Edit</button></div></div>'}).join('')||'<p class="mu">No parts found.</p>';
+}
+function adjQ(i,d){var p=pvis[i];if(!p)return;p=JSON.parse(JSON.stringify(p));p.q=(+p.q||0)+d;saveDoc('parts',p)}
+function partsView(){
+  if(pedit!==null){
+    var e=pedit=='new'?{}:(docs('parts').find(function(x){return x.id===pedit})||{});
+    return '<div class="card"><b>'+(pedit=='new'?'Add part':'Edit part')+'</b><br>'+
+      '<label>Part number</label><input id="pa_no" value="'+esc(e.no)+'">'+
+      '<label>Description</label><input id="pa_d" value="'+esc(e.d)+'">'+
+      '<div class="row"><span><label>Price each ($)</label><input id="pa_pr" inputmode="decimal" value="'+(e.pr!=null?esc(e.pr):'')+'"></span><span><label>Qty in stock</label><input id="pa_qt" inputmode="numeric" value="'+(e.q!=null?esc(e.q):'')+'"></span></div>'+
+      '<label>Location (shelf / bin)</label><input id="pa_l" value="'+esc(e.loc)+'">'+
+      '<div class="row"><button class="btn alt" onclick="pedit=null;render()">Cancel</button><button class="btn" onclick="savePart()">Save</button></div>'+
+      (e.id?(pdel?'<p class="mu">Delete this part from the list?</p><div class="row"><button class="btn alt" onclick="pdel=false;render()">Cancel</button><button class="btn" style="background:#e03131" onclick="delDoc(\'parts\',\''+e.id+'\');pedit=null;pdel=false;render()">Yes, delete</button></div>':'<button class="btn alt" style="color:#e03131;margin-top:12px" onclick="pdel=true;render()">Delete part</button>'):'')+'</div>';
+  }
+  var low=docs('parts').filter(function(p){return (+p.q||0)<=0}).length;
+  return partsFlow()+'<button class="btn" onclick="pedit=\'new\';render()">➕ Add part</button>'+(low?'<p class="mu" style="color:#e03131">'+low+' part'+(low>1?'s':'')+' out of stock</p>':'')+
+    '<input id="pa_s" placeholder="🔍 Search part #, name, location" value="'+esc(pq)+'" oninput="pq=this.value;$(\'palist\').innerHTML=partList()" style="margin-top:12px"><div id="palist">'+partList()+'</div>';
+}
+function savePart(){
+  blurA();var d=$('pa_d').value.trim(),no=$('pa_no').value.trim();if(!d&&!no){$('pa_d').focus();$('pa_d').style.borderColor='#e03131';return}
+  var old=pedit!='new'&&docs('parts').find(function(x){return x.id===pedit});
+  saveDoc('parts',{id:old?old.id:'p'+Date.now().toString(36),no:no,d:d||no,pr:parseFloat($('pa_pr').value)||0,q:parseInt($('pa_qt').value)||0,loc:$('pa_l').value.trim(),created:old?old.created:Date.now()});
+  pedit=null;render();
+}
+// parts used on an SO
+function puCard(o){
+  var u=o.partsUsed||[],tot=u.reduce(function(a,x){return a+x.q*(x.pr||0)},0);
+  return '<div class="card"><b>Parts used</b>'+u.map(function(x,i){return '<div class="row" style="align-items:center;padding:6px 0;border-top:1px solid var(--ln)"><span>'+x.q+' × '+esc((x.no?x.no+' ':'')+x.d)+(SP()?'<br><span class="mu">'+money(x.pr)+' each</span>':'')+'</span>'+(SP()?'<span style="flex:0 0 auto">'+money(x.q*(x.pr||0))+'</span>':'')+'<button class="btn alt" style="flex:0 0 auto;width:auto;margin:0;padding:6px 10px" onclick="rmPU(\''+o.id+'\','+i+')">✕</button></div>'}).join('')+
+    (u.length&&SP()?'<div class="row" style="padding-top:6px"><b>Parts total</b><b style="text-align:right">'+money(tot)+'</b></div>':'')+
+    '<div class="row" style="align-items:center;margin-top:8px"><input id="pu_s" list="pcl" autocomplete="off" placeholder="Part # or name" style="flex:3"><input id="pu_q" type="number" inputmode="numeric" value="1" min="1" style="flex:1"><button class="btn alt" style="flex:0 0 auto;width:auto;margin:0;padding:11px 14px" onclick="addPU(\''+o.id+'\')">Add</button></div>'+
+    '<datalist id="pcl">'+docs('parts').map(function(p){return '<option value="'+esc(pname(p))+'">'}).join('')+'</datalist></div>';
+}
+function addPU(id){
+  var s=$('pu_s').value.trim(),q=Math.max(1,parseInt($('pu_q').value)||1);if(!s){$('pu_s').focus();return}
+  var o=byId(id);if(!o)return;blurA();
+  var m=docs('parts').find(function(p){return pname(p)===s||(p.no&&lc(p.no)===lc(s))});
+  o.partsUsed=(o.partsUsed||[]).concat([m?{pid:m.id,no:m.no||'',d:m.d,q:q,pr:+m.pr||0}:{d:s,q:q,pr:0}]);o.notes=($('nt')||{}).value||o.notes;
+  saveOrder(o).then(render);
+  if(m){var c=JSON.parse(JSON.stringify(m));c.q=(+c.q||0)-q;saveDoc('parts',c)}
+}
+function rmPU(id,i){
+  var o=byId(id);if(!o||!o.partsUsed)return;var x=o.partsUsed.splice(i,1)[0];o.notes=($('nt')||{}).value||o.notes;saveOrder(o).then(render);
+  var m=x&&x.pid&&docs('parts').find(function(p){return p.id===x.pid});if(m){var c=JSON.parse(JSON.stringify(m));c.q=(+c.q||0)+x.q;saveDoc('parts',c)}
+}
+function partsSum(list){
+  var r=[];list.forEach(function(p){(p.partsUsed||[]).forEach(function(x){r.push(x)});(p.actions||[]).forEach(function(a){(a.parts||[]).forEach(function(x){r.push(x)})})});if(!r.length)return '';
+  var tot=r.reduce(function(a,x){return a+x.q*(x.pr||0)},0);
+  return '<div class="hrs"><b>Parts to bill</b>'+r.map(function(x){return '<div class="row mu"><span>'+x.q+' × '+esc((x.no?x.no+' ':'')+x.d)+'</span><span>'+money(x.q*(x.pr||0))+'</span></div>'}).join('')+'<div class="row"><b>Parts total</b><b style="text-align:right">'+money(tot)+'</b></div></div>';
+}
+function checklistCard(o){
+  var it=o.items||[],un=it.filter(function(x){return !x.done}),h='<div class="card"><b>Checklist</b>'+(it.length?' <span class="mu">'+(it.length-un.length)+' of '+it.length+' done</span>':'');
+  h+=it.map(function(x,i){return '<label class="ck'+(x.done?' dn':'')+'"><input type="checkbox"'+(x.done?' checked':'')+' onchange="tick(\''+o.id+'\','+i+',this.checked)"><span>'+esc(x.t)+'</span></label>'}).join('');
+  h+='<div class="row" style="align-items:center"><input id="cka" placeholder="Add an item"><button class="btn alt" style="flex:0 0 auto;width:auto;margin:0;padding:11px 16px" onclick="addItem(\''+o.id+'\')">Add</button></div>';
+  if(un.length&&!o.billed){
+    var ps=parts(o),nx=nextPart(ps),nn=esc(o.so+'_'+nx);
+    if(ps.length>=MAXP)h+='<div class="mu">'+un.length+' item'+(un.length>1?'s':'')+' not done. This SO already has '+MAXP+' parts, so a revisit SO cannot be added.</div>';
+    else if(revisit!==o.id)h+='<button class="btn alt" onclick="revisit=\''+o.id+'\';render()">↪ Needs a revisit: move '+un.length+' unchecked item'+(un.length>1?'s':'')+' to SO '+nn+'</button>';
+    else h+='<div class="card" style="margin:10px 0 0;border-color:var(--ac)"><b>Revisit: new SO '+nn+'</b><p class="mu" style="margin:4px 0 8px">These items move to SO '+nn+'. It also gets a copy of this part\'s notes and photos. This part ('+esc(o.part?sonum(o):o.so+'_1')+') is marked done with the checked items, ready to bill.</p>'+
+      un.map(function(x){return '<div>• '+esc(x.t)+'</div>'}).join('')+
+      '<label style="display:block;margin-top:8px">Mechanic for the revisit</label>'+mechSel('rvm',o.mechanic)+
+      '<div class="row"><button class="btn alt" onclick="revisit=null;render()">Cancel</button><button class="btn" onclick="doRevisit(\''+o.id+'\')">Create SO '+nn+'</button></div></div>';
+  }
+  return h+'</div>';
+}
+function tick(id,i,v){var o=byId(id);if(!o||!o.items||!o.items[i])return;o.items[i].done=v;if(v)o.items[i].by=nm;else delete o.items[i].by;o.notes=($('nt')||{}).value||o.notes;saveOrder(o)}
+function addItem(id){var e=$('cka'),v=e.value.trim();if(!v){e.focus();return}var o=byId(id);if(!o)return;o.items=(o.items||[]).concat([{t:v,done:false}]);o.notes=($('nt')||{}).value||o.notes;e.value='';e.blur();saveOrder(o).then(render)}
+function doRevisit(id){blurA();
+  var ck=readDetails(byId(id));if(ck){if(!ck.mechanic&&nm)ck.mechanic=nm;if(missing(ck,true).length){missFor=id;missRev=true;revisit=null;saveOrder(ck).then(function(){render();var b=$('missbox');if(b)b.scrollIntoView({block:'center'})});return}}
+  var o=byId(id);if(!o)return;
+  var ps=parts(o),nx=nextPart(ps);if(ps.length>=MAXP){revisit=null;render();return}
+  var g=grp(o),notes=($('nt')||{}).value||o.notes||'',me=$('rvm').value.trim(),saves=[],self;
+  ps.forEach(function(p,i){var c=JSON.parse(JSON.stringify(p));c.group=g;c.part=c.part||i+1;delete c.of;if(c.id===o.id)self=c;else saves.push(c)});
+  readDetails(self);if(!self.mechanic&&nm)self.mechanic=nm;var from=sonum(self);
+  var useA=acts(self).length>0,it=self.items||[],un=useA?self.actions.filter(function(a){return a.st!='done'}):it.filter(function(x){return !x.done});
+  if(!un.length)return;
+  self.notes=notes;self.status='done';if(useA)self.actions=self.actions.filter(function(a){return a.st=='done'});else self.items=it.filter(function(x){return x.done});
+  var l=(self.sessions||[])[(self.sessions||[]).length-1];if(l&&!l.end)l.end=Date.now();
+  saves.push(self);
+  var nid='so'+String(o.so).replace(/\W/g,'')+'_'+Date.now().toString(36);
+  saves.push({id:nid,so:o.so,customer:self.customer,unit:self.unit,vin:self.vin||'',rate:self.rate||0,mechanic:me||o.mechanic,
+    desc:'Revisit from SO '+from+': '+un.map(function(x){return useA?(x.c||''):x.t}).join(', '),items:useA?[]:un.map(function(x){return {t:x.t,done:false}}),
+    actions:useA?un.map(function(a){var c=JSON.parse(JSON.stringify(a));if(me)c.mech=me;return c}):[],
+    notes:notes?'From SO '+from+':\n'+notes:'',photos:(o.photos||[]).map(function(p){return {url:p.url,t:p.t,from:p.from||from}}),
+    sessions:[],status:'open',created:Date.now(),group:g,part:nx,revisitOf:o.id});
+  var q=queue(),add=q.filter(function(p){return p.so===o.id}).map(function(p){return {so:nid,data:p.data,t:p.t,from:from}});if(add.length)sv(Q,q.concat(add));
+  revisit=null;
+  saves.reduce(function(pr,c){return pr.then(function(){return saveOrder(c)})},Promise.resolve()).then(function(){setNet();sync();render()});
+}
+// ---- action items: complaint / cause / correction, workflow, parts per item ----
+var jt='act',openA={},aMiss=null,delA=null,micT='nt',micReg=false;
+function acts(o){return o.actions||[]}
+function newAct(c,me){return {id:'a'+Date.now().toString(36)+Math.random().toString(36).slice(2,5),c:c||'',cause:'',corr:'',mech:me||'',st:'diag',inv:0,parts:[]}}
+function actMs(o,aid){return (o.sessions||[]).reduce(function(t,s){return s.a===aid?t+((s.end||Date.now())-s.start):t},0)}
+function runAct(o){var l=(o.sessions||[])[(o.sessions||[]).length-1];return l&&!l.end?(l.a||null):null}
+function firstOpen(o){var a=acts(o).find(function(x){return x.st!='done'});return a?a.id:null}
+function hrs(ms){return (ms/3600000).toFixed(2)}
+function svcIdx(a,o){if(o.billed)return 5;if(!(a.mech||o.mechanic))return 0;return {diag:1,auth:2,repair:3,done:4}[a.st]||1}
+function prtIdx(a){if(!(a.parts||[]).length)return -1;return {quote:0,order:1,recv:3}[a.pst||'quote']}
+function steps(names,idx,icons){return '<div class="steps">'+names.map(function(n,i){var c=i<idx?'ok':i===idx?'cur':'';return '<div class="st '+c+'"><i>'+(i<idx?'✓':icons[i])+'</i>'+n+'</div>'}).join('')+'</div>'}
+function stLabel(a,o){return o.billed?'Invoiced':{diag:'Diagnose',auth:'Waiting for authorization',repair:'Repair',done:'Repaired'}[a.st]||'Diagnose'}
+function pLabel(a){return !(a.parts||[]).length?'No parts':{quote:'Parts quoted',order:'Parts ordered',recv:'Parts received'}[a.pst||'quote']}
+function isOpenA(o,i){return openA[o.id]!=null?openA[o.id]===i:i===acts(o).findIndex(function(x){return x.st!='done'})}
+function commit(){if(!cur)return;var o=byId(cur);if(!o)return;var b=JSON.stringify(o);readDetails(o);if(JSON.stringify(o)!==b)saveOrder(o)}
+function setJt(t){commit();jt=t;aMiss=null;render();scrollTo(0,0)}
+function vendors(){var s={};all().forEach(function(o){acts(o).forEach(function(a){(a.parts||[]).forEach(function(p){if(p.ven)s[p.ven]=1})})});return Object.keys(s).sort()}
+function fv(o,i,f,v){var on=(aMiss===o.id+':'+i+':'+f)||(missFor===o.id&&!lc(v));return on?' class="miss"':''}
+function actCard(o,a,i){
+  var run=runAct(o)===a.id,ms=actMs(o,a.id),inv=+a.inv||0,diff=inv-ms/3600000,ex=isOpenA(o,i),N=i+1,lock=o.billed||o.status=='done';
+  if(Math.abs(diff)<0.005)diff=0;
+  var h='<div class="card'+(run?' run':'')+'" id="act'+i+'">'+(run?'<div class="runb">⏱ TIMING · '+fmt(ms)+'</div>':'')+'<div class="ah" onclick="togAct(\''+o.id+'\','+i+')"><b>Action Item '+N+'</b><span class="pill">'+stLabel(a,o)+'</span></div>'+
+    '<div class="mu">'+pLabel(a)+' · Assigned: '+esc(a.mech||o.mechanic||'Unassigned')+'</div>'+
+    '<div class="hr3"><span>Invoiced <b>'+inv.toFixed(2)+'</b></span><span>Actual <b>'+hrs(ms)+'</b></span><span'+(diff<0?' class="neg"':'')+'>Diff <b>'+diff.toFixed(2)+'</b></span></div>';
+  if(!ex)return h+'<div>'+(a.c?esc(a.c):'<span class="mu">No complaint written</span>')+' <span class="mu">›</span></div></div>';
+  if(!lock&&a.st!='done')h+=run?'<button class="btn alt" onclick="timer(\''+o.id+'\',\'stop\')">⏸ Pause</button>':'<button class="btn alt" onclick="timer(\''+o.id+'\',\'start\',\''+a.id+'\')">▶ Start work on this item</button>';
+  var mic=function(f){return dict?' <button class="btn alt" style="display:inline;width:auto;margin:0;padding:2px 10px;font-size:13px" onclick="mic(\'ac_'+f+'_'+i+'\')">🎤</button>':''};
+  h+='<div class="row"><span><label>Mechanic</label>'+mechSel('ac_m_'+i,a.mech||o.mechanic)+'</span>'+
+     (tab==1?'<span style="flex:.6"><label>Invoiced hours</label><input id="ac_iv_'+i+'" inputmode="decimal" value="'+(inv||'')+'"></span>':'')+'</div>'+
+     '<label>Complaint</label><input id="ac_c_'+i+'"'+fv(o,i,'c',a.c)+' value="'+esc(a.c)+'">'+
+     '<label>'+(a.noDiag?'Cause (optional)':'Cause *')+'</label>'+mic('ca')+'<textarea id="ac_ca_'+i+'" rows="2"'+fv(o,i,'cause',a.noDiag?'-':a.cause)+'>'+esc(a.cause)+'</textarea>'+
+     '<label>Correction *</label>'+mic('co')+'<textarea id="ac_co_'+i+'" rows="2"'+fv(o,i,'corr',a.corr)+'>'+esc(a.corr)+'</textarea>';
+  var P=a.parts||[],pt=P.reduce(function(s,p){return s+p.q*(p.pr||0)},0);
+  h+='<div class="box2"><b>Parts for Action '+N+'</b>'+P.map(function(p,j){return '<div class="row" style="align-items:center;padding:6px 0;border-top:1px solid var(--ln)"><span>'+p.q+' × '+esc((p.no?p.no+' ':'')+p.d)+(SP()?'<br><span class="mu">'+(p.ven?esc(p.ven)+' · ':'')+money(p.pr)+' each</span>':(p.ven?'<br><span class="mu">'+esc(p.ven)+'</span>':''))+'</span>'+(SP()?'<span style="flex:0 0 auto">'+money(p.q*(p.pr||0))+'</span>':'')+(lock?'':'<button class="btn alt" style="flex:0 0 auto;width:auto;margin:0;padding:6px 10px" onclick="rmAP(\''+o.id+'\','+i+','+j+')">✕</button>')+'</div>'}).join('')+
+    (P.length&&SP()?'<div class="row" style="padding-top:4px"><b>Parts total</b><b style="text-align:right">'+money(pt)+'</b></div>':'');
+  if(!lock)h+='<div class="row"><input id="ac_pn_'+i+'" list="pcl" autocomplete="off" placeholder="Part #" onchange="fillPart('+i+')"><input id="ac_pd_'+i+'" placeholder="Description" style="flex:1.6"></div>'+
+    '<div class="row"><input id="ac_pv_'+i+'" list="vel" autocomplete="off" placeholder="Vendor"><input id="ac_pq_'+i+'" inputmode="numeric" placeholder="Qty" style="flex:.5">'+(SP()?'<input id="ac_pp_'+i+'" inputmode="decimal" placeholder="$ Price" style="flex:.7">':'')+'</div>'+
+    '<div class="row"><button class="btn alt" style="margin-top:0" onclick="addAP(\''+o.id+'\','+i+')">➕ Add part</button>'+
+    (P.length&&a.pst!='recv'?'<button class="btn alt" style="margin-top:0" onclick="advParts(\''+o.id+'\','+i+')">'+(a.pst=='order'?'📦 Mark received':'🛒 Mark ordered')+'</button>':'')+'</div>';
+  h+='</div><div class="trk">SERVICE</div>'+steps(['Assign','Diagnose','Authorize','Repair','Invoice'],svcIdx(a,o),['👤','🩺','👍','🔧','💲'])+
+    '<div class="trk">PARTS</div>'+steps(['Quote','Order','Receive'],prtIdx(a),['🏷','🛒','📦']);
+  if(!lock){
+    if(a.st=='diag')h+='<button class="btn" style="background:var(--ok)" onclick="advAct(\''+o.id+'\','+i+')">Mark Action '+N+' as Diagnosed</button>';
+    else if(a.st=='auth')h+=tab==1?'<button class="btn" style="background:var(--ok)" onclick="advAct(\''+o.id+'\','+i+')">👍 Customer authorized Action '+N+'</button>':'<div class="box2">⏳ Waiting for the shop to authorize this repair.</div>';
+    else if(a.st=='repair')h+='<button class="btn" style="background:var(--ok)" onclick="advAct(\''+o.id+'\','+i+')">Mark Action '+N+' as Repaired</button>';
+    else h+='<div style="color:var(--ok);font-weight:700;margin-top:8px">✓ Repaired</div>';
+    if(a.st!='diag')h+='<button class="btn alt" onclick="advAct(\''+o.id+'\','+i+',true)">↩ Back one step</button>';
+    if(tab==1)h+='<button class="btn alt" style="color:#e03131" onclick="delAct(\''+o.id+'\','+i+')">'+(delA===o.id+':'+i?'Tap again to delete Action '+N:'🗑 Delete action item')+'</button>';
+  }
+  return h+'</div>';
+}
+function actionsTab(o){
+  var A=acts(o),h='<datalist id="pcl">'+docs('parts').map(function(p){return '<option value="'+esc(pname(p))+'">'}).join('')+'</datalist><datalist id="vel">'+vendors().map(function(v){return '<option value="'+esc(v)+'">'}).join('')+'</datalist>'+mechDatalist();
+  var ps=parts(o);
+  if(o.deskNotes)h+='<div class="box2" style="margin-top:0"><b>📝 Notes from the desk</b><div style="white-space:pre-wrap">'+esc(o.deskNotes)+'</div></div>';
+  if(ps.length>1)h+='<div class="card"><b>Parts of SO '+esc(o.so)+'</b>'+ps.map(function(p){return '<div class="prt'+(p.id===o.id?' me':'')+'" onclick="openSO(\''+p.id+'\')"><span>SO '+esc(sonum(p))+' · Part '+(p.part||1)+(p.id===o.id?' (this one)':'')+'</span><span class="tag '+p.status+'">'+p.status.toUpperCase()+'</span>'+btag(p)+'</div>'}).join('')+'</div>';
+  if(!A.length&&!(o.items||[]).length)h+='<p class="mu">No action items yet. Add one for each complaint.</p>';
+  h+=A.map(function(a,i){return actCard(o,a,i)}).join('');
+  if(!o.billed&&o.status!='done')h+='<button class="btn" onclick="addAct(\''+o.id+'\')">➕ Add action item</button>';
+  if(A.length)h+=revisitBox(o);
+  if((o.items||[]).length)h+=checklistCard(o);
+  return h;
+}
+function togAct(id,i){commit();openA[id]=isOpenA(byId(id),i)?-1:i;aMiss=null;render();var e=$('act'+i);if(e)e.scrollIntoView({block:'start'})}
+function addAct(id){commit();var o=byId(id);if(!o)return;var na=newAct('',o.mechanic);if(o.skipDiag){na.st='repair';na.noDiag=true}o.actions=acts(o).concat([na]);var k=o.actions.length-1;openA[id]=k;saveOrder(o).then(function(){render();var e=$('ac_c_'+k);if(e){e.scrollIntoView({block:'center'});e.focus()}})}
+function delAct(id,i){if(delA!==id+':'+i){delA=id+':'+i;render();return}delA=null;var o=readDetails(byId(id));if(!o)return;var a=o.actions.splice(i,1)[0];(a.parts||[]).forEach(function(p){stock(p,p.q)});openA[id]=-1;skipKeep=true;saveOrder(o).then(render)}
+function advAct(id,i,back){
+  blurA();var o=readDetails(byId(id));if(!o||!o.actions[i])return;var a=o.actions[i];aMiss=null;
+  if(back){if(a.st=='repair'&&a.noDiag){a.st='diag';delete a.noDiag}else a.st={auth:'diag',repair:autoAuth(o)?'diag':'auth',done:'repair'}[a.st]||'diag'}
+  else if(a.st=='diag'){if(!lc(a.cause)){aMiss=id+':'+i+':cause';render();var e=$('ac_ca_'+i);if(e){e.scrollIntoView({block:'center'})}return}if(autoAuth(o)){a.st='repair';if(cfg.auth!==false){a.authAt=Date.now();a.authBy='pre'}}else a.st='auth';a.diagBy=nm||'';a.diagAt=Date.now()}
+  else if(a.st=='auth'){a.st='repair';a.authAt=Date.now()}
+  else if(a.st=='repair'){if(!lc(a.corr)){aMiss=id+':'+i+':corr';render();var e2=$('ac_co_'+i);if(e2){e2.scrollIntoView({block:'center'})}return}a.st='done';a.doneAt=Date.now();
+    if(runAct(o)===a.id){var l=o.sessions[o.sessions.length-1];l.end=Date.now();var nx=firstOpen(o);if(nx&&tab==2&&nm)o.sessions.push({who:nm,start:Date.now(),a:nx})}
+    openA[id]=o.actions.findIndex(function(x){return x.st!='done'})}
+  saveOrder(o).then(render);
+}
+function stock(p,d){var m=p.pid&&docs('parts').find(function(x){return x.id===p.pid});if(m){var c=JSON.parse(JSON.stringify(m));c.q=(+c.q||0)+d;saveDoc('parts',c)}}
+function fillPart(i){var v=$('ac_pn_'+i).value.trim(),m=docs('parts').find(function(p){return pname(p)===v||(p.no&&lc(p.no)===lc(v))});if(!m)return;$('ac_pn_'+i).value=m.no||'';$('ac_pd_'+i).value=m.d||'';if(m.pr&&$('ac_pp_'+i))$('ac_pp_'+i).value=m.pr}
+function addAP(id,i){
+  var no=$('ac_pn_'+i).value.trim(),d=$('ac_pd_'+i).value.trim();if(!no&&!d){$('ac_pd_'+i).focus();$('ac_pd_'+i).style.borderColor='#e03131';return}
+  var q=Math.max(1,parseInt($('ac_pq_'+i).value)||1),pr=$('ac_pp_'+i)?parseFloat($('ac_pp_'+i).value)||0:0,ven=$('ac_pv_'+i).value.trim();
+  var m=docs('parts').find(function(p){return (no&&p.no&&lc(p.no)===lc(no))||pname(p)===no});
+  var p={no:m?(m.no||''):no,d:d||(m?m.d:no),ven:ven,q:q,pr:pr||(m?+m.pr||0:0)};if(m)p.pid=m.id;
+  ['ac_pn_','ac_pd_','ac_pv_','ac_pq_','ac_pp_'].forEach(function(k){if($(k+i))$(k+i).value=''});blurA();
+  var o=readDetails(byId(id));if(!o)return;var a=o.actions[i];a.parts=(a.parts||[]).concat([p]);if(!a.pst)a.pst='quote';
+  saveOrder(o).then(render);if(m)stock(p,-q);
+}
+function rmAP(id,i,j){var o=readDetails(byId(id));if(!o)return;var a=o.actions[i],p=a.parts.splice(j,1)[0];if(!a.parts.length)delete a.pst;saveOrder(o).then(render);if(p)stock(p,p.q)}
+function advParts(id,i){var o=readDetails(byId(id));if(!o)return;var a=o.actions[i];a.pst=a.pst=='order'?'recv':'order';a[a.pst+'At']=Date.now();saveOrder(o).then(render)}
+function revisitBox(o){
+  var un=acts(o).filter(function(a){return a.st!='done'});if(!un.length||o.billed||o.status=='done')return '';
+  var ps=parts(o),nx=nextPart(ps),nn=esc(o.so+'_'+nx);
+  if(ps.length>=MAXP)return '<div class="mu" style="margin:8px 0">'+un.length+' item'+(un.length>1?'s':'')+' not done. This SO already has '+MAXP+' parts, so a revisit SO cannot be added.</div>';
+  if(revisit!==o.id)return '<button class="btn alt" onclick="commit();revisit=\''+o.id+'\';render()">↪ Needs a revisit: move '+un.length+' unfinished action item'+(un.length>1?'s':'')+' to SO '+nn+'</button>';
+  return '<div class="card" style="margin:10px 0 0;border-color:var(--ac)"><b>Revisit: new SO '+nn+'</b><p class="mu" style="margin:4px 0 8px">These action items move to SO '+nn+' with their cause and parts. It also gets a copy of this part\'s notes and photos. This part ('+esc(o.part?sonum(o):o.so+'_1')+') is marked done with the repaired items, ready to bill.</p>'+
+    un.map(function(a){return '<div>• '+esc(a.c||'(no complaint)')+'</div>'}).join('')+
+    '<label style="display:block;margin-top:8px">Mechanic for the revisit</label>'+mechSel('rvm',o.mechanic)+
+    '<div class="row"><button class="btn alt" onclick="revisit=null;render()">Cancel</button><button class="btn" onclick="doRevisit(\''+o.id+'\')">Create SO '+nn+'</button></div></div>';
+}
+function allParts(o){var r=[];acts(o).forEach(function(a,i){(a.parts||[]).forEach(function(p){r.push({p:p,a:a,i:i})})});return r}
+function partsListTab(o){
+  var r=allParts(o),tot=r.reduce(function(s,x){return s+x.p.q*(x.p.pr||0)},0);
+  var h='<div class="card"><b>Parts list</b>'+(r.length?r.map(function(x){var st=x.a.pst||'quote';
+    return '<div class="row" style="align-items:center;padding:8px 0;border-top:1px solid var(--ln)"><span>'+x.p.q+' × '+esc((x.p.no?x.p.no+' ':'')+x.p.d)+'<br><span class="mu">Action '+(x.i+1)+(x.p.ven?' · '+esc(x.p.ven):'')+(SP()?' · '+money(x.p.pr)+' each':'')+'</span></span><span class="tag'+(st=='recv'?' done':st=='order'?' working':' open')+'" style="flex:0 0 auto">'+({quote:'QUOTED',order:'ORDERED',recv:'RECEIVED'}[st])+'</span>'+(SP()?'<span style="flex:0 0 auto">'+money(x.p.q*(x.p.pr||0))+'</span>':'')+'</div>'}).join('')+
+    (SP()?'<div class="row" style="padding-top:6px"><b>Parts total</b><b style="text-align:right">'+money(tot)+'</b></div>':''):'<p class="mu">No parts yet. Add parts inside each action item.</p>')+'</div>';
+  if((o.partsUsed||[]).length)h+=puCard(o);
+  return h;
+}
+function est(o){
+  var rate=+o.rate||0,lh=acts(o).reduce(function(s,a){return s+(+a.inv||0)},0),pp=0;
+  acts(o).forEach(function(a){(a.parts||[]).forEach(function(p){pp+=p.q*(p.pr||0)})});(o.partsUsed||[]).forEach(function(p){pp+=p.q*(p.pr||0)});
+  return {rate:rate,lh:lh,lab:lh*rate,pp:pp,tot:lh*rate+pp};
+}
+function estSum(list){var t={lh:0,lab:0,pp:0,tot:0};list.forEach(function(o){var e=est(o);t.lh+=e.lh;t.lab+=e.lab;t.pp+=e.pp;t.tot+=e.tot});
+  return '<div class="hrs"><b>Invoice total</b><div class="row mu"><span>Labor ('+t.lh.toFixed(2)+' invoiced h)</span><span>'+money(t.lab)+'</span></div><div class="row mu"><span>Parts</span><span>'+money(t.pp)+'</span></div><div class="row"><b>Total</b><b style="text-align:right">'+money(t.tot)+'</b></div></div>'}
+function estimateTab(o){
+  var e=est(o),A=acts(o);
+  var h='<div class="card"><b>Estimate · SO '+esc(sonum(o))+'</b><div class="mu">'+esc(o.customer)+' · '+esc(o.unit)+(o.vin?' · VIN '+esc(o.vin):'')+(o.mileage?' · '+esc(o.mileage)+' mi':'')+'</div>'+
+    (tab==1&&!o.billed?'<label style="display:block;margin-top:8px">Labor rate ($ per hour)</label><input id="dt_rt" inputmode="decimal" value="'+(o.rate||'')+'" placeholder="e.g. 125">':'<div class="mu">Labor rate: '+money(e.rate)+' / h</div>');
+  h+=A.map(function(a,i){var lab=(+a.inv||0)*e.rate,pp=(a.parts||[]).reduce(function(s,p){return s+p.q*(p.pr||0)},0);
+    return '<div style="border-top:1px solid var(--ln);margin-top:10px;padding-top:8px"><b>Action '+(i+1)+': '+esc(a.c||'')+'</b>'+(a.cause?'<div class="mu">Cause: '+esc(a.cause)+'</div>':'')+(a.corr?'<div class="mu">Correction: '+esc(a.corr)+'</div>':'')+
+      '<div class="hrs"><div class="row mu"><span>Labor '+(+a.inv||0).toFixed(2)+' h × '+money(e.rate)+'</span><span>'+money(lab)+'</span></div>'+
+      (a.parts||[]).map(function(p){return '<div class="row mu"><span>'+p.q+' × '+esc((p.no?p.no+' ':'')+p.d)+'</span><span>'+money(p.q*(p.pr||0))+'</span></div>'}).join('')+'</div></div>'}).join('');
+  h+='<div style="border-top:2px solid var(--tx);margin-top:10px;padding-top:6px" class="hrs"><div class="row"><span>Labor ('+e.lh.toFixed(2)+' h)</span><span style="text-align:right">'+money(e.lab)+'</span></div><div class="row"><span>Parts</span><span style="text-align:right">'+money(e.pp)+'</span></div><div class="row" style="font-size:18px"><b>Total</b><b style="text-align:right">'+money(e.tot)+'</b></div></div>'+
+    (+o.preAmt>0?'<div class="box2">Customer pre-authorized up to <b>'+money(o.preAmt)+'</b>'+(e.tot>+o.preAmt?'<div style="color:#e03131;font-weight:700">Over by '+money(e.tot-o.preAmt)+'. Get the customer\'s approval.</div>':'<div style="color:var(--ok);font-weight:700">✓ Within the pre-authorized amount</div>')+'</div>':'')+
+    (e.lh?'':'<div class="mu">Labor uses the invoiced hours on each action item. Set them on the Shop desk.</div>')+
+    '<div class="row">'+(tab==1&&!o.billed?'<button class="btn alt" onclick="saveDetails(\''+o.id+'\')">Save rate</button>':'')+'<button class="btn alt" onclick="window.print()">🖨 Print</button></div></div>';
+  return h+billBox(o);
+}
+function lastMiles(o){
+  var best=null;all().forEach(function(x){if(x.id===o.id||grp(x)===grp(o))return;var same=(o.vin&&x.vin&&lc(x.vin)===lc(o.vin))||(o.plate&&x.plate&&lc(x.plate)===lc(o.plate))||(lc(o.unit)&&lc(x.unit)===lc(o.unit));var mi=parseInt(String(x.mileage||'').replace(/\D/g,''));
+    if(same&&mi&&(!best||x.created>best.t))best={mi:mi,t:x.created}});return best;
+}
+function headerCard(o){
+  var lm=lastMiles(o),cm=parseInt(String(o.mileage||'').replace(/\D/g,''));
+  return '<div class="card" style="margin-top:12px"><div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start"><div><b style="font-size:24px">SO '+esc(sonum(o))+'</b>'+plabel(o)+'<div style="font-size:17px;color:var(--act);font-weight:600">'+esc(o.customer||'')+'</div></div>'+
+    '<div style="text-align:right"><span class="tag '+o.status+'">'+o.status.toUpperCase()+'</span>'+btag(o)+(o.preAuth?'<div><span class="tag" style="color:var(--ok);border-color:var(--ok);margin-top:4px">👍 PRE-AUTHORIZED</span></div>':'')+(o.skipDiag?'<div><span class="tag" style="color:#1c7ed6;border-color:#1c7ed6;margin-top:4px">🔧 STRAIGHT TO REPAIR</span></div>':'')+'<div>'+esc(o.unit||'')+'</div>'+(o.vin?'<div class="mu">VIN '+esc(o.vin)+'</div>':'')+(o.plate?'<div class="mu">Plate '+esc(o.plate)+(o.plateState?' '+esc(o.plateState):'')+'</div>':'')+'</div></div>'+
+    '<div class="mirow"><b>Miles</b><input id="dt_mi" inputmode="numeric" placeholder="Odometer reading"'+(missFor===o.id&&!lc(o.mileage)?' class="miss"':'')+' value="'+esc(o.mileage)+'"></div>'+
+    (lm?'<div class="mu">Last: '+lm.mi.toLocaleString(LOC())+' ('+new Date(lm.t).toLocaleDateString(LOC())+')</div>':'')+
+    (lm&&cm&&cm<lm.mi?'<div style="color:#e03131;font-weight:700">Lower than the last reading</div>':'')+
+    '<div class="mu" style="margin-top:4px">Mechanic: '+esc(o.mechanic||'Unassigned')+'</div>'+schedLine(o)+soInfo(o)+'</div>';
+}
+// ---- truck lookup: plate in your records, VIN decode, VIN from a photo ----
+var VMAP={A:1,B:2,C:3,D:4,E:5,F:6,G:7,H:8,J:1,K:2,L:3,M:4,N:5,P:7,R:9,S:2,T:3,U:4,V:5,W:6,X:7,Y:8,Z:9};
+function vinCheck(v){var w=[8,7,6,5,4,3,2,10,0,9,8,7,6,5,4,3,2],s=0;for(var i=0;i<17;i++){var c=v[i];s+=(/\d/.test(c)?+c:VMAP[c]||0)*w[i]}var r=s%11;return v[8]===(r==10?'X':String(r))}
+var VID={f:{vi:'f_vi',un:'f_un',pl:'f_pl',ps:'f_ps'},dt:{vi:'dt_vin',un:'dt_un',pl:'dt_pl',ps:'dt_ps'}};
+function vf(pre,k){return $(VID[pre][k])}
+function vst(pre,msg,bad){var e=$(pre+'_vs');if(!e)return;e.textContent=msg;e.style.color=bad?'#e03131':'';tr(e)}
+function cap(s){return String(s||'').toLowerCase().replace(/\b[a-z]/g,function(c){return c.toUpperCase()})}
+function truckBox(pre,o,ucl){
+  var I=VID[pre];
+  return '<div class="box2"><b>🚚 Truck</b>'+
+    '<div class="row"><span><label>Plate #</label><input id="'+I.pl+'" autocomplete="off" style="text-transform:uppercase" value="'+esc(o.plate)+'"></span><span style="flex:.45"><label>State</label><input id="'+I.ps+'" maxlength="2" autocomplete="off" style="text-transform:uppercase" value="'+esc(o.plateState)+'"></span></div>'+
+    '<div class="row"><button class="btn alt" style="margin-top:0" onclick="runPlate(\''+pre+'\')">🔍 Look up plate</button><button class="btn alt" style="margin-top:0" onclick="azPlate(\''+pre+'\')">AutoZone ↗</button></div>'+
+    '<label style="display:block;margin-top:10px">VIN</label><input id="'+I.vi+'" autocomplete="off" maxlength="17" style="text-transform:uppercase" value="'+esc(o.vin)+'" oninput="if(this.value.replace(/\\s/g,\'\').length==17)runVin(\''+pre+'\')">'+
+    '<div class="row"><button class="btn alt" style="margin-top:0" onclick="runVin(\''+pre+'\')">🔎 Decode VIN</button>'+(SB?'':'<button class="btn alt" style="margin-top:0" onclick="$(\''+pre+'_cam\').click()">📷 Scan VIN</button>')+'</div>'+
+    '<input type="file" id="'+pre+'_cam" accept="image/*" capture="environment" class="hide" onchange="scanVin(\''+pre+'\',this.files[0]);this.value=\'\'">'+
+    '<div id="'+pre+'_vs" class="mu" style="margin:6px 0"></div>'+
+    '<label>Truck / unit (year, make, model, unit #)</label><input id="'+I.un+'"'+(ucl||'')+' value="'+esc(o.unit)+'"></div>';
+}
+function azPlate(pre){
+  var p=vf(pre,'pl').value.trim().toUpperCase();
+  try{if(p&&navigator.clipboard)navigator.clipboard.writeText(p).catch(function(){})}catch(e){}
+  window.open('https://www.autozone.com/','_blank','noopener');
+  vst(pre,(p?'Plate '+p+' copied. ':'')+'On AutoZone tap Add Vehicle, choose License Plate, paste it and pick the state. Then come back and type or scan the VIN here.');
+}
+function runPlate(pre){
+  var pe=vf(pre,'pl'),p=pe.value.trim().toUpperCase().replace(/[\s-]/g,'');if(!p){pe.focus();return}
+  var st=lc(vf(pre,'ps').value),cid=pre=='dt'?cur:null;
+  var hit=all().filter(function(o){return o.id!==cid&&o.plate&&o.plate.replace(/[\s-]/g,'')===p&&(!st||!o.plateState||lc(o.plateState)===st)}).sort(function(a,b){return (b.created||0)-(a.created||0)})[0];
+  if(!hit){vst(pre,'This plate is not in your records yet. Type the VIN or scan it with the camera and the truck info fills in.');return}
+  if(hit.vin)vf(pre,'vi').value=hit.vin;if(hit.unit)vf(pre,'un').value=hit.unit;if(!vf(pre,'ps').value&&hit.plateState)vf(pre,'ps').value=hit.plateState;
+  if(pre=='f'&&!$('f_cu').value.trim()&&hit.customer)$('f_cu').value=hit.customer;
+  vst(pre,'✓ Found in your records: SO '+sonum(hit)+' · '+(hit.unit||hit.vin||''));
+}
+async function nhtsa(v){
+  var c=new AbortController(),t=setTimeout(function(){c.abort()},8000);
+  try{var r=await fetch('https://vpic.nhtsa.dot.gov/api/vehicles/DecodeVinValues/'+v+'?format=json',{signal:c.signal});var j=await r.json(),x=j&&j.Results&&j.Results[0];
+    if(!x||!x.Make)return null;return {year:x.ModelYear||'',make:cap(x.Make),model:x.Model||'',src:'NHTSA'}}catch(e){return null}finally{clearTimeout(t)}
+}
+async function claudeVin(v){
+  try{var s=window.claude&&await claude.use('sample');if(!s)return null;
+    var d=await s.json('Decode this 17-character vehicle VIN: '+v+'. Use the World Manufacturer Identifier (first 3 characters), the vehicle descriptor section (characters 4-8) and the model-year character (10th). Answer ONLY JSON: {"year":"","make":"","model":""}. Use common names, e.g. make Ford, Freightliner, International, Peterbilt, Kenworth, Mack, Volvo, Chevrolet, Ram, Isuzu, Hino and model F-550, Cascadia, 4300. Leave model empty if you are not sure.',{modelTier:'default'});
+    if(d&&d.make)return {year:String(d.year||''),make:d.make,model:d.model||'',src:'Claude'}}catch(e){}
+  return null;
+}
+async function runVin(pre){
+  var e=vf(pre,'vi');if(!e)return;var v=e.value.trim().toUpperCase().replace(/\s/g,'');e.value=v;
+  if(v.length!=17||/[^A-HJ-NPR-Z0-9]/.test(v)){vst(pre,'A VIN has 17 letters and numbers (no I, O or Q).',true);return}
+  if(e.dataset.done===v)return;e.dataset.done=v;
+  var warn=!vinCheck(v);vst(pre,'Looking up VIN…');
+  var r=await nhtsa(v)||await claudeVin(v);
+  if(!r){e.dataset.done='';vst(pre,'Could not look up this VIN right now. Type the year, make and model.',true);return}
+  var ymm=[r.year,r.make,r.model].filter(Boolean).join(' '),u=vf(pre,'un');
+  if(u){var old=u.value.trim();u.value=!old||/^\d{4} /.test(old)?ymm:ymm+' · '+old}
+  vst(pre,'✓ '+ymm+(r.src=='Claude'?' (read by Claude, please double-check)':'')+(warn?' · VIN check digit does not match, double-check the VIN':''),warn);
+}
+async function scanVin(pre,file){
+  if(!file)return;var s=null;try{s=window.claude&&await claude.use('sample')}catch(e){}
+  if(!s){vst(pre,'Scanning needs Claude, which is not available here.',true);return}
+  vst(pre,'Reading the photo…');
+  try{
+    var blob=await (await fetch(await shrink(file))).blob();
+    var d=await s.json('This photo shows a vehicle VIN plate, door-jamb sticker, registration card, title or windshield VIN. Read the 17-character VIN exactly (VINs never contain I, O or Q). If a license plate number and its state are visible, read them too. Answer ONLY JSON: {"vin":"","plate":"","state":""}. Use empty strings for anything you cannot read clearly.',{images:[blob],modelTier:'default',cache:false});
+    var vin=String(d&&d.vin||'').toUpperCase().replace(/[^A-Z0-9]/g,'');
+    if(d&&d.plate&&!vf(pre,'pl').value)vf(pre,'pl').value=String(d.plate).toUpperCase();
+    if(d&&d.state&&!vf(pre,'ps').value)vf(pre,'ps').value=String(d.state).toUpperCase().slice(0,2);
+    if(vin.length!=17){vst(pre,'Could not read a VIN in the photo. Try again closer, or type it.',true);return}
+    vf(pre,'vi').value=vin;runVin(pre);
+  }catch(e){vst(pre,e&&e.code=='not_granted'?'Claude was not allowed, so the photo could not be read.':'Could not read a VIN in the photo. Try again closer, or type it.',true)}
+}
+var delAsk=null;
+function delBox(o){
+  if(tab!=1)return '';
+  if(delAsk!==o.id)return '<button class="btn alt" style="margin-top:24px;color:#e03131;border-color:#e03131" onclick="delAsk=\''+o.id+'\';render()">🗑 Delete SO '+esc(sonum(o))+'</button>';
+  return '<div class="card" style="margin-top:24px;border-color:#e03131"><b>Delete SO '+esc(sonum(o))+'?</b><p class="mu" style="margin:4px 0 8px">This removes its notes, photos and time for everyone. It cannot be undone.</p>'+
+    '<div class="row"><button class="btn alt" onclick="delAsk=null;render()">Cancel</button><button class="btn" style="background:#e03131" onclick="delSO(\''+o.id+'\')">Yes, delete</button></div></div>';
+}
+function delSO(id){
+  var o=byId(id);if(!o)return;sbPush('serviceOrders',id,null,true);
+  sv(Q,queue().filter(function(p){return p.so!==id}));setNet();
+  var gone=db?db.collection('serviceOrders').doc(id).delete().catch(function(){$('net').textContent='Could not delete'}):Promise.resolve(sv(LS,(lg(LS)||[]).filter(function(x){return x.id!==id})));
+  delAsk=null;cur=null;splitting=null;
+  gone.then(render);
+}
+function autoStart(id){
+  var o=byId(id);if(tab!=2||!o||!nm||o.status=='done'||o.billed||running(o))return;
+  all().forEach(function(x){var l=(x.sessions||[])[(x.sessions||[]).length-1];if(x.id!==id&&l&&!l.end&&l.who===nm){var c=JSON.parse(JSON.stringify(x));c.sessions[c.sessions.length-1].end=Date.now();saveOrder(c)}});
+  timer(id,'start');
+}
+function openSO(id){commit();missFor=null;aMiss=null;delA=null;if(cur!==id){jt='act'}cur=id;splitting=null;delAsk=null;revisit=null;autoStart(id);render();scrollTo(0,0)}
+function back(){commit();missFor=null;aMiss=null;delA=null;cur=null;jt='act';splitting=null;delAsk=null;revisit=null;render()}
+function partsCard(o){
+  var ps=parts(o),n=ps.length,nx=nextPart(ps),h='';
+  if(n>1){
+    var tot=ps.reduce(function(a,p){return a+soMs(p)},0);
+    h+='<b>Parts of SO '+esc(o.so)+'</b>'+ps.map(function(p){
+      return '<div class="prt'+(p.id===o.id?' me':'')+'" onclick="openSO(\''+p.id+'\')"><span>SO '+esc(sonum(p))+' · Part '+(p.part||1)+(p.id===o.id?' (this one)':'')+'<br><span class="mu">'+esc((p.desc||'').slice(0,60))+'</span></span><span class="tag '+p.status+'">'+p.status.toUpperCase()+'</span>'+btag(p)+'<span class="mu">'+fmt(soMs(p))+'</span></div>'}).join('')+
+      '<div class="mu" style="margin-top:6px">All parts together: '+fmt(tot)+'</div>'+billAllBtn(ps);
+  }
+  if(n<2)return '';
+  if(false){
+    h+=(n>1?'<hr style="border:0;border-top:1px solid var(--ln);margin:12px 0">':'')+'<b>Add Part '+nx+': SO '+esc(o.so+'_'+nx)+'</b>'+
+      (n==1?'<p class="mu" style="margin:4px 0 8px">This job becomes Part 1. It keeps its notes, photos and time, so it can be finished and billed on its own.</p>':'')+
+      '<label>What Part '+nx+' covers</label><textarea id="spd" rows="3" placeholder="e.g. Come back to install parts when they arrive"></textarea>'+
+      '<label>Mechanic</label>'+mechSel('spm',o.mechanic)+''+
+      '<div class="row"><button class="btn alt" onclick="splitting=null;render()">Cancel</button><button class="btn" onclick="doSplit(\''+o.id+'\')">Create SO '+esc(o.so+'_'+nx)+'</button></div>';
+  }
+  return '<div class="card">'+h+'</div>';
+}
+function doSplit(id){blurA();
+  var o=byId(id);if(!o)return;
+  var ps=parts(o),n=ps.length,nx=nextPart(ps);if(n>=MAXP){splitting=null;render();return}
+  var g=grp(o),d=$('spd').value.trim(),me=$('spm').value.trim(),saves=[];
+  if(!d){$('spd').focus();$('spd').style.borderColor='#e03131';return}
+  ps.forEach(function(p,i){var c=JSON.parse(JSON.stringify(p));c.group=g;c.part=c.part||i+1;delete c.of;if(c.id===o.id)c.notes=($('nt')||{}).value||c.notes;saves.push(c)});
+  saves.push({id:'so'+String(o.so).replace(/\W/g,'')+'_'+Date.now().toString(36),so:o.so,customer:o.customer,unit:o.unit,mechanic:me||o.mechanic,
+    desc:d,notes:'',status:'open',photos:[],sessions:[],created:Date.now(),group:g,part:nx});
+  splitting=null;
+  saves.reduce(function(pr,c){return pr.then(function(){return saveOrder(c)})},Promise.resolve()).then(render);
+}
+function jobView(o){
+  if(!o)return '<button class="btn alt" onclick="back()">Back</button>';
+  var pend=queue().filter(function(p){return p.so===o.id});
+  var ph=(o.photos||[]).map(function(p){return '<div><img src="'+esc(p.url)+'">'+(p.from?'<span class="w">'+esc(p.from)+'</span>':'')+'</div>'}).join('')+
+    pend.map(function(p){return '<div><img src="'+p.data+'"><span class="w">waiting</span></div>'}).join('');
+  var top='<i id="dtc" data-id="'+o.id+'" hidden></i><button class="btn alt" onclick="back()">← Back</button>'+headerCard(o)+
+    '<div class="seg">'+[['act','Action items'],['parts','Parts list'],['est','Estimate'],['edit','Edit']].filter(function(x){return SP()||x[0]!='est'}).map(function(x){return '<button class="'+(jt==x[0]?'on':'')+'" onclick="setJt(\''+x[0]+'\')">'+x[1]+'</button>'}).join('')+'</div>';
+  if(jt=='parts')return top+partsListTab(o);
+  if(jt=='est'&&SP())return top+estimateTab(o);
+  if(jt=='edit')return top+detailsCard(o)+schedCard(o)+partsCard(o)+delBox(o);
+  return top+actionsTab(o)+
+  '<div class="card"><label>Work notes</label><textarea id="nt" rows="5" placeholder="Optional">'+esc(o.notes)+'</textarea>'+
+  '<div class="row">'+(dict?'<button class="btn alt" id="mic" onclick="mic()">🎤 Dictate</button>':'')+'<button class="btn alt" onclick="saveNotes(\''+o.id+'\')">Save notes</button></div></div>'+
+  '<div class="card"><b'+(ownPhotos(o)<NP()&&missFor===o.id?' style="color:#e03131"':'')+'>'+photoHead(o)+'</b><div class="ph">'+(ph||'')+'</div>'+
+  '<input type="file" id="cam" accept="image/*" capture="environment" class="hide" onchange="addPhotos(\''+o.id+'\',this.files)">'+
+  '<input type="file" id="gal" accept="image/*" multiple class="hide" onchange="addPhotos(\''+o.id+'\',this.files)">'+
+  '<div class="row"><button class="btn" onclick="$(\'cam\').click()">📷 Take photo</button><button class="btn alt" onclick="$(\'gal\').click()">Gallery</button></div>'+
+  '<p class="mu">Photos are shrunk automatically and upload when you have signal.</p></div>'+
+  '<div class="card'+(running(o)?' on':'')+'"><b>'+(running(o)?'⏱ TIMING – ':'')+'Time on '+(o.part?'this part':'this job')+'</b><div style="font-size:28px;font-weight:700" id="tick">'+fmt(soMs(o))+'</div><div class="mu">'+(running(o)?'Timer running':'Timer stopped')+'</div>'+nameBox()+'</div>'+
+  '<div id="mbw">'+missBox(o,true)+'</div><div class="row">'+(running(o)?'<button class="btn alt" onclick="timer(\''+o.id+'\',\'stop\')">Pause</button>':'<button class="btn alt" onclick="timer(\''+o.id+'\',\'start\')">Start work</button>')+'<button class="btn" onclick="timer(\''+o.id+'\',\'done\')">'+(o.part?'Mark Part '+o.part+' done':'Mark done')+'</button></div>';
+}
+function saveNotes(id){blurA();var o=byId(id);if(!o)return;o.notes=$('nt').value;saveOrder(o);alert('Saved')}
+function setSt(id,s){var o=byId(id);if(!o)return;o.notes=($('nt')||{}).value||o.notes;o.status=s;saveOrder(o).then(function(){if(s=='done')cur=null;render()})}
+// time tracking
+function fmt(ms){var m=Math.floor((ms||0)/60000);return Math.floor(m/60)+'h '+('0'+m%60).slice(-2)+'m'}
+function tm(t){return new Date(t).toLocaleTimeString(LOC(),{hour:'numeric',minute:'2-digit'})}
+function today(){var d=new Date();return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2)}
+function dayKey(){return 'tc_'+uid+'_'+today()}
+function dayMs(d){return d&&d.punches?d.punches.reduce(function(a,p){return a+((p.out||Date.now())-p['in'])},0):0}
+function soMs(o){return (o.sessions||[]).reduce(function(a,s){return a+((s.end||Date.now())-s.start)},0)}
+function running(o){var l=(o.sessions||[])[(o.sessions||[]).length-1];return !!(l&&!l.end)}
+function loadDay(){if(db&&uid!='local'){db.doc('timeclock/'+dayKey()).onSnapshot(function(s){day=s.exists?s.data():null;render()},function(){})}else{day=lg('wm_day_'+today())}}
+function needName(){if(!nm){var e=$('nmi'),v=e?e.value.trim():'';if(v){nm=v;sv('wm_name',nm)}else if(e){e.focus();e.style.borderColor='#e03131'}}return nm}
+function nameBox(){return nm?'':'<label>Your name (first time only)</label><input id="nmi" placeholder="Type your name, then tap the button">'}
+function clock(dir){
+  if(!needName())return;
+  try{
+  var d=day?JSON.parse(JSON.stringify(day)):{name:nm,date:today(),uid:uid,punches:[]};d.name=nm;d.punches=d.punches||[];
+  var l=d.punches[d.punches.length-1];
+  if(dir=='in'){if(l&&!l.out)return;d.punches.push({'in':Date.now()})}else{if(!l||l.out){$('net').textContent='Not clocked in';return}d.punches[d.punches.length-1]={'in':l['in'],out:Date.now()}}
+  day=d;sbPush('timeclock',dayKey(),d);
+  if(db&&uid!='local')db.doc('timeclock/'+dayKey()).set(d).catch(function(e){$('net').textContent='Clock not saved: '+((e&&(e.code||e.message))||'try again')});else sv('wm_day_'+today(),d);
+  render();
+  }catch(e){$('net').textContent='Clock error: '+e.message}
+}
+function clockCard(){
+  var l=day&&day.punches&&day.punches[day.punches.length-1],on=l&&!l.out;
+  return '<div class="card'+(on?' on':'')+'"><b>'+(on?'CLOCKED IN':'Today\'s hours')+'</b><div style="font-size:28px;font-weight:700" id="dtick">'+fmt(dayMs(day))+'</div><div class="mu">'+(on?'Clocked in since '+tm(l['in']):(l?'Clocked out at '+tm(l.out):'Not clocked in'))+'</div>'+
+  nameBox()+(on?'<button class="btn" onclick="clock(\'out\')">Clock out</button>':'<button class="btn" onclick="clock(\'in\')">Clock in</button>')+'</div>';
+}
+function weekStart(){var d=new Date();d.setDate(d.getDate()-((d.getDay()+6)%7));return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2)}
+function hhmm(t){var d=new Date(t);return ('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2)}
+function atTime(date,s){var m=/^(\d{1,2}):(\d{2})$/.exec((s||'').trim());if(!m)return null;var p=date.split('-');return new Date(+p[0],+p[1]-1,+p[2],+m[1],+m[2]).getTime()}
+function deskClock(){
+  if(!db)return '';
+  var ws=weekStart(),wk={},rows=[];
+  tcAll.forEach(function(d){if(d.date>=ws){var k=d.name||'?';wk[k]=(wk[k]||0)+dayMs(d);rows.push(d)}});
+  var tot=Object.keys(wk).sort().map(function(k){return '<div class="row" style="margin:4px 0"><span>'+esc(k)+'</span><span class="mu" style="text-align:right">'+fmt(wk[k])+'</span></div>'}).join('');
+  var sh=rows.map(function(d){var p=d.punches||[],l=p[p.length-1],on=l&&!l.out;
+    return '<div class="row" style="margin:6px 0;align-items:center"><span>'+esc(d.name)+'<br><span class="mu">'+esc(d.date)+'</span></span><span class="mu" style="text-align:right">'+(on?'IN · ':'')+fmt(dayMs(d))+gapHtml(d)+'</span><button class="btn alt" style="margin:0;padding:6px" onclick="fixDay(\''+d._id+'\')">Edit</button></div>'}).join('');
+  return edBox()+'<div class="card"><b>Hours this week</b>'+(tot||'<div class="mu">No hours yet this week.</div>')+'</div>'+
+    '<div class="card"><b>Time sheet (tap Edit to fix a punch)</b>'+(sh||'<div class="mu">No punches yet.</div>')+'</div>';
+}
+var ed=null;
+function fixDay(id){ed=id;render()}
+function cancelEd(){ed=null;render()}
+function saveEd(){blurA();
+  var d=tcAll.find(function(x){return x._id==ed});if(!d){ed=null;return}
+  var ps=[];
+  for(var i=0;i<(d.punches||[]).length;i++){
+    var a=$('ei'+i).value,b=$('eo'+i).value,ti=atTime(d.date,a),to=atTime(d.date,b);
+    if(ti==null||(b&&to==null)||(to&&to<ti)){$('net').textContent='Fix times: out must be after in';return}
+    ps.push(to?{'in':ti,out:to}:{'in':ti});
+  }
+  sbPush('timeclock',ed,{name:d.name,date:d.date,uid:d.uid||'',punches:ps});
+  db.doc('timeclock/'+ed).set({name:d.name,date:d.date,uid:d.uid||'',punches:ps}).then(function(){ed=null;render()}).catch(function(){$('net').textContent='Could not save'});
+}
+function edBox(){var d=ed&&tcAll.find(function(x){return x._id==ed});if(!d)return '';
+  return '<div class="card"><b>Edit '+esc(d.name)+' · '+esc(d.date)+'</b>'+(d.punches||[]).map(function(p,i){return '<label>In</label><input type="time" id="ei'+i+'" value="'+hhmm(p['in'])+'"><label>Out (blank if still working)</label><input type="time" id="eo'+i+'" value="'+(p.out?hhmm(p.out):'')+'">'}).join('')+'<div class="row"><button class="btn alt" onclick="cancelEd()">Cancel</button><button class="btn" onclick="saveEd()">Save</button></div></div>'}
+function timer(id,act,aid){
+  var o=readDetails(byId(id));if(!o)return;if(act=='start'&&!needName())return;
+  if(act=='done'){if(!o.mechanic&&nm)o.mechanic=nm;var mm=missing(o);if(mm.length){missFor=id;missRev=false;saveOrder(o).then(function(){render();var b=$('missbox');if(b)b.scrollIntoView({block:'center'})});return}}
+  o.sessions=(o.sessions||[]).slice();var l=o.sessions[o.sessions.length-1];
+  if(act=='start'){
+    var want=aid||firstOpen(o)||null;
+    if(l&&!l.end){if((l.a||null)===want)return;l.end=Date.now()}
+    var s={who:nm,start:Date.now()};if(want)s.a=want;o.sessions.push(s);o.status='working';if(!o.mechanic)o.mechanic=nm;
+    var A=acts(o).find(function(x){return x.id===want});if(A&&!A.mech)A.mech=nm;
+  }
+  else{if(l&&!l.end)l.end=Date.now();if(act=='done')o.status='done'}
+  if(act=='done')missFor=null;
+  saveOrder(o).then(function(){if(act=='done')cur=null;render()});
+}
+setInterval(function(){var a=$('dtick');if(a)a.textContent=fmt(dayMs(day));var t=$('tick'),o=cur&&byId(cur);if(t&&o)t.textContent=fmt(soMs(o))},30000);
+function mic(tid){
+  if(!dict)return;micT=tid||'nt';
+  if(!micReg){micReg=true;dict.onFinal(function(r){var t=$(micT);if(t)t.value=(t.value+' '+r.text).trim()})}
+  dict.start().catch(function(){});
+}
+$('t1').onclick=function(){commit();setOpen=false;tab=1;cur=null;splitting=null;render()};
+$('t2').onclick=function(){commit();setOpen=false;tab=2;cur=null;splitting=null;render()};
+if(SB)boot();else init();
+</script></body></html>
