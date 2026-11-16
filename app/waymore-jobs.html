@@ -78,6 +78,15 @@ details.card>summary{font-weight:700;cursor:pointer;font-size:16px;padding:2px 0
 .seg button:last-child{border-right:0}.seg button.on{background:var(--tx);color:var(--bg)}
 .ah{display:flex;justify-content:space-between;align-items:center;gap:8px;cursor:pointer}.ah b{font-size:18px}
 .pill{font-size:12px;font-weight:700;padding:3px 10px;border-radius:99px;background:var(--bg);color:var(--tx);border:1px solid var(--ln);white-space:nowrap}
+.pill.diag{background:#1c7ed6;border-color:#1c7ed6;color:#fff}
+.pill.auth{background:#f08c00;border-color:#f08c00;color:#1a1a1a}
+.pill.repair{background:#7048e8;border-color:#7048e8;color:#fff}
+.pill.open{background:#495057;border-color:#495057;color:#fff}
+.pill.rinv{background:#2b8a3e;border-color:#2b8a3e;color:#fff}
+.pill.wpay{background:#e03131;border-color:#e03131;color:#fff}
+.pill.paid{background:#0ca678;border-color:#0ca678;color:#fff}
+.pill.done{background:#2b8a3e;border-color:#2b8a3e;color:#fff}
+.pill.billed{background:#0b7285;border-color:#0b7285;color:#fff}
 .hr3{display:flex;gap:14px;font-size:14px;margin:6px 0;flex-wrap:wrap}.neg b{color:#e03131}.card.on .neg b{color:#ffe3e3}
 .steps{display:flex;position:relative;margin:6px 0 4px}.steps:before{content:'';position:absolute;left:10%;right:10%;top:14px;height:2px;background:var(--ln)}
 .st{flex:1;text-align:center;font-size:11px;color:var(--mu);position:relative;min-width:0}
@@ -946,6 +955,7 @@ var tview='list',rpF=null,rpT=null,rpG='week';
 function tiles(a){return '<div class="tiles">'+a.map(function(t){return '<div class="tile"><b>'+t[0]+'</b><span>'+t[1]+'</span></div>'}).join('')+'</div>'}
 function invH(o){return acts(o).reduce(function(s,a){return s+(+a.inv||0)},0)}
 function h2(n){return (Math.round(n*100)/100).toFixed(2)}
+function pillCls(o){if(o.billed)return o.paid?'paid':'wpay';if(o.status=='done')return 'rinv';var a=acts(o).find(function(x){return x.st!='done'});return a?({diag:'diag',auth:'auth',repair:'repair'}[a.st]||'open'):'open'}
 function soStatus(o){if(o.billed)return o.paid?'Paid':'Waiting for payment';if(o.status=='done')return 'Ready to invoice';var a=acts(o).find(function(x){return x.st!='done'});return a?stLabel(a,o):'Open'}
 function svcTiles(){
   var a=all(),td=today(),open=a.filter(function(o){return o.status!='done'});
@@ -958,7 +968,7 @@ function svcTiles(){
 }
 function trow(o,extra){
   var a=acts(o)[0],e=est(o);
-  return '<div class="trow" onclick="openSO(\''+o.id+'\')"><span style="flex:0 0 auto;min-width:70px"><b>SO '+esc(sonum(o))+'</b><br><span class="pill" style="display:inline-block;margin-top:3px">'+soStatus(o)+'</span></span>'+
+  return '<div class="trow" onclick="openSO(\''+o.id+'\')"><span style="flex:0 0 auto;min-width:70px"><b>SO '+esc(sonum(o))+'</b><br><span class="pill '+pillCls(o)+'" style="display:inline-block;margin-top:3px">'+soStatus(o)+'</span></span>'+
     '<span style="flex:1"><b>'+esc(o.customer||'')+'</b>'+(o.unit?' · '+esc(o.unit):'')+'<br><span class="mu">'+esc(a?a.c:o.desc||'')+'</span>'+(extra||'')+'</span>'+
     (SP()?'<span style="flex:0 0 auto;text-align:right;font-weight:700">'+money(e.tot)+'</span>':'')+'</div>';
 }
@@ -1462,7 +1472,7 @@ function fv(o,i,f,v){var on=(aMiss===o.id+':'+i+':'+f)||(missFor===o.id&&!lc(v))
 function actCard(o,a,i){
   var run=runAct(o)===a.id,ms=actMs(o,a.id),inv=+a.inv||0,diff=inv-ms/3600000,ex=isOpenA(o,i),N=i+1,lock=o.billed||o.status=='done';
   if(Math.abs(diff)<0.005)diff=0;
-  var h='<div class="card'+(run?' run':'')+'" id="act'+i+'">'+(run?'<div class="runb">⏱ TIMING · '+fmt(ms)+'</div>':'')+'<div class="ah" onclick="togAct(\''+o.id+'\','+i+')"><b>Action Item '+N+'</b><span class="pill">'+stLabel(a,o)+'</span></div>'+
+  var h='<div class="card'+(run?' run':'')+'" id="act'+i+'">'+(run?'<div class="runb">⏱ TIMING · '+fmt(ms)+'</div>':'')+'<div class="ah" onclick="togAct(\''+o.id+'\','+i+')"><b>Action Item '+N+'</b><span class="pill '+(o.billed?'billed':a.st)+'">'+stLabel(a,o)+'</span></div>'+
     '<div class="mu">'+pLabel(a)+' · Assigned: '+esc(a.mech||o.mechanic||'Unassigned')+'</div>'+
     '<div class="hr3"><span>Invoiced <b>'+inv.toFixed(2)+'</b></span><span>Actual <b>'+hrs(ms)+'</b></span><span'+(diff<0?' class="neg"':'')+'>Diff <b>'+diff.toFixed(2)+'</b></span></div>';
   if(!ex)return h+'<div>'+(a.c?esc(a.c):'<span class="mu">No complaint written</span>')+' <span class="mu">›</span></div></div>';
