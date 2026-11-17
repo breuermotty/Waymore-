@@ -10,7 +10,6 @@ mechanic timers, photos, parts, scheduling, billing, office and reports. English
 | `index.html` | The website. Built from `app/waymore-jobs.html` by `tools/build_site.py`. |
 | `app/waymore-jobs.html` | The app source. Inside Claude it runs as an artifact with Claude's database; on the website it runs on Supabase. |
 | `supabase/setup.sql` | One-time Supabase setup: worker logins and roles, shop data, history backup, photo storage, live updates. |
-| `supabase/functions/platedecoder/` | Optional Edge Function that looks up a VIN from a license plate with CarsXE (paid). See below. |
 | `manifest.json`, `icon-*.png` | Lets phones add the website to the home screen like an app. |
 
 ## Setup
@@ -29,22 +28,10 @@ mechanic timers, photos, parts, scheduling, billing, office and reports. English
 
 These rules are enforced by Supabase (Row Level Security), not only hidden on screen.
 
-## Optional: plate → VIN lookup (CarsXE)
+## Plate → VIN lookup
 
-"Look up plate" first searches your own saved service orders (free, instant). If the plate isn't on file and this
-is set up, the website asks CarsXE for the VIN and then fills in year/make/model from the free NHTSA decoder.
-
-CarsXE's plate decoder is **paid** (not in their free trial) and its key must stay private, so the website never
-calls CarsXE directly. A small Supabase Edge Function holds the key and makes the call. Only a signed-in, approved
-worker can trigger it. Without this set up, "Look up plate" simply stays on the free manual flow — nothing breaks.
-
-To enable it:
-1. Supabase Dashboard → **Edge Functions** → **Create a function**, name it exactly `platedecoder`, paste
-   `supabase/functions/platedecoder/index.ts`, **Deploy**.
-2. Supabase Dashboard → **Edge Functions → Secrets** (or **Project Settings → Edge Functions**) → add
-   `CARSXE_KEY` = your CarsXE API key.
-
-That's it — no website rebuild needed.
+"Look up plate" searches your own saved service orders (free, instant). If the plate isn't on file, type or scan the
+VIN (or use the AutoZone button to look the plate up on AutoZone), and the free NHTSA decoder fills in year/make/model.
 
 ## Rebuild after changing the app
 
