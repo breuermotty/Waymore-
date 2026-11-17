@@ -712,7 +712,7 @@ function createSO(){blurA();
   var o={id:'so'+so.replace(/\W/g,'')+'_'+Date.now().toString(36),so:so,customer:$('f_cu').value.trim(),contact:$('f_rq').value.trim(),unit:$('f_un').value.trim(),
     mechanic:me,desc:nItems.map(function(x){return x.t}).join(', '),mileage:$('f_mi').value.trim(),location:$('f_loc').value.trim(),availAt:$('f_av').value||'',mustAccess:$('f_must').checked,backBy:$('f_back').value.trim(),
     schedDate:$('f_sd').value||'',schedTime:$('f_st').value||'',estH:parseFloat($('f_eh').value)||0,po:$('f_po').value.trim(),preAuth:$('f_pa').checked,preAmt:parseFloat($('f_pam').value)||0,deskNotes:$('f_nt').value.trim(),
-    vin:$('f_vi').value.trim().toUpperCase(),plate:$('f_pl').value.trim().toUpperCase(),plateState:$('f_ps').value.trim().toUpperCase(),items:[],
+    vin:$('f_vi').value.trim().toUpperCase(),plate:$('f_pl').value.trim().toUpperCase(),plateState:$('f_ps').value.trim().toUpperCase(),vehicle:(VINMORE[$('f_vi').value.trim().toUpperCase()]||''),items:[],
     actions:nItems.map(function(x){var a=newAct(x.t,me);if(x.skip){a.st='repair';a.noDiag=true}return a}),rate:+cfg.rate||+lg('wm_rate')||0,notes:'',status:'open',photos:[],created:Date.now()};
   nItems=[];toast('✓ SO '+so+' created');
   if(o.customer&&!docs('customers').some(function(c){return lc(c.name)===lc(o.customer)}))saveDoc('customers',{id:'c'+Date.now().toString(36),name:o.customer,created:Date.now()});
@@ -807,6 +807,7 @@ function missBox(o){
 }
 function applyVals(o,get){
   [['dt_cu','customer'],['dt_un','unit'],['dt_mi','mileage'],['dt_de','desc'],['dt_vin','vin'],['dt_pl','plate'],['dt_ps','plateState'],['dt_rq','contact'],['dt_loc','location'],['dt_back','backBy'],['dt_po','po'],['dt_dn','deskNotes']].forEach(function(p){var x=get(p[0]);if(x!=null)o[p[1]]=/^(vin|plate|plateState)$/.test(p[1])?x.trim().toUpperCase():x.trim()});
+  if(o.vin&&VINMORE[o.vin])o.vehicle=VINMORE[o.vin];
   var pa=get('dt_pam');if(pa!=null)o.preAmt=parseFloat(pa)||0;
   var r=get('dt_rt');if(r!=null){o.rate=parseFloat(r)||0;if(o.rate)sv('wm_rate',o.rate)}
   (o.actions||[]).forEach(function(a,i){var x;if((x=get('ac_c_'+i))!=null)a.c=x.trim();if((x=get('ac_ca_'+i))!=null)a.cause=x.trim();if((x=get('ac_co_'+i))!=null)a.corr=x.trim();if((x=get('ac_m_'+i))!=null)a.mech=x.trim();if((x=get('ac_iv_'+i))!=null)a.inv=parseFloat(x)||0});
@@ -1587,7 +1588,7 @@ function lastMiles(o){
 function headerCard(o){
   var lm=lastMiles(o),cm=parseInt(String(o.mileage||'').replace(/\D/g,''));
   return '<div class="card" style="margin-top:12px"><div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start"><div><b style="font-size:24px">SO '+esc(sonum(o))+'</b>'+plabel(o)+'<div style="font-size:17px;color:var(--act);font-weight:600">'+esc(o.customer||'')+'</div></div>'+
-    '<div style="text-align:right"><span class="tag '+o.status+'">'+o.status.toUpperCase()+'</span>'+btag(o)+(o.preAuth?'<div><span class="tag" style="color:var(--ok);border-color:var(--ok);margin-top:4px">👍 PRE-AUTHORIZED</span></div>':'')+(o.skipDiag?'<div><span class="tag" style="color:#1c7ed6;border-color:#1c7ed6;margin-top:4px">🔧 STRAIGHT TO REPAIR</span></div>':'')+'<div>'+esc(o.unit||'')+'</div>'+(o.vin?'<div class="mu">VIN '+esc(o.vin)+'</div>':'')+(o.plate?'<div class="mu">Plate '+esc(o.plate)+(o.plateState?' '+esc(o.plateState):'')+'</div>':'')+'</div></div>'+
+    '<div style="text-align:right"><span class="tag '+o.status+'">'+o.status.toUpperCase()+'</span>'+btag(o)+(o.preAuth?'<div><span class="tag" style="color:var(--ok);border-color:var(--ok);margin-top:4px">👍 PRE-AUTHORIZED</span></div>':'')+(o.skipDiag?'<div><span class="tag" style="color:#1c7ed6;border-color:#1c7ed6;margin-top:4px">🔧 STRAIGHT TO REPAIR</span></div>':'')+'<div>'+esc(o.unit||'')+'</div>'+(o.vehicle?'<div class="mu raw">'+esc(o.vehicle)+'</div>':'')+(o.vin?'<div class="mu">VIN '+esc(o.vin)+'</div>':'')+(o.plate?'<div class="mu">Plate '+esc(o.plate)+(o.plateState?' '+esc(o.plateState):'')+'</div>':'')+'</div></div>'+
     '<div class="mirow"><b>Miles</b><input id="dt_mi" inputmode="numeric" placeholder="Odometer reading"'+(missFor===o.id&&!lc(o.mileage)?' class="miss"':'')+' value="'+esc(o.mileage)+'"></div>'+
     (lm?'<div class="mu">Last: '+lm.mi.toLocaleString(LOC())+' ('+new Date(lm.t).toLocaleDateString(LOC())+')</div>':'')+
     (lm&&cm&&cm<lm.mi?'<div style="color:#e03131;font-weight:700">Lower than the last reading</div>':'')+
@@ -1609,6 +1610,7 @@ function truckBox(pre,o,ucl){
     '<div class="row"><button class="btn alt" style="margin-top:0" onclick="runVin(\''+pre+'\')">🔎 Decode VIN</button>'+(SB?'':'<button class="btn alt" style="margin-top:0" onclick="$(\''+pre+'_cam\').click()">📷 Scan VIN</button>')+'</div>'+
     '<input type="file" id="'+pre+'_cam" accept="image/*" capture="environment" class="hide" onchange="scanVin(\''+pre+'\',this.files[0]);this.value=\'\'">'+
     '<div id="'+pre+'_vs" class="mu" style="margin:6px 0"></div>'+
+    '<div id="'+pre+'_more" class="mu raw" style="margin:-2px 0 6px;font-size:13px'+(o.vehicle?'':';display:none')+'">'+esc(o.vehicle||'')+'</div>'+
     '<label>Truck / unit (year, make, model, unit #)</label><input id="'+I.un+'"'+(ucl||'')+' value="'+esc(o.unit)+'"></div>';
 }
 function azPlate(pre){
@@ -1626,10 +1628,19 @@ function runPlate(pre){
   if(pre=='f'&&!$('f_cu').value.trim()&&hit.customer)$('f_cu').value=hit.customer;
   vst(pre,'✓ Found in your records: SO '+sonum(hit)+' · '+(hit.unit||hit.vin||''));
 }
+var VINMORE={};
 async function nhtsa(v){
   var c=new AbortController(),t=setTimeout(function(){c.abort()},8000);
   try{var r=await fetch('https://vpic.nhtsa.dot.gov/api/vehicles/DecodeVinValues/'+v+'?format=json',{signal:c.signal});var j=await r.json(),x=j&&j.Results&&j.Results[0];
-    if(!x||!x.Make)return null;return {year:x.ModelYear||'',make:cap(x.Make),model:x.Model||'',src:'NHTSA'}}catch(e){return null}finally{clearTimeout(t)}
+    if(!x||!x.Make)return null;
+    function pick(k){var s=String(x[k]==null?'':x[k]).trim();return (!s||s=='0'||/^not applicable$/i.test(s))?'':s}
+    var disp=pick('DisplacementL');if(disp){var dn=parseFloat(disp);disp=dn?(Math.round(dn*10)/10)+'L':''}
+    var cyl=pick('EngineCylinders');if(cyl)cyl=cyl+' cyl';
+    var hp=pick('EngineHP');if(hp){var hn=parseFloat(hp);hp=hn?Math.round(hn)+' hp':''}
+    var fuel=pick('FuelTypePrimary');if(fuel)fuel=fuel.split(/[ ,(/]/)[0];
+    var gvwr=pick('GVWR');if(gvwr){var mg=/Class\s*\w+/i.exec(gvwr);gvwr=mg?mg[0]:gvwr}
+    var details=[disp,cyl,hp,fuel,pick('BodyClass'),pick('DriveType'),pick('TransmissionStyle'),gvwr].filter(Boolean);
+    return {year:x.ModelYear||'',make:cap(x.Make),model:x.Model||'',trim:pick('Series')||pick('Trim'),details:details,src:'NHTSA'}}catch(e){return null}finally{clearTimeout(t)}
 }
 async function claudeVin(v){
   try{var s=window.claude&&await claude.use('sample');if(!s)return null;
@@ -1646,6 +1657,8 @@ async function runVin(pre){
   if(!r){e.dataset.done='';vst(pre,'Could not look up this VIN right now. Type the year, make and model.',true);return}
   var ymm=[r.year,r.make,r.model].filter(Boolean).join(' '),u=vf(pre,'un');
   if(u){var old=u.value.trim();u.value=!old||/^\d{4} /.test(old)?ymm:ymm+' · '+old}
+  var det=(r.details||[]).join(' · ');VINMORE[v]=det;
+  var me=$(pre+'_more');if(me){me.textContent=det;me.style.display=det?'':'none'}
   vst(pre,'✓ '+ymm+(r.src=='Claude'?' (read by Claude, please double-check)':'')+(warn?' · VIN check digit does not match, double-check the VIN':''),warn);
 }
 async function scanVin(pre,file){
