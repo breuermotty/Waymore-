@@ -500,7 +500,7 @@ var ES={
 'No action items yet. Add one for each complaint.':'Todavía no hay tareas. Agrega una por cada queja.','No parts yet. Add parts inside each action item.':'Todavía no hay piezas. Agrégalas dentro de cada tarea.',
 '$ Price':'$ Precio','Part #':'Pieza #','Qty':'Cant.','Vendor':'Proveedor','Check engine light\nBrakes grinding\nPM service':'Luz de motor encendida\nFrenos rechinan\nServicio PM',
 '🚚 Truck':'🚚 Camión','On AutoZone tap Add Vehicle, choose License Plate, paste it and pick the state. Then come back and type or scan the VIN here.':'En AutoZone toca Agregar vehículo, elige Placa, pégala y escoge el estado. Luego regresa y escribe o escanea el VIN aquí.','Plate #':'Placa #','State':'Estado','🔍 Look up plate':'🔍 Buscar placa','🔎 Decode VIN':'🔎 Decodificar VIN','📷 Scan VIN':'📷 Escanear VIN',
-'Looking up VIN…':'Buscando VIN…','Reading the photo…':'Leyendo la foto…','A VIN has 17 letters and numbers (no I, O or Q).':'Un VIN tiene 17 letras y números (sin I, O ni Q).',
+'Looking up VIN…':'Buscando VIN…','Looking up plate…':'Buscando placa…','Reading the photo…':'Leyendo la foto…','A VIN has 17 letters and numbers (no I, O or Q).':'Un VIN tiene 17 letras y números (sin I, O ni Q).',
 'Could not look up this VIN right now. Type the year, make and model.':'No se pudo buscar este VIN ahora. Escribe el año, marca y modelo.',
 'This plate is not in your records yet. Type the VIN or scan it with the camera and the truck info fills in.':'Esta placa todavía no está en tus registros. Escribe el VIN o escanéalo con la cámara y se llenan los datos del camión.',
 'Could not read a VIN in the photo. Try again closer, or type it.':'No se pudo leer un VIN en la foto. Intenta más de cerca o escríbelo.',
@@ -569,7 +569,7 @@ var PAT=[
 [/^(\d+) SOs? · (.+) h authorized$/,'$1 SO · $2 h autorizadas'],[/^(.+) days$/,'$1 días'],
 [/^Requested by: (.*)$/,'Pidió: $1'],[/^PO #: (.*)$/,'PO #: $1'],[/^Available: (.*)$/,'Disponible: $1'],[/^⚠️ Must access at: (.*)$/,'⚠️ Atender a las: $1'],[/^Wanted back: (.*)$/,'De regreso: $1'],
 [/^Pre-authorized up to (.*)$/,'Pre-autorizado hasta $1'],[/^Over by (.+)\. Get the customer's approval\.$/,'Excede por $1. Pide la aprobación del cliente.'],[/^Plate (.+?) · (.*)$/,function(m,a,b){return 'Placa '+a+' · '+b}],
-[/^✓ Found in your records: SO (.+)$/,'✓ Encontrado en tus registros: SO $1'],[/^Plate (.+) copied\. (.+)$/,function(m,a,b){return 'Placa '+a+' copiada. '+trS(b)}],[/^Plate (.+)$/,'Placa $1'],
+[/^✓ Found in your records: SO (.+)$/,'✓ Encontrado en tus registros: SO $1'],[/^✓ Plate (.+) → VIN (.+)$/,function(m,a,b){return '✓ Placa '+a+' → VIN '+b}],[/^Plate (.+) copied\. (.+)$/,function(m,a,b){return 'Placa '+a+' copiada. '+trS(b)}],[/^Plate (.+)$/,'Placa $1'],
 [/^✓ (.+?)( \(read by Claude, please double-check\))?( · VIN check digit does not match, double-check the VIN)?$/,function(m,a,b,c){return '✓ '+a+(b?' (leído por Claude, revísalo)':'')+(c?' · el dígito de control del VIN no coincide, revisa el VIN':'')}],
 [/^Action Item (\d+)$/,'Tarea $1'],
 [/^Action (\d+): (.*)$/,function(m,a,b){return 'Tarea '+a+': '+(AX[b]||b)}],
@@ -1617,14 +1617,34 @@ function azPlate(pre){
   window.open('https://www.autozone.com/','_blank','noopener');
   vst(pre,(p?'Plate '+p+' copied. ':'')+'On AutoZone tap Add Vehicle, choose License Plate, paste it and pick the state. Then come back and type or scan the VIN here.');
 }
-function runPlate(pre){
+async function runPlate(pre){
   var pe=vf(pre,'pl'),p=pe.value.trim().toUpperCase().replace(/[\s-]/g,'');if(!p){pe.focus();return}
   var st=lc(vf(pre,'ps').value),cid=pre=='dt'?cur:null;
   var hit=all().filter(function(o){return o.id!==cid&&o.plate&&o.plate.replace(/[\s-]/g,'')===p&&(!st||!o.plateState||lc(o.plateState)===st)}).sort(function(a,b){return (b.created||0)-(a.created||0)})[0];
-  if(!hit){vst(pre,'This plate is not in your records yet. Type the VIN or scan it with the camera and the truck info fills in.');return}
-  if(hit.vin)vf(pre,'vi').value=hit.vin;if(hit.unit)vf(pre,'un').value=hit.unit;if(!vf(pre,'ps').value&&hit.plateState)vf(pre,'ps').value=hit.plateState;
-  if(pre=='f'&&!$('f_cu').value.trim()&&hit.customer)$('f_cu').value=hit.customer;
-  vst(pre,'✓ Found in your records: SO '+sonum(hit)+' · '+(hit.unit||hit.vin||''));
+  if(hit){
+    if(hit.vin)vf(pre,'vi').value=hit.vin;if(hit.unit)vf(pre,'un').value=hit.unit;if(!vf(pre,'ps').value&&hit.plateState)vf(pre,'ps').value=hit.plateState;
+    if(pre=='f'&&!$('f_cu').value.trim()&&hit.customer)$('f_cu').value=hit.customer;
+    vst(pre,'✓ Found in your records: SO '+sonum(hit)+' · '+(hit.unit||hit.vin||''));return;
+  }
+  var notFound='This plate is not in your records yet. Type the VIN or scan it with the camera and the truck info fills in.';
+  // Website only: ask CarsXE (through the Supabase proxy that holds the paid key) for the VIN,
+  // then decode year/make/model for free with the existing NHTSA pipeline.
+  if(SB&&sbc){
+    vst(pre,'Looking up plate…');
+    try{
+      var inv=await sbc.functions.invoke('platedecoder',{body:{plate:vf(pre,'pl').value.trim().toUpperCase(),state:vf(pre,'ps').value.trim().toUpperCase()}});
+      var d=(inv&&inv.data)||{};
+      var vin=String(d.vin||'').toUpperCase().replace(/[^A-Z0-9]/g,'');
+      if(vin.length==17){
+        vf(pre,'vi').value=vin;
+        vst(pre,'✓ Plate '+p+' → VIN '+vin);
+        runVin(pre);
+        return;
+      }
+    }catch(e){}
+    vst(pre,notFound);return;
+  }
+  vst(pre,notFound);
 }
 async function nhtsa(v){
   var c=new AbortController(),t=setTimeout(function(){c.abort()},8000);
