@@ -1799,6 +1799,18 @@ function dayKey(){return 'tc_'+uid+'_'+today()}
 function dayMs(d){return d&&d.punches?d.punches.reduce(function(a,p){return a+((p.out||Date.now())-p['in'])},0):0}
 function soMs(o){return (o.sessions||[]).reduce(function(a,s){return a+((s.end||Date.now())-s.start)},0)}
 function running(o){var l=(o.sessions||[])[(o.sessions||[]).length-1];return !!(l&&!l.end)}
+function stopMyTimers(){
+  // When a mechanic clocks out, stop any job timer still running on their tickets
+  // so hours don't keep counting after they've left for the day.
+  all().forEach(function(o){
+    var ss=o.sessions||[],l=ss[ss.length-1];
+    if(!l||l.end)return;
+    if(l.who&&nm&&l.who!==nm)return;            // leave other mechanics' timers alone
+    var x=readDetails(byId(o.id));if(!x)return;
+    x.sessions=(x.sessions||[]).slice();var ll=x.sessions[x.sessions.length-1];
+    if(ll&&!ll.end){ll.end=Date.now();saveOrder(x);}
+  });
+}
 function loadDay(){if(db&&uid!='local'){db.doc('timeclock/'+dayKey()).onSnapshot(function(s){day=s.exists?s.data():null;render()},function(){})}else{day=lg('wm_day_'+today())}}
 function needName(){if(!nm){var e=$('nmi'),v=e?e.value.trim():'';if(v){nm=v;sv('wm_name',nm)}else if(e){e.focus();e.style.borderColor='#e03131'}}return nm}
 function nameBox(){return nm?'':'<label>Your name (first time only)</label><input id="nmi" placeholder="Type your name, then tap the button">'}
@@ -1810,6 +1822,7 @@ function clock(dir){
   if(dir=='in'){if(l&&!l.out)return;d.punches.push({'in':Date.now()})}else{if(!l||l.out){$('net').textContent='Not clocked in';return}d.punches[d.punches.length-1]={'in':l['in'],out:Date.now()}}
   day=d;if(SB)geoPunch(d,dir);sbPush('timeclock',dayKey(),d);
   if(db&&uid!='local')db.doc('timeclock/'+dayKey()).set(d).catch(function(e){$('net').textContent='Clock not saved: '+((e&&(e.code||e.message))||'try again')});else sv('wm_day_'+today(),d);
+  if(dir=='out')stopMyTimers();
   render();
   }catch(e){$('net').textContent='Clock error: '+e.message}
 }
