@@ -633,11 +633,13 @@ function render(){
   $('gear').style.background=setOpen?'rgba(0,0,0,.25)':'transparent';
   $('t1').textContent='Shop desk';$('t2').textContent='Mechanic';
   var keep=null,dc=$('dtc');
-  if(cur&&dc&&dc.dataset.id===cur&&!skipKeep)keep=grabVals();skipKeep=false;
+  if(cur&&dc&&dc.dataset.id===cur&&!skipKeep)keep=grabVals();
+  var fkeep=skipKeep?null:grabF();skipKeep=false;
   keepV=keep?Object.assign({id:cur},keep):null;
   render0();
   if(!SB&&!lg('wm_hidemove')&&!$('mvb'))$('app').insertAdjacentHTML('afterbegin',movedBox('mvb',true));
   dc=$('dtc');if(keep&&dc&&dc.dataset.id===cur)Object.keys(keep).forEach(function(k){var e=$(k);if(e&&e!==document.activeElement)e.value=keep[k]});
+  restoreF(fkeep);
   $('lng').textContent=lang=='es'?'English':'Español';document.documentElement.lang=lang;
   tr(document.body);
   setNet();if(SB)geoSync();
@@ -780,6 +782,27 @@ var revisit=null;
 var missFor=null,missRev=false,keepV=null;
 var KEEPRE=/^(dt_|nt$|ac_(c|ca|co|m|iv)_)/,skipKeep=false;
 function grabVals(){var k={};document.querySelectorAll('#app input,#app textarea,#app select').forEach(function(e){if(e.id&&KEEPRE.test(e.id)&&e.type!='file'&&e.type!='checkbox')k[e.id]=e.value});return k}
+// Keep everything typed/auto-filled on the Create SO form (incl. the collapsible Truck box)
+// alive across any background re-render (live data sync, location pings, etc.).
+function grabF(){
+  if(!$('f_cu'))return null;
+  var k={_nu:!!($('f_nu')&&$('f_nu').style.display!=='none')};
+  document.querySelectorAll('#app [id^="f_"]').forEach(function(e){
+    if(e.type=='file'||e.type=='button'||e.tagName=='BUTTON')return;
+    if(e.type=='checkbox'){k[e.id]={c:e.checked};return}
+    if(typeof e.value=='string')k[e.id]=e.value;
+  });
+  return k;
+}
+function restoreF(k){
+  if(!k||!$('f_cu'))return;
+  if(k._nu&&$('f_nu'))$('f_nu').style.display='block';
+  Object.keys(k).forEach(function(id){
+    if(id=='_nu')return;var e=$(id);if(!e||e===document.activeElement)return;
+    if(k[id]&&typeof k[id]=='object')e.checked=!!k[id].c;
+    else if(k[id]!=='')e.value=k[id];
+  });
+}
 document.addEventListener('change',function(e){
   if(!missFor||!e.target||!KEEPRE.test(e.target.id||'')||missFor!==cur)return;
   var w=$('mbw'),o=byId(cur);if(!w||!o)return;
@@ -1061,6 +1084,9 @@ function showTrucks(name){
   soFor(name).sort(function(a,b){return (b.created||0)-(a.created||0)}).forEach(function(o){var k=lc(o.vin||o.unit||o.plate);if(!k||seen[k])return;seen[k]=1;trks.push(o)});
   var s=$('f_usel');
   if(s){s.innerHTML='<option value="">'+(trks.length?'Choose unit':'No units yet for this customer')+'</option>'+trks.map(function(o,i){return '<option value="'+i+'">'+esc([o.unit||o.vin,o.plate?'Plate '+o.plate:'',o.vin&&o.unit?'VIN …'+o.vin.slice(-6):''].filter(Boolean).join(' · '))+'</option>'}).join('')+'<option value="new">➕ New unit</option>';tr(s);
+    // Don't clobber a unit the user has already picked, looked up or typed.
+    var filled=(($('f_un')&&$('f_un').value.trim())||($('f_vi')&&$('f_vi').value.trim())||($('f_pl')&&$('f_pl').value.trim()));
+    if(filled){s.value='new';if($('f_nu'))$('f_nu').style.display='block';return}
     unitPick(trks.length==1?'0':trks.length?'':'new');return}
   w.innerHTML='';
 }
