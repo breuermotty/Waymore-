@@ -216,3 +216,19 @@ do $$ begin
   alter publication supabase_realtime add table public.docs;
 exception when duplicate_object then null;
 end $$;
+
+-- =========================================================
+-- 6. iPhone push notifications: each phone saves its own subscription here.
+--    The "notify" Edge Function reads the owner's/admins' subscriptions
+--    (with the service role) and sends the push.
+-- =========================================================
+create table if not exists public.push_subs (
+  endpoint   text primary key,
+  user_id    uuid references auth.users(id) on delete cascade,
+  sub        jsonb not null,
+  created_at timestamptz not null default now()
+);
+alter table public.push_subs enable row level security;
+drop policy if exists "own push subs" on public.push_subs;
+create policy "own push subs" on public.push_subs for all to authenticated
+  using (user_id = auth.uid()) with check (user_id = auth.uid());

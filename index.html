@@ -238,7 +238,7 @@ async function doLogin(){blurA();var e=lv('lg_e'),p=$('lg_p').value;if(!e||!p){l
   var r=await sbc.auth.signInWithPassword({email:e,password:p});if(r.error){lgo('in',/confirm/i.test(r.error.message)?'Confirm your email first: open the link Supabase sent you.':'Wrong email or password.');return}afterLogin(r.data.user)}
 async function doSignup(){blurA();var n=lv('lg_n'),e=lv('lg_e'),p=$('lg_p').value;if(!n||!e||p.length<6){lgo('up','Fill in your name, email and a password of at least 6 characters.');return}
   var r=await sbc.auth.signUp({email:e,password:p,options:{data:{name:n},emailRedirectTo:location.origin+location.pathname}});
-  if(r.error){lgo('up',r.error.message);return}if(r.data.session){afterLogin(r.data.user);return}lgo('in','✓ Account created. Check your email, tap the confirm link, then sign in.')}
+  if(r.error){lgo('up',r.error.message);return}pushNotify('signup',n+' ('+e+') signed up and is waiting for approval');if(r.data.session){afterLogin(r.data.user);return}lgo('in','✓ Account created. Check your email, tap the confirm link, then sign in.')}
 async function doForgot(){blurA();var e=lv('lg_e');if(!e){lgo('forgot','Enter your email.');return}
   var r=await sbc.auth.resetPasswordForEmail(e,{redirectTo:location.origin+location.pathname});lgo('in',r.error?r.error.message:'✓ Check your email for the reset link.')}
 async function doReset(){blurA();var p=$('lg_p').value;if(p.length<6){lgo('reset','Use at least 6 characters.');return}
@@ -285,12 +285,44 @@ async function saveWorker(i){
   if(x.error){toast(x.error.message,true);return}toast('✓ Saved');loadWorkers();
 }
 
+// ---- iPhone push notifications (website only; owner/admin gets the pings) ----
+var VAPID_PUBLIC='BPs9jsIQZX1-RQRlXlB9Cw8glsGp1uuqVhBbZX5OCvxQnf5PRh8C0oNjpIc9kI8gEivLuD1gnO0R4jUeUBUWCeY';
+function pushSupported(){return !!(SB&&'serviceWorker' in navigator&&'PushManager' in window&&typeof Notification!=='undefined')}
+function b64ToU8(s){s=s.replace(/-/g,'+').replace(/_/g,'/');s+='='.repeat((4-s.length%4)%4);var r=atob(s),a=new Uint8Array(r.length);for(var i=0;i<r.length;i++)a[i]=r.charCodeAt(i);return a}
+function notifyBox(){
+  if(!SB||ROLE!=='admin')return '';
+  var on=(typeof Notification!=='undefined'&&Notification.permission==='granted');
+  return '<div class="card"><b>🔔 iPhone notifications</b><p class="mu" style="margin:4px 0 8px">Get a push on this phone when a new service order comes in, a job is ready to invoice, a new worker signs up, or a repair needs authorization.</p>'+
+    (pushSupported()?'<button class="btn" onclick="pushEnable()">'+(on?'🔔 On · tap to re-check this phone':'Turn on notifications')+'</button>'+
+      '<p class="mu" style="margin-top:8px">On iPhone: first add this website to your Home Screen (Share → Add to Home Screen), open it from the Home Screen, then tap the button.</p>'
+      :'<p class="mu">To get push on iPhone, add this website to your Home Screen and open it from there, then come back here.</p>')+
+    '<div id="pushst" class="mu" style="margin-top:6px"></div></div>';
+}
+async function pushEnable(){
+  var e=$('pushst');function msg(m){if(e){e.textContent=m;tr(e)}}
+  if(!pushSupported()){msg('Not available here. Add the site to your Home Screen and open it from there.');return}
+  try{
+    await navigator.serviceWorker.register('sw.js');
+    var reg=await navigator.serviceWorker.ready;
+    var perm=await Notification.requestPermission();
+    if(perm!=='granted'){msg('Notifications are turned off. Allow them for this app in your phone Settings.');return}
+    var sub=await reg.pushManager.getSubscription();
+    if(!sub)sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:b64ToU8(VAPID_PUBLIC)});
+    var j=sub.toJSON(),x=await sbc.from('push_subs').upsert({endpoint:j.endpoint,user_id:ME.id,sub:j});
+    if(x.error){msg('Could not register this phone: '+x.error.message);return}
+    toast('✓ This phone will get notifications.');render();
+  }catch(err){msg('Could not turn on notifications: '+((err&&err.message)||err));}
+}
+function pushNotify(type,text){
+  try{if(SB&&sbc&&sbc.functions)sbc.functions.invoke('notify',{body:{type:type,text:String(text||'')}}).catch(function(){});}catch(e){}
+}
+
 // shared data (live when db is available, otherwise this device only)
 function all(){return db?orders:(lg(LS)||[])}
 function saveOrder(o){
   if(o&&o.id===cur&&typeof readDetails=='function')readDetails(o);
   sbPush('serviceOrders',o.id,o);
-  if(db){return db.collection('serviceOrders').doc(o.id).set(JSON.parse(JSON.stringify(o))).catch(function(e){toast('Could not save. Check your signal and try again.',true)})}
+  if(db){return db.collection('serviceOrders').doc(o.id).set(JSON.parse(JSON.stringify(o))).catch(function(e){toast('Could not save. Check your signal and try again.',true);if(SB&&navigator.onLine)pushNotify('error','A phone could not save SO '+sonum(o)+' · '+(o.customer||''))})}
   var a=lg(LS)||[],i=a.findIndex(function(x){return x.id===o.id});
   if(i<0)a.unshift(o);else a[i]=o;sv(LS,a);render();return Promise.resolve();
 }
@@ -307,6 +339,7 @@ function btag(o){return o.billed?' <span class="tag billed">BILLED</span>':(o.st
 async function init(){
   setNet();
   if(SB){db=SBDB;assets=SBASSETS;dict=webDict();uid=ME.id;
+    if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(function(){});
     db.collection('serviceOrders').orderBy('created','desc').limit(5000).onSnapshot(function(s){orders=s.docs.map(function(d){var x=d.data();x.id=d.id;return x});render()});
     if(!isMech())db.collection('locations').onSnapshot(function(s){GMAP.list=s.docs.map(function(d){var x=d.data();x.uid=x.uid||d.id;return x});render()});
   }else{
@@ -432,7 +465,7 @@ function settingsView(){
     '<label>Your name (for the time clock and job timers)</label><input id="s_nm" value="'+esc(nm)+'">'+
     '<label>Screen</label><select id="s_th"><option value="auto"'+(th=='auto'?' selected':'')+'>Automatic</option><option value="light"'+(th=='light'?' selected':'')+'>Light</option><option value="dark"'+(th=='dark'?' selected':'')+'>Dark</option></select>'+
     '<button class="btn" onclick="savePhone()">Save phone settings</button></div>'+
-   accountBox()+(isMech()?'':
+   accountBox()+notifyBox()+(isMech()?'':
    '<div class="card"><b>🏢 Shop (shared with everyone)</b><br>'+
     '<label>Shop name</label><input id="s_shop" value="'+esc(cfg.shop||'')+'" placeholder="Waymore Jobs">'+
     '<div class="row"><span><label>Default labor rate ($/h)</label><input id="s_rate" inputmode="decimal" value="'+(cfg.rate||'')+'"></span><span><label>Photos required to finish</label><input id="s_ph" inputmode="numeric" value="'+NP()+'"></span></div>'+
@@ -470,7 +503,8 @@ var ES={
 'OPEN':'ABIERTA','WORKING':'EN TRABAJO','DONE':'TERMINADA','BILLED':'FACTURADA','READY TO BILL':'LISTA PARA FACTURAR',
 'Add':'Agregar','Add customer':'Agregar cliente','Add part':'Agregar pieza','Address':'Dirección','All open jobs':'Todos los trabajos abiertos',
 'All parts billed.':'Todas las partes facturadas.','Billing':'Facturación','CLOCKED IN':'ENTRADA MARCADA','Cancel':'Cancelar','Checklist':'Lista de tareas',
-'Clock in':'Marcar entrada','Clock out':'Marcar salida','Delete customer':'Eliminar cliente','Delete this customer? Their SOs stay.':'¿Eliminar este cliente? Sus SO se quedan.',
+'Clock in':'Marcar entrada','Clock out':'Marcar salida',
+'🔔 iPhone notifications':'🔔 Notificaciones al iPhone','Turn on notifications':'Activar notificaciones','🔔 On · tap to re-check this phone':'🔔 Activas · toca para volver a verificar','Get a push on this phone when a new service order comes in, a job is ready to invoice, a new worker signs up, or a repair needs authorization.':'Recibe un aviso en este teléfono cuando entra una orden nueva, un trabajo está listo para facturar, un trabajador nuevo se registra o una reparación necesita autorización.','On iPhone: first add this website to your Home Screen (Share → Add to Home Screen), open it from the Home Screen, then tap the button.':'En iPhone: primero agrega esta página a la pantalla de inicio (Compartir → Agregar a inicio), ábrela desde ahí y luego toca el botón.','To get push on iPhone, add this website to your Home Screen and open it from there, then come back here.':'Para recibir avisos en iPhone, agrega esta página a la pantalla de inicio y ábrela desde ahí, luego vuelve aquí.','✓ This phone will get notifications.':'✓ Este teléfono recibirá notificaciones.','Delete customer':'Eliminar cliente','Delete this customer? Their SOs stay.':'¿Eliminar este cliente? Sus SO se quedan.',
 'Delete this part from the list?':'¿Eliminar esta pieza de la lista?','Delete part':'Eliminar pieza','Description':'Descripción','Edit':'Editar','Edit part':'Editar pieza',
 'Email':'Correo','Every open ticket is scheduled.':'Todas las órdenes abiertas están programadas.','Gallery':'Galería','Hours this week':'Horas esta semana',
 'Hours to bill together':'Horas a facturar juntas','Location (shelf / bin)':'Ubicación (estante / caja)','Mark done':'Marcar terminada',
@@ -724,7 +758,7 @@ function createSO(){blurA();
     schedDate:$('f_sd').value||'',schedTime:$('f_st').value||'',estH:parseFloat($('f_eh').value)||0,po:$('f_po').value.trim(),preAuth:$('f_pa').checked,preAmt:parseFloat($('f_pam').value)||0,deskNotes:$('f_nt').value.trim(),
     vin:$('f_vi').value.trim().toUpperCase(),plate:$('f_pl').value.trim().toUpperCase(),plateState:$('f_ps').value.trim().toUpperCase(),vehicle:(VINMORE[$('f_vi').value.trim().toUpperCase()]||''),items:[],
     actions:nItems.map(function(x){var a=newAct(x.t,me);if(x.skip){a.st='repair';a.noDiag=true}return a}),rate:+cfg.rate||+lg('wm_rate')||0,notes:'',status:'open',photos:[],created:Date.now()};
-  nItems=[];toast('✓ SO '+so+' created');
+  nItems=[];toast('✓ SO '+so+' created');pushNotify('so','SO '+so+' · '+(o.customer||'')+(o.unit?' · '+o.unit:''));
   if(o.customer&&!docs('customers').some(function(c){return lc(c.name)===lc(o.customer)}))saveDoc('customers',{id:'c'+Date.now().toString(36),name:o.customer,created:Date.now()});
   preCu='';dtab='open';tf='open';
   saveOrder(o).then(render);
@@ -1555,7 +1589,7 @@ function delAct(id,i){if(delA!==id+':'+i){delA=id+':'+i;render();return}delA=nul
 function advAct(id,i,back){
   blurA();var o=readDetails(byId(id));if(!o||!o.actions[i])return;var a=o.actions[i];aMiss=null;
   if(back){if(a.st=='repair'&&a.noDiag){a.st='diag';delete a.noDiag}else a.st={auth:'diag',repair:autoAuth(o)?'diag':'auth',done:'repair'}[a.st]||'diag'}
-  else if(a.st=='diag'){if(!lc(a.cause)){aMiss=id+':'+i+':cause';render();var e=$('ac_ca_'+i);if(e){e.scrollIntoView({block:'center'})}return}if(autoAuth(o)){a.st='repair';if(cfg.auth!==false){a.authAt=Date.now();a.authBy='pre'}}else a.st='auth';a.diagBy=nm||'';a.diagAt=Date.now()}
+  else if(a.st=='diag'){if(!lc(a.cause)){aMiss=id+':'+i+':cause';render();var e=$('ac_ca_'+i);if(e){e.scrollIntoView({block:'center'})}return}if(autoAuth(o)){a.st='repair';if(cfg.auth!==false){a.authAt=Date.now();a.authBy='pre'}}else{a.st='auth';pushNotify('auth','SO '+sonum(o)+' · '+(o.customer||'')+' needs authorization'+(a.c?' · '+a.c:''))}a.diagBy=nm||'';a.diagAt=Date.now()}
   else if(a.st=='auth'){a.st='repair';a.authAt=Date.now()}
   else if(a.st=='repair'){if(!lc(a.corr)){aMiss=id+':'+i+':corr';render();var e2=$('ac_co_'+i);if(e2){e2.scrollIntoView({block:'center'})}return}a.st='done';a.doneAt=Date.now();
     if(runAct(o)===a.id){var l=o.sessions[o.sessions.length-1];l.end=Date.now();var nx=firstOpen(o);if(nx&&tab==2&&nm)o.sessions.push({who:nm,start:Date.now(),a:nx})}
@@ -1889,7 +1923,7 @@ function timer(id,act,aid){
     var s={who:nm,start:Date.now()};if(want)s.a=want;o.sessions.push(s);o.status='working';if(!o.mechanic)o.mechanic=nm;
     var A=acts(o).find(function(x){return x.id===want});if(A&&!A.mech)A.mech=nm;
   }
-  else{if(l&&!l.end)l.end=Date.now();if(act=='done')o.status='done'}
+  else{if(l&&!l.end)l.end=Date.now();if(act=='done'){o.status='done';pushNotify('done','SO '+sonum(o)+' · '+(o.customer||'')+' is ready to invoice')}}
   if(act=='done')missFor=null;
   saveOrder(o).then(function(){if(act=='done')cur=null;render()});
 }
