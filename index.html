@@ -537,7 +537,7 @@ var ES={
 'All parts billed.':'Todas las partes facturadas.','Billing':'Facturación','CLOCKED IN':'ENTRADA MARCADA','Cancel':'Cancelar','Checklist':'Lista de tareas',
 'Clock in':'Marcar entrada','Clock out':'Marcar salida',
 '🔔 iPhone notifications':'🔔 Notificaciones al iPhone','Turn on notifications':'Activar notificaciones','🔔 On · tap to re-check this phone':'🔔 Activas · toca para volver a verificar','Get a push on this phone when a new service order comes in, a job is ready to invoice, a new worker signs up, or a repair needs authorization.':'Recibe un aviso en este teléfono cuando entra una orden nueva, un trabajo está listo para facturar, un trabajador nuevo se registra o una reparación necesita autorización.','On iPhone: first add this website to your Home Screen (Share → Add to Home Screen), open it from the Home Screen, then tap the button.':'En iPhone: primero agrega esta página a la pantalla de inicio (Compartir → Agregar a inicio), ábrela desde ahí y luego toca el botón.','To get push on iPhone, add this website to your Home Screen and open it from there, then come back here.':'Para recibir avisos en iPhone, agrega esta página a la pantalla de inicio y ábrela desde ahí, luego vuelve aquí.','✓ This phone will get notifications.':'✓ Este teléfono recibirá notificaciones.',
-'Customer email (for invoices)':'Correo del cliente (para facturas)','🧾 Invoice':'🧾 Factura','🖨 Print / Save PDF':'🖨 Imprimir / Guardar PDF','✉️ Email customer':'✉️ Enviar al cliente','← Close':'← Cerrar','Add the customer email on the ticket first, then try again.':'Agrega el correo del cliente en la orden primero e intenta otra vez.','Could not send the email. Check your signal.':'No se pudo enviar el correo. Revisa la señal.','🧾 Invoice':'🧾 Factura','Shown on printed invoices.':'Aparece en las facturas impresas.','Shop address':'Dirección del taller','Remit payment to':'Enviar el pago a','Tax rate (%)':'Impuesto (%)','Tax label':'Etiqueta del impuesto','Terms':'Términos','First invoice #':'Primer # de factura','Email':'Correo','Phone':'Teléfono','Parts markup (%)':'Margen en piezas (%)','Always CC these emails on invoices (one per line)':'Siempre poner en copia (CC) estos correos (uno por línea)','Added to part prices on invoices (a per-invoice checkbox can turn it off).':'Se suma al precio de las piezas en las facturas (una casilla por factura puede quitarlo).','Parts cost':'Costo de piezas','Parts billed':'Piezas facturadas','Delete customer':'Eliminar cliente','Delete this customer? Their SOs stay.':'¿Eliminar este cliente? Sus SO se quedan.',
+'Customer email (for invoices)':'Correo del cliente (para facturas)','🧾 Invoice':'🧾 Factura','🖨 Print / Save PDF':'🖨 Imprimir / Guardar PDF','✉️ Email customer':'✉️ Enviar al cliente','← Close':'← Cerrar','Add the customer email on the ticket first, then try again.':'Agrega el correo del cliente en la orden primero e intenta otra vez.','Could not send the email. Check your signal.':'No se pudo enviar el correo. Revisa la señal.','🧾 Invoice':'🧾 Factura','Shown on printed invoices.':'Aparece en las facturas impresas.','Shop address':'Dirección del taller','Remit payment to':'Enviar el pago a','Tax rate (%)':'Impuesto (%)','Tax label':'Etiqueta del impuesto','Terms':'Términos','First invoice #':'Primer # de factura','Email':'Correo','Phone':'Teléfono','Parts markup (%)':'Margen en piezas (%)','Always CC these emails on invoices (one per line)':'Siempre poner en copia (CC) estos correos (uno por línea)','Added to part prices on invoices (a per-invoice checkbox can turn it off).':'Se suma al precio de las piezas en las facturas (una casilla por factura puede quitarlo).','Parts cost':'Costo de piezas','Parts billed':'Piezas facturadas','Invoices':'Facturas','Search invoice #, customer, SO':'Buscar # de factura, cliente, SO','UNPAID':'SIN PAGAR','PAID':'PAGADO','DRAFT':'BORRADOR','✉️ sent':'✉️ enviada','No invoices yet. Mark an order billed, or open a done order and tap 🧾 Invoice.':'Aún no hay facturas. Marca una orden como facturada, o abre una orden terminada y toca 🧾 Factura.','Delete customer':'Eliminar cliente','Delete this customer? Their SOs stay.':'¿Eliminar este cliente? Sus SO se quedan.',
 'Delete this part from the list?':'¿Eliminar esta pieza de la lista?','Delete part':'Eliminar pieza','Description':'Descripción','Edit':'Editar','Edit part':'Editar pieza',
 'Email':'Correo','Every open ticket is scheduled.':'Todas las órdenes abiertas están programadas.','Gallery':'Galería','Hours this week':'Horas esta semana',
 'Hours to bill together':'Horas a facturar juntas','Location (shelf / bin)':'Ubicación (estante / caja)','Mark done':'Marcar terminada',
@@ -733,7 +733,7 @@ function render0(){
   a.innerHTML='<div class="ptitle"><span>🛠</span>Tech Home</div>'+listView();
 }
 function deskView(){
-  return pendingBanner()+subNav()+(dtab=='new'?newView():dtab=='sched'?schedView():dtab=='hrs'?hoursView():dtab=='open'?ticketsView():dtab=='cust'?custView():dtab=='office'?officeView():dtab=='rep'?reportsView():dtab=='po'?poView():dtab=='map'?mapView():dtab=='vendors'?vendorsView():partsView());
+  return pendingBanner()+subNav()+(dtab=='new'?newView():dtab=='sched'?schedView():dtab=='hrs'?hoursView():dtab=='open'?ticketsView():dtab=='cust'?custView():dtab=='office'?officeView():dtab=='inv'?invoicesView():dtab=='rep'?reportsView():dtab=='po'?poView():dtab=='map'?mapView():dtab=='vendors'?vendorsView():partsView());
 }
 var nItems=[];
 function nowLocal(){var d=new Date();d.setMinutes(d.getMinutes()-d.getTimezoneOffset());return d.toISOString().slice(0,16)}
@@ -1006,7 +1006,23 @@ function subNav(){
   return m?'<div class="ptitle"><span>'+m[2]+'</span>'+m[1]+'</div>':'';
 }
 // ---- slide-out side menu (replaces the tabs) ----
-var MENU=[['tech','Tech Home','🛠'],['new','Create SO','➕'],['open','Service','📋'],['map','Live map','📍'],['sched','Schedule','📅'],['parts','Parts','🔧'],['po','Purchase orders','📦'],['vendors','Vendors','🏭'],['office','Office','🧾'],['rep','Reporting','📈'],['cust','Customers','👤'],['hrs','Workers hours','⏱']];
+var MENU=[['tech','Tech Home','🛠'],['new','Create SO','➕'],['open','Service','📋'],['map','Live map','📍'],['sched','Schedule','📅'],['parts','Parts','🔧'],['po','Purchase orders','📦'],['vendors','Vendors','🏭'],['office','Office','🧾'],['inv','Invoices','🧾'],['rep','Reporting','📈'],['cust','Customers','👤'],['hrs','Workers hours','⏱']];
+var invQ='';
+function invoicesView(){
+  return '<div class="drs" style="margin-top:8px"><input id="inv_q" type="search" autocomplete="off" placeholder="Search invoice #, customer, SO" value="'+esc(invQ)+'" oninput="invQ=this.value;$(\'invlist\').innerHTML=invListRows()"></div><div id="invlist">'+invListRows()+'</div>';
+}
+function invListRows(){
+  var seen={},q=lc(invQ);
+  var L=all().filter(function(o){return o.invNo||o.billed}).filter(function(o){
+    if(o.billedWith&&o.billedWith.length>1){var g=grp(o);if(seen[g])return false;seen[g]=1}
+    return true;
+  }).filter(function(o){return !q||lc([o.invNo,o.customer,sonum(o),o.unit].join(' ')).indexOf(q)>=0})
+   .sort(function(a,b){return (b.invDate||b.billedAt||b.created||0)-(a.invDate||a.billedAt||a.created||0)});
+  if(!L.length)return '<div class="mu" style="margin-top:10px">No invoices yet. Mark an order billed, or open a done order and tap 🧾 Invoice.</div>';
+  return L.map(function(o){var T=invTotal(o),st=o.paid?'<span class="pill paid">PAID</span>':(o.billed?'<span class="pill wpay">UNPAID</span>':'<span class="pill open">DRAFT</span>');
+    return '<div class="card so" onclick="openInvoice(\''+o.id+'\')"><div class="row" style="align-items:center"><span style="flex:1"><b>'+esc(o.invNo||'(draft)')+'</b> · '+esc(o.customer||'')+'<br><span class="mu">'+new Date(o.invDate||o.billedAt||o.created).toLocaleDateString(LOC())+' · SO '+esc(sonum(o))+' · '+money(T.total)+'</span></span><span style="flex:0 0 auto;text-align:right">'+st+(o.invEmailed?'<div class="mu" style="margin-top:4px">✉️ sent</div>':'')+'</span></div></div>';
+  }).join('');
+}
 function menuBadges(k){
   var a=all(),B=[];
   if(k=='tech'){var n=a.filter(function(o){return o.status!='done'&&(!nm||!o.mechanic||lc(o.mechanic)===lc(nm))}).length;if(n)B.push([n,''])}
