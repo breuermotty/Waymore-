@@ -11,6 +11,7 @@ mechanic timers, photos, parts, scheduling, billing, office and reports. English
 | `app/waymore-jobs.html` | The app source. Inside Claude it runs as an artifact with Claude's database; on the website it runs on Supabase. |
 | `supabase/setup.sql` | One-time Supabase setup: worker logins and roles, shop data, history backup, photo storage, live updates, push subscriptions. |
 | `supabase/functions/notify/` | Optional Edge Function that sends iPhone push notifications to the owner. See below. |
+| `supabase/functions/send-invoice/` | Optional Edge Function that emails the invoice to the customer (via Resend). See below. |
 | `sw.js` | Service worker that shows push notifications on the phone. |
 | `manifest.json`, `icon-*.png` | Lets phones add the website to the home screen like an app. |
 
@@ -51,6 +52,20 @@ To enable it:
    public key is already embedded in the app.
 
 The step-by-step with the exact key value is in the private Setup Guide. Without this, everything else works unchanged.
+
+## Optional: email invoices to customers
+
+Each service order can hold a **customer email**. When an order is marked **billed**, the app emails the invoice to
+that customer automatically (and the invoice view has an **✉️ Email customer** button). Free via **Resend**.
+
+To enable it:
+1. Create a free Resend account and an API key.
+2. Verify your sending domain (e.g. `waymoreauto.com`) in Resend by adding its DNS records, so invoices send from
+   your shop and reach inboxes. (For testing you can use `onboarding@resend.dev`, which only emails your own account.)
+3. Deploy `supabase/functions/send-invoice/index.ts` as a function named `send-invoice`.
+4. Set secrets: `RESEND_API_KEY` and `INVOICE_FROM` (e.g. `Waymore Truck Repairs <invoices@waymoreauto.com>`).
+
+The step-by-step is in the private Setup Guide. Without this, invoices still print/share as normal.
 
 ## Rebuild after changing the app
 

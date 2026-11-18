@@ -526,7 +526,8 @@ var ES={
 'Add':'Agregar','Add customer':'Agregar cliente','Add part':'Agregar pieza','Address':'Dirección','All open jobs':'Todos los trabajos abiertos',
 'All parts billed.':'Todas las partes facturadas.','Billing':'Facturación','CLOCKED IN':'ENTRADA MARCADA','Cancel':'Cancelar','Checklist':'Lista de tareas',
 'Clock in':'Marcar entrada','Clock out':'Marcar salida',
-'🔔 iPhone notifications':'🔔 Notificaciones al iPhone','Turn on notifications':'Activar notificaciones','🔔 On · tap to re-check this phone':'🔔 Activas · toca para volver a verificar','Get a push on this phone when a new service order comes in, a job is ready to invoice, a new worker signs up, or a repair needs authorization.':'Recibe un aviso en este teléfono cuando entra una orden nueva, un trabajo está listo para facturar, un trabajador nuevo se registra o una reparación necesita autorización.','On iPhone: first add this website to your Home Screen (Share → Add to Home Screen), open it from the Home Screen, then tap the button.':'En iPhone: primero agrega esta página a la pantalla de inicio (Compartir → Agregar a inicio), ábrela desde ahí y luego toca el botón.','To get push on iPhone, add this website to your Home Screen and open it from there, then come back here.':'Para recibir avisos en iPhone, agrega esta página a la pantalla de inicio y ábrela desde ahí, luego vuelve aquí.','✓ This phone will get notifications.':'✓ Este teléfono recibirá notificaciones.','Delete customer':'Eliminar cliente','Delete this customer? Their SOs stay.':'¿Eliminar este cliente? Sus SO se quedan.',
+'🔔 iPhone notifications':'🔔 Notificaciones al iPhone','Turn on notifications':'Activar notificaciones','🔔 On · tap to re-check this phone':'🔔 Activas · toca para volver a verificar','Get a push on this phone when a new service order comes in, a job is ready to invoice, a new worker signs up, or a repair needs authorization.':'Recibe un aviso en este teléfono cuando entra una orden nueva, un trabajo está listo para facturar, un trabajador nuevo se registra o una reparación necesita autorización.','On iPhone: first add this website to your Home Screen (Share → Add to Home Screen), open it from the Home Screen, then tap the button.':'En iPhone: primero agrega esta página a la pantalla de inicio (Compartir → Agregar a inicio), ábrela desde ahí y luego toca el botón.','To get push on iPhone, add this website to your Home Screen and open it from there, then come back here.':'Para recibir avisos en iPhone, agrega esta página a la pantalla de inicio y ábrela desde ahí, luego vuelve aquí.','✓ This phone will get notifications.':'✓ Este teléfono recibirá notificaciones.',
+'Customer email (for invoices)':'Correo del cliente (para facturas)','🧾 Invoice':'🧾 Factura','🖨 Print / Save PDF':'🖨 Imprimir / Guardar PDF','✉️ Email customer':'✉️ Enviar al cliente','← Close':'← Cerrar','Add the customer email on the ticket first, then try again.':'Agrega el correo del cliente en la orden primero e intenta otra vez.','Could not send the email. Check your signal.':'No se pudo enviar el correo. Revisa la señal.','🧾 Invoice':'🧾 Factura','Shown on printed invoices.':'Aparece en las facturas impresas.','Shop address':'Dirección del taller','Remit payment to':'Enviar el pago a','Tax rate (%)':'Impuesto (%)','Tax label':'Etiqueta del impuesto','Terms':'Términos','First invoice #':'Primer # de factura','Email':'Correo','Phone':'Teléfono','Delete customer':'Eliminar cliente','Delete this customer? Their SOs stay.':'¿Eliminar este cliente? Sus SO se quedan.',
 'Delete this part from the list?':'¿Eliminar esta pieza de la lista?','Delete part':'Eliminar pieza','Description':'Descripción','Edit':'Editar','Edit part':'Editar pieza',
 'Email':'Correo','Every open ticket is scheduled.':'Todas las órdenes abiertas están programadas.','Gallery':'Galería','Hours this week':'Horas esta semana',
 'Hours to bill together':'Horas a facturar juntas','Location (shelf / bin)':'Ubicación (estante / caja)','Mark done':'Marcar terminada',
@@ -631,7 +632,7 @@ var PAT=[
 [/^🏷 Price parts \((\d+)\)$/,'🏷 Poner precio ($1)'],[/^🛒 Order parts \((\d+)\)$/,'🛒 Pedir piezas ($1)'],[/^📦 Receive parts \((\d+)\)$/,'📦 Recibir piezas ($1)'],
 [/^Invoiced (\d+) days? ago$/,'Facturada hace $1 día(s)'],[/^Paid (.+)$/,'Pagada $1'],[/^All revenue · (\d+) orders$/,'Ingresos totales · $1 órdenes'],[/^Labor · (\d+) orders$/,'Mano de obra · $1 órdenes'],[/^Parts · (\d+) orders$/,'Piezas · $1 órdenes'],
 [/^(\d+) SOs? · (.+) h authorized$/,'$1 SO · $2 h autorizadas'],[/^(.+) days$/,'$1 días'],
-[/^Requested by: (.*)$/,'Pidió: $1'],[/^PO #: (.*)$/,'PO #: $1'],[/^Available: (.*)$/,'Disponible: $1'],[/^⚠️ Must access at: (.*)$/,'⚠️ Atender a las: $1'],[/^Wanted back: (.*)$/,'De regreso: $1'],
+[/^✓ Invoice emailed to (.+)$/,'✓ Factura enviada a $1'],[/^Email not sent: (.+)$/,'Correo no enviado: $1'],[/^Requested by: (.*)$/,'Pidió: $1'],[/^PO #: (.*)$/,'PO #: $1'],[/^Available: (.*)$/,'Disponible: $1'],[/^⚠️ Must access at: (.*)$/,'⚠️ Atender a las: $1'],[/^Wanted back: (.*)$/,'De regreso: $1'],
 [/^Pre-authorized up to (.*)$/,'Pre-autorizado hasta $1'],[/^Over by (.+)\. Get the customer's approval\.$/,'Excede por $1. Pide la aprobación del cliente.'],[/^Plate (.+?) · (.*)$/,function(m,a,b){return 'Placa '+a+' · '+b}],
 [/^✓ Found in your records: SO (.+)$/,'✓ Encontrado en tus registros: SO $1'],[/^Plate (.+) copied\. (.+)$/,function(m,a,b){return 'Placa '+a+' copiada. '+trS(b)}],[/^Plate (.+)$/,'Placa $1'],
 [/^✓ (.+?)( \(read by Claude, please double-check\))?( · VIN check digit does not match, double-check the VIN)?$/,function(m,a,b,c){return '✓ '+a+(b?' (leído por Claude, revísalo)':'')+(c?' · el dígito de control del VIN no coincide, revisa el VIN':'')}],
@@ -749,6 +750,7 @@ function newView(){
   '<label>SO number</label><input id="f_so" inputmode="numeric" placeholder="Automatic: '+nextSO()+'">'+
   '<label>Customer *</label><input id="f_cu" autocomplete="off" placeholder="Start typing a name or phone" value="'+esc(preCu)+'"><div id="f_trk"></div>'+
   '<label>Who is requesting service?</label><input id="f_rq" autocomplete="off" placeholder="Contact name or phone">'+
+  '<label>Customer email (for invoices)</label><input id="f_email" type="email" autocomplete="off" placeholder="name@company.com">'+
   H('🚚 Which unit needs service? *')+
    '<div class="row" style="align-items:center"><select id="f_usel" onchange="unitPick(this.value)"><option value="">Pick the customer first</option></select><button class="btn alt" style="flex:0 0 auto;width:auto;margin:4px 0 10px;padding:11px 12px" onclick="unitPick(\'new\')">➕ New unit</button></div>'+
    '<div id="f_usum" style="font-weight:600"></div><div id="f_nu" style="display:none">'+truckBox('f',{},'')+'</div>'+
@@ -776,13 +778,15 @@ function createSO(){blurA();
   if(all().some(function(x){return String(x.so)===so})){toast('SO '+so+' already exists. Use another number or leave it empty.',true);$('f_so').focus();return}
   if($('f_cc').value.trim())addNI(true);blurA();
   var me=$('f_me').value.trim();
-  var o={id:'so'+so.replace(/\W/g,'')+'_'+Date.now().toString(36),so:so,customer:$('f_cu').value.trim(),contact:$('f_rq').value.trim(),unit:$('f_un').value.trim(),
+  var o={id:'so'+so.replace(/\W/g,'')+'_'+Date.now().toString(36),so:so,customer:$('f_cu').value.trim(),contact:$('f_rq').value.trim(),email:($('f_email')?$('f_email').value.trim():''),unit:$('f_un').value.trim(),
     mechanic:me,desc:nItems.map(function(x){return x.t}).join(', '),mileage:$('f_mi').value.trim(),location:$('f_loc').value.trim(),availAt:$('f_av').value||'',mustAccess:$('f_must').checked,backBy:$('f_back').value.trim(),
     schedDate:$('f_sd').value||'',schedTime:$('f_st').value||'',estH:parseFloat($('f_eh').value)||0,po:$('f_po').value.trim(),preAuth:$('f_pa').checked,preAmt:parseFloat($('f_pam').value)||0,deskNotes:$('f_nt').value.trim(),
     vin:$('f_vi').value.trim().toUpperCase(),plate:$('f_pl').value.trim().toUpperCase(),plateState:$('f_ps').value.trim().toUpperCase(),vehicle:(VINMORE[$('f_vi').value.trim().toUpperCase()]||''),items:[],
     actions:nItems.map(function(x){var a=newAct(x.t,me);if(x.skip){a.st='repair';a.noDiag=true}return a}),rate:+cfg.rate||+lg('wm_rate')||0,notes:'',status:'open',photos:[],created:Date.now()};
   nItems=[];toast('✓ SO '+so+' created');pushNotify('so','SO '+so+' · '+(o.customer||'')+(o.unit?' · '+o.unit:''));
-  if(o.customer&&!docs('customers').some(function(c){return lc(c.name)===lc(o.customer)}))saveDoc('customers',{id:'c'+Date.now().toString(36),name:o.customer,created:Date.now()});
+  if(o.customer){var exC=docs('customers').find(function(c){return lc(c.name)===lc(o.customer)});
+    if(!exC)saveDoc('customers',{id:'c'+Date.now().toString(36),name:o.customer,email:o.email||'',created:Date.now()});
+    else if(o.email&&exC.email!==o.email){exC.email=o.email;saveDoc('customers',exC)}}
   preCu='';dtab='open';tf='open';
   saveOrder(o).then(render);
 }
@@ -808,7 +812,7 @@ function billBox(o){
 }
 function bill(id,v){
   var o=byId(id);if(!o)return;
-  if(v){o.billed=true;o.billedAt=Date.now();delete o.billedWith;saveOrder(o).then(render);return}
+  if(v){o.billed=true;o.billedAt=Date.now();delete o.billedWith;if(!o.invNo){o.invNo='INV-'+nextInv();o.invDate=Date.now()}saveOrder(o).then(function(){render();if(SB&&o.email)emailInvoice(o.id,true)});return}
   var g=o.billedWith?parts(o).filter(function(p){return p.billed&&p.billedAt===o.billedAt}):[o];
   g.reduce(function(pr,p){var c=p.id===o.id?o:p;delete c.billed;delete c.billedAt;delete c.billedWith;return pr.then(function(){return saveOrder(c)})},Promise.resolve()).then(render);
 }
@@ -894,7 +898,7 @@ function missBox(o){
   return '<div class="card" id="missbox" style="border:2px solid #e03131"><b style="color:#e03131">Can\'t finish yet. Please complete:</b>'+mm.map(function(x){var t=missTab(x);return '<div'+(t!=jt?' class="ml" onclick="setJt(\''+t+'\')"':'')+'>• '+esc(x)+'</div>'}).join('')+'</div>';
 }
 function applyVals(o,get){
-  [['dt_cu','customer'],['dt_un','unit'],['dt_mi','mileage'],['dt_de','desc'],['dt_vin','vin'],['dt_pl','plate'],['dt_ps','plateState'],['dt_rq','contact'],['dt_loc','location'],['dt_back','backBy'],['dt_po','po'],['dt_dn','deskNotes']].forEach(function(p){var x=get(p[0]);if(x!=null)o[p[1]]=/^(vin|plate|plateState)$/.test(p[1])?x.trim().toUpperCase():x.trim()});
+  [['dt_cu','customer'],['dt_un','unit'],['dt_mi','mileage'],['dt_de','desc'],['dt_vin','vin'],['dt_pl','plate'],['dt_ps','plateState'],['dt_rq','contact'],['dt_email','email'],['dt_loc','location'],['dt_back','backBy'],['dt_po','po'],['dt_dn','deskNotes']].forEach(function(p){var x=get(p[0]);if(x!=null)o[p[1]]=/^(vin|plate|plateState)$/.test(p[1])?x.trim().toUpperCase():x.trim()});
   if(o.vin&&VINMORE[o.vin])o.vehicle=VINMORE[o.vin];
   var pa=get('dt_pam');if(pa!=null)o.preAmt=parseFloat(pa)||0;
   var r=get('dt_rt');if(r!=null){o.rate=parseFloat(r)||0;if(o.rate)sv('wm_rate',o.rate)}
@@ -912,6 +916,7 @@ function detailsCard(o){
     truckBox('dt',o,cl(o.unit))+
     '<label>Complaint / description</label><textarea id="dt_de" rows="2"'+cl(o.desc)+'>'+esc(o.desc)+'</textarea>'+
     '<label>Who is requesting service?</label><input id="dt_rq" value="'+esc(o.contact)+'">'+
+    '<label>Customer email (for invoices)</label><input id="dt_email" type="email" value="'+esc(o.email||'')+'">'+
     '<div class="row"><span><label>Unit location</label><input id="dt_loc" value="'+esc(o.location)+'"></span><span><label>Wanted back</label><input id="dt_back" value="'+esc(o.backBy)+'"></span></div>'+
     '<div class="row"><span><label>Customer PO #</label><input id="dt_po" value="'+esc(o.po)+'"></span>'+(SP()?'<span><label>Pre-authorized ($)</label><input id="dt_pam" inputmode="decimal" value="'+(o.preAmt||'')+'"></span>':'')+'</div>'+
     '<label>Notes from the desk</label><textarea id="dt_dn" rows="2">'+esc(o.deskNotes)+'</textarea>'+
@@ -1147,6 +1152,8 @@ function acUpd(inp){
 function showTrucks(name){
   var w=$('f_trk');if(!w)return;var seen={};trks=[];
   soFor(name).sort(function(a,b){return (b.created||0)-(a.created||0)}).forEach(function(o){var k=lc(o.vin||o.unit||o.plate);if(!k||seen[k])return;seen[k]=1;trks.push(o)});
+  // prefill the customer's saved email for invoices
+  if($('f_email')&&!$('f_email').value){var ce=(docs('customers').find(function(c){return lc(c.name)===lc(name)})||{}).email||(soFor(name).map(function(o){return o.email}).filter(Boolean)[0]);if(ce)$('f_email').value=ce}
   var s=$('f_usel');
   if(s){s.innerHTML='<option value="">'+(trks.length?'Choose unit':'No units yet for this customer')+'</option>'+trks.map(function(o,i){return '<option value="'+i+'">'+esc([o.unit||o.vin,o.plate?'Plate '+o.plate:'',o.vin&&o.unit?'VIN …'+o.vin.slice(-6):''].filter(Boolean).join(' · '))+'</option>'}).join('')+'<option value="new">➕ New unit</option>';tr(s);
     // Don't clobber a unit the user has already picked, looked up or typed.
@@ -1698,7 +1705,7 @@ function invoiceHTML(o){
   var h='<div class="inv">';
   h+='<div class="hd"><div><div class="wm">WAYMORE <span>TRUCK REPAIRS</span></div><div style="margin-top:6px;font-weight:700">'+esc(invName())+'</div><div class="mu" style="font-size:12px">'+nl2br(iv('shopAddr'))+'<br>'+esc(iv('shopEmail'))+'<br>'+esc(iv('shopPhone'))+'</div></div>'+
     '<div class="ino"><div class="lbl">Invoice</div><b>'+esc(o.invNo||'(draft)')+'</b><div class="lbl" style="margin-top:8px">Date</div><div>'+dd+'</div></div></div>';
-  h+='<div class="two"><div><div class="lbl">Bill To</div><div style="font-weight:700">'+esc(o.customer||'')+'</div>'+(o.contact?'<div class="mu">'+esc(o.contact)+'</div>':'')+'</div>'+
+  h+='<div class="two"><div><div class="lbl">Bill To</div><div style="font-weight:700">'+esc(o.customer||'')+'</div>'+(o.contact?'<div class="mu">'+esc(o.contact)+'</div>':'')+(o.email?'<div class="mu">'+esc(o.email)+'</div>':'')+'</div>'+
     '<div><div class="lbl">Remit Payment To</div><div class="mu">'+nl2br(iv('remit'))+'</div></div></div>';
   h+='<table class="meta"><tr><th>Service Order</th><th>Terms</th><th>Due Date</th><th>Customer PO</th><th>Unit</th></tr>'+
     '<tr><td>'+esc(sos)+'</td><td>'+esc(iv('terms'))+'</td><td>'+dd+'</td><td>'+esc(o.po||'')+'</td><td>'+esc(o.unit||'')+'</td></tr></table>';
@@ -1725,7 +1732,40 @@ function invMount(){var w=document.getElementById('invwrap');
   var o=byId(invOpen);if(!o){if(w)w.remove();document.body.classList.remove('inv-open');invOpen=null;return}
   if(!w){w=document.createElement('div');w.id='invwrap';document.body.appendChild(w)}
   document.body.classList.add('inv-open');
-  w.innerHTML='<div class="invbar noprint"><button class="btn alt" onclick="closeInvoice()">← Close</button><button class="btn alt" onclick="window.print()">🖨 Print / Save PDF</button><button class="btn alt" onclick="shareInvoice()">Share</button></div>'+invoiceHTML(o);
+  w.innerHTML='<div class="invbar noprint"><button class="btn alt" onclick="closeInvoice()">← Close</button><button class="btn alt" onclick="window.print()">🖨 Print / Save PDF</button>'+(SB?'<button class="btn" onclick="emailInvoice(invOpen,false)">✉️ Email customer</button>':'<button class="btn alt" onclick="shareInvoice()">Share</button>')+'</div>'+invoiceHTML(o);
+}
+// email-safe invoice (inline styles so Gmail/Apple Mail render it)
+function invoiceEmailHTML(o){
+  var G=invGroup(o),T=invTotal(o),dd=new Date(o.invDate||o.billedAt||Date.now()).toLocaleDateString(LOC());
+  var cell='padding:7px 8px;border-bottom:1px solid #eee;font-size:13px;color:#111';
+  var rth='padding:6px 8px;border-bottom:2px solid #111;font-size:10px;text-transform:uppercase;color:#888;text-align:left';
+  function line(item,desc,qty,rate,amt){return '<tr><td style="'+cell+'">'+esc(item)+'</td><td style="'+cell+'">'+desc+'</td><td style="'+cell+';text-align:right">'+qty+'</td><td style="'+cell+';text-align:right">'+money(rate)+'</td><td style="'+cell+';text-align:right">'+money(amt)+'</td></tr>'}
+  var rows='';
+  G.forEach(function(x){var rate=+x.rate||0;
+    acts(x).forEach(function(a){var hrs=+a.inv||0;if(hrs||hrs*rate)rows+=line('Labor',esc(a.c||x.desc||'Service')+(a.corr?' — '+esc(a.corr):''),hrs.toFixed(2),rate,hrs*rate);
+      (a.parts||[]).forEach(function(p){rows+=line('Part',esc((p.no?p.no+' — ':'')+(p.d||'')),p.q,p.pr||0,p.q*(p.pr||0))})});
+    (x.partsUsed||[]).forEach(function(p){rows+=line('Part',esc((p.no?p.no+' — ':'')+(p.d||'')),p.q,p.pr||0,p.q*(p.pr||0))})});
+  function tr2(l,v,b){var s='padding:3px 0;font-size:13px'+(b?';font-weight:700;border-top:2px solid #111':'');return '<tr><td style="'+s+'">'+l+'</td><td align="right" style="'+s+'">'+v+'</td></tr>'}
+  var tot='<table style="width:280px;margin:12px 0 0 auto">'+tr2('Labor',money(T.lab))+tr2('Parts',money(T.pp))+tr2('Subtotal',money(T.sub))+(T.rate?tr2('Tax · '+esc(iv('taxLabel'))+' ('+T.rate+'%)',money(T.tax)):'')+tr2('Total',money(T.total),true)+tr2('Payments & Credits',money(T.paid))+tr2('Balance Due',money(T.bal),true)+'</table>';
+  return '<div style="font-family:Arial,Helvetica,sans-serif;max-width:640px;margin:0 auto;color:#111;padding:8px">'+
+    '<div style="font-size:20px;font-weight:800">WAYMORE <span style="color:#e6a700">TRUCK REPAIRS</span></div>'+
+    '<div style="font-weight:700;margin-top:4px">'+esc(invName())+'</div>'+
+    '<div style="color:#666;font-size:12px">'+nl2br(iv('shopAddr'))+'<br>'+esc(iv('shopEmail'))+' · '+esc(iv('shopPhone'))+'</div>'+
+    '<div style="margin:12px 0;font-size:13px"><b>Invoice '+esc(o.invNo||'')+'</b> · '+dd+'<br>Bill To: '+esc(o.customer||'')+'<br>Unit: '+esc(o.unit||'')+(o.vin?' · VIN '+esc(o.vin):'')+(o.mileage?' · '+esc(o.mileage)+' mi':'')+'</div>'+
+    '<table style="width:100%;border-collapse:collapse"><tr><th style="'+rth+'">Item</th><th style="'+rth+'">Description</th><th style="'+rth+';text-align:right">Qty</th><th style="'+rth+';text-align:right">Rate</th><th style="'+rth+';text-align:right">Amount</th></tr>'+(rows||'<tr><td colspan="5" style="'+cell+'">—</td></tr>')+'</table>'+tot+
+    '<div style="color:#666;font-size:12px;margin-top:18px">'+(o.paid?'Paid in full. Thank you for your business!':'Please remit payment to:<br>'+nl2br(iv('remit')))+'</div></div>';
+}
+function emailInvoice(id,auto){
+  var o=byId(id);if(!o)return;
+  if(auto&&o.invEmailed)return;
+  if(!o.email){if(!auto)toast('Add the customer email on the ticket first, then try again.',true);return}
+  if(!o.invNo){o.invNo='INV-'+nextInv();if(!o.invDate)o.invDate=Date.now()}
+  var T=invTotal(o),html=invoiceEmailHTML(o),subject=invName()+' · Invoice '+(o.invNo||'')+' · '+money(T.total);
+  try{if(SB&&sbc&&sbc.functions)sbc.functions.invoke('send-invoice',{body:{to:o.email,subject:subject,html:html,replyTo:iv('shopEmail')}}).then(function(r){
+      var err=(r&&r.error&&r.error.message)||(r&&r.data&&r.data.error);
+      if(!auto){if(err)toast('Email not sent: '+err,true);else toast('✓ Invoice emailed to '+o.email)}
+    }).catch(function(){if(!auto)toast('Could not send the email. Check your signal.',true)});}catch(e){}
+  o.invEmailed=Date.now();saveOrder(o);
 }
 function lastMiles(o){
   var best=null;all().forEach(function(x){if(x.id===o.id||grp(x)===grp(o))return;var same=(o.vin&&x.vin&&lc(x.vin)===lc(o.vin))||(o.plate&&x.plate&&lc(x.plate)===lc(o.plate))||(lc(o.unit)&&lc(x.unit)===lc(o.unit));var mi=parseInt(String(x.mileage||'').replace(/\D/g,''));
