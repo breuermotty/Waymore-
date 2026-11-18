@@ -1059,7 +1059,7 @@ function drSearch(q){
   w.innerHTML=R.map(function(o){return '<button class="dri" onclick="drawer(false);if(!isMech())tab=1;openSO(\''+o.id+'\')"><span><b>SO '+esc(sonum(o))+'</b> · '+esc(o.customer||'')+'<br><span style="opacity:.75">'+esc(o.unit||'')+'</span></span></button>'}).join('')||'<div style="padding:8px 4px;opacity:.75">No matches</div>';tr(w);
 }
 function go(k){
-  drawer(false);commit();poCommit();copen=null;cedit=null;pedit=null;cdel=false;pdel=false;cur=null;splitting=null;vopen=null;vedit=null;vdel=false;poOpen=null;poDel=false;codesOpen=false;
+  stopSOTimer(cur);drawer(false);commit();poCommit();copen=null;cedit=null;pedit=null;cdel=false;pdel=false;cur=null;splitting=null;vopen=null;vedit=null;vdel=false;poOpen=null;poDel=false;codesOpen=false;
   if(k=='codes'){codesOpen=true;render();scrollTo(0,0);return}
   if(k=='settings'){setOpen=true;if(SB)loadWorkers()}else{setOpen=false;if(k=='tech')tab=2;else{tab=1;dtab=k}}
   render();scrollTo(0,0);
@@ -1987,13 +1987,16 @@ function delSO(id){
   delAsk=null;cur=null;splitting=null;
   gone.then(render);
 }
+// Leaving a service order stops its running job timer (so it never keeps counting after the mechanic steps away).
+function stopSOTimer(id){if(!id)return;var o=byId(id);if(!o)return;var ss=o.sessions||[],l=ss[ss.length-1];
+  if(l&&!l.end&&(!l.who||!nm||l.who===nm)){var c=JSON.parse(JSON.stringify(o));c.sessions[c.sessions.length-1].end=Date.now();saveOrder(c)}}
 function autoStart(id){
   var o=byId(id);if(tab!=2||!o||!nm||o.status=='done'||o.billed||running(o))return;
   all().forEach(function(x){var l=(x.sessions||[])[(x.sessions||[]).length-1];if(x.id!==id&&l&&!l.end&&l.who===nm){var c=JSON.parse(JSON.stringify(x));c.sessions[c.sessions.length-1].end=Date.now();saveOrder(c)}});
   timer(id,'start');
 }
-function openSO(id){commit();missFor=null;aMiss=null;delA=null;if(cur!==id){jt='act'}cur=id;splitting=null;delAsk=null;revisit=null;autoStart(id);render();scrollTo(0,0)}
-function back(){commit();missFor=null;aMiss=null;delA=null;cur=null;jt='act';splitting=null;delAsk=null;revisit=null;render()}
+function openSO(id){if(cur&&cur!==id)stopSOTimer(cur);commit();missFor=null;aMiss=null;delA=null;if(cur!==id){jt='act'}cur=id;splitting=null;delAsk=null;revisit=null;autoStart(id);render();scrollTo(0,0)}
+function back(){stopSOTimer(cur);commit();missFor=null;aMiss=null;delA=null;cur=null;jt='act';splitting=null;delAsk=null;revisit=null;render()}
 function partsCard(o){
   var ps=parts(o),n=ps.length,nx=nextPart(ps),h='';
   if(n>1){
@@ -2163,7 +2166,7 @@ function mic(tid){
   if(!micReg){micReg=true;dict.onFinal(function(r){var t=$(micT);if(t)t.value=(t.value+' '+r.text).trim()})}
   dict.start().catch(function(){});
 }
-$('t1').onclick=function(){commit();setOpen=false;tab=1;cur=null;splitting=null;render()};
-$('t2').onclick=function(){commit();setOpen=false;tab=2;cur=null;splitting=null;render()};
+$('t1').onclick=function(){stopSOTimer(cur);commit();setOpen=false;tab=1;cur=null;splitting=null;render()};
+$('t2').onclick=function(){stopSOTimer(cur);commit();setOpen=false;tab=2;cur=null;splitting=null;render()};
 if(SB)boot();else init();
 </script></body></html>
