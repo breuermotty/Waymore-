@@ -1,0 +1,16 @@
+{
+  "name": "waymore-shop",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Shop management app for a heavy-duty repair shop: work orders, estimates, invoices, parts and tech time clock.",
+  "type": "module",
+  "scripts": {
+    "start": "node --no-warnings server.js",
+    "seed": "node --no-warnings seed.js",
+    "test": "node --no-warnings --test test/*.test.js"
+  },
+  "engines": { "node": ">=22.13" },
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}
