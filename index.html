@@ -380,6 +380,7 @@ async function init(){
     try{db.collection('customers').orderBy('created','desc').limit(500).onSnapshot(function(s){custs=s.docs.map(function(d){var x=d.data();x.id=d.id;return x});render()},function(){})}catch(e){}
     try{db.collection('parts').orderBy('created','desc').limit(500).onSnapshot(function(s){pcat=s.docs.map(function(d){var x=d.data();x.id=d.id;return x});render()},function(){})}catch(e){}
     try{db.collection('vendors').orderBy('created','desc').limit(1000).onSnapshot(function(s){vends=s.docs.map(function(d){var x=d.data();x.id=d.id;return x});render()},function(){})}catch(e){}
+    try{db.collection('packages').orderBy('created','desc').limit(500).onSnapshot(function(s){pkgCat=s.docs.map(function(d){var x=d.data();x.id=d.id;return x});render()},function(){})}catch(e){}
     try{db.collection('pos').orderBy('created','desc').limit(2000).onSnapshot(function(s){pos=s.docs.map(function(d){var x=d.data();x.id=d.id;return x});render()},function(){})}catch(e){}
   }
   if(db)try{db.doc('settings/shop').onSnapshot(function(s){if(s.exists){cfg=s.data();sv('wm_settings',cfg)}render()},function(){})}catch(e){}
@@ -537,7 +538,7 @@ var ES={
 'All parts billed.':'Todas las partes facturadas.','Billing':'Facturación','CLOCKED IN':'ENTRADA MARCADA','Cancel':'Cancelar','Checklist':'Lista de tareas',
 'Clock in':'Marcar entrada','Clock out':'Marcar salida',
 '🔔 iPhone notifications':'🔔 Notificaciones al iPhone','Turn on notifications':'Activar notificaciones','🔔 On · tap to re-check this phone':'🔔 Activas · toca para volver a verificar','Get a push on this phone when a new service order comes in, a job is ready to invoice, a new worker signs up, or a repair needs authorization.':'Recibe un aviso en este teléfono cuando entra una orden nueva, un trabajo está listo para facturar, un trabajador nuevo se registra o una reparación necesita autorización.','On iPhone: first add this website to your Home Screen (Share → Add to Home Screen), open it from the Home Screen, then tap the button.':'En iPhone: primero agrega esta página a la pantalla de inicio (Compartir → Agregar a inicio), ábrela desde ahí y luego toca el botón.','To get push on iPhone, add this website to your Home Screen and open it from there, then come back here.':'Para recibir avisos en iPhone, agrega esta página a la pantalla de inicio y ábrela desde ahí, luego vuelve aquí.','✓ This phone will get notifications.':'✓ Este teléfono recibirá notificaciones.',
-'Customer email (for invoices)':'Correo del cliente (para facturas)','🧾 Invoice':'🧾 Factura','🖨 Print / Save PDF':'🖨 Imprimir / Guardar PDF','✉️ Email customer':'✉️ Enviar al cliente','← Close':'← Cerrar','Add the customer email on the ticket first, then try again.':'Agrega el correo del cliente en la orden primero e intenta otra vez.','Could not send the email. Check your signal.':'No se pudo enviar el correo. Revisa la señal.','🧾 Invoice':'🧾 Factura','Shown on printed invoices.':'Aparece en las facturas impresas.','Shop address':'Dirección del taller','Remit payment to':'Enviar el pago a','Tax rate (%)':'Impuesto (%)','Tax label':'Etiqueta del impuesto','Terms':'Términos','First invoice #':'Primer # de factura','Email':'Correo','Phone':'Teléfono','Parts markup (%)':'Margen en piezas (%)','Always CC these emails on invoices (one per line)':'Siempre poner en copia (CC) estos correos (uno por línea)','Added to part prices on invoices (a per-invoice checkbox can turn it off).':'Se suma al precio de las piezas en las facturas (una casilla por factura puede quitarlo).','Parts cost':'Costo de piezas','Parts billed':'Piezas facturadas','Misc fees':'Cargos varios','Fee name':'Nombre del cargo','Taxable':'Con impuesto','➕ Add fee':'➕ Agregar cargo','Invoice note (prints on the invoice)':'Nota de factura (aparece en la factura)','Hours (invoiced vs actual)':'Horas (facturadas vs reales)','Invoice note:':'Nota de factura:','Invoices':'Facturas','Search invoice #, customer, SO':'Buscar # de factura, cliente, SO','UNPAID':'SIN PAGAR','PAID':'PAGADO','DRAFT':'BORRADOR','✉️ sent':'✉️ enviada','No invoices yet. Mark an order billed, or open a done order and tap 🧾 Invoice.':'Aún no hay facturas. Marca una orden como facturada, o abre una orden terminada y toca 🧾 Factura.','Delete customer':'Eliminar cliente','Delete this customer? Their SOs stay.':'¿Eliminar este cliente? Sus SO se quedan.',
+'Customer email (for invoices)':'Correo del cliente (para facturas)','🧾 Invoice':'🧾 Factura','🖨 Print / Save PDF':'🖨 Imprimir / Guardar PDF','✉️ Email customer':'✉️ Enviar al cliente','← Close':'← Cerrar','Add the customer email on the ticket first, then try again.':'Agrega el correo del cliente en la orden primero e intenta otra vez.','Could not send the email. Check your signal.':'No se pudo enviar el correo. Revisa la señal.','🧾 Invoice':'🧾 Factura','Shown on printed invoices.':'Aparece en las facturas impresas.','Shop address':'Dirección del taller','Remit payment to':'Enviar el pago a','Tax rate (%)':'Impuesto (%)','Tax label':'Etiqueta del impuesto','Terms':'Términos','First invoice #':'Primer # de factura','Email':'Correo','Phone':'Teléfono','Parts markup (%)':'Margen en piezas (%)','Always CC these emails on invoices (one per line)':'Siempre poner en copia (CC) estos correos (uno por línea)','Added to part prices on invoices (a per-invoice checkbox can turn it off).':'Se suma al precio de las piezas en las facturas (una casilla por factura puede quitarlo).','Parts cost':'Costo de piezas','Parts billed':'Piezas facturadas','Misc fees':'Cargos varios','Fee name':'Nombre del cargo','Taxable':'Con impuesto','Service packages':'Paquetes de servicio','Fault codes':'Códigos de falla','🔧 Truck fault-code lookup (J1939)':'🔧 Búsqueda de códigos de falla (J1939)','Look up code':'Buscar código','Common codes':'Códigos comunes','Search by name or SPN number':'Buscar por nombre o número SPN','🧰 Service packages':'🧰 Paquetes de servicio','Default hours':'Horas por defecto','Add a package':'Agregar un paquete','Labor rate (blank = shop default)':'Tarifa (vacío = la del taller)','➕ Add common packages to start':'➕ Agregar paquetes comunes para empezar','Failure mode:':'Modo de falla:','Copy':'Copiar','✓ Copied':'✓ Copiado','➕ Add fee':'➕ Agregar cargo','Invoice note (prints on the invoice)':'Nota de factura (aparece en la factura)','Hours (invoiced vs actual)':'Horas (facturadas vs reales)','Invoice note:':'Nota de factura:','Invoices':'Facturas','Search invoice #, customer, SO':'Buscar # de factura, cliente, SO','UNPAID':'SIN PAGAR','PAID':'PAGADO','DRAFT':'BORRADOR','✉️ sent':'✉️ enviada','No invoices yet. Mark an order billed, or open a done order and tap 🧾 Invoice.':'Aún no hay facturas. Marca una orden como facturada, o abre una orden terminada y toca 🧾 Factura.','Delete customer':'Eliminar cliente','Delete this customer? Their SOs stay.':'¿Eliminar este cliente? Sus SO se quedan.',
 'Delete this part from the list?':'¿Eliminar esta pieza de la lista?','Delete part':'Eliminar pieza','Description':'Descripción','Edit':'Editar','Edit part':'Editar pieza',
 'Email':'Correo','Every open ticket is scheduled.':'Todas las órdenes abiertas están programadas.','Gallery':'Galería','Hours this week':'Horas esta semana',
 'Hours to bill together':'Horas a facturar juntas','Location (shelf / bin)':'Ubicación (estante / caja)','Mark done':'Marcar terminada',
@@ -727,13 +728,14 @@ function render0(){
   $('t1').className=tab==1?'on':'';$('t2').className=tab==2?'on':'';
   var cl=day&&day.punches&&day.punches[day.punches.length-1];document.querySelector('header').className=(cl&&!cl.out)?'in':'';
   var a=$('app');
+  if(codesOpen){a.innerHTML=codesView();return}
   if(setOpen){a.innerHTML=settingsView();return}
   if(tab==1&&!cur){a.innerHTML=deskView();return}
   if(cur){a.innerHTML=jobView(byId(cur));return}
   a.innerHTML='<div class="ptitle"><span>🛠</span>Tech Home</div>'+listView();
 }
 function deskView(){
-  return pendingBanner()+subNav()+(dtab=='new'?newView():dtab=='sched'?schedView():dtab=='hrs'?hoursView():dtab=='open'?ticketsView():dtab=='cust'?custView():dtab=='office'?officeView():dtab=='inv'?invoicesView():dtab=='rep'?reportsView():dtab=='po'?poView():dtab=='map'?mapView():dtab=='vendors'?vendorsView():partsView());
+  return pendingBanner()+subNav()+(dtab=='new'?newView():dtab=='sched'?schedView():dtab=='hrs'?hoursView():dtab=='open'?ticketsView():dtab=='cust'?custView():dtab=='office'?officeView():dtab=='inv'?invoicesView():dtab=='pkgs'?pkgsView():dtab=='rep'?reportsView():dtab=='po'?poView():dtab=='map'?mapView():dtab=='vendors'?vendorsView():partsView());
 }
 var nItems=[];
 function nowLocal(){var d=new Date();d.setMinutes(d.getMinutes()-d.getTimezoneOffset());return d.toISOString().slice(0,16)}
@@ -767,6 +769,7 @@ function newView(){
    '<div class="mirow"><b>Miles</b><input id="f_mi" inputmode="numeric" placeholder="Odometer reading"></div><div id="f_last" class="mu"></div></div>'+
   H('🔧 Action items *')+
    '<div class="row" style="align-items:flex-start"><textarea id="f_cc" rows="2" placeholder="Customer complaint, or the repair / service to do"></textarea><button class="btn" style="flex:0 0 auto;width:auto;margin:4px 0 10px;padding:11px 16px" onclick="addNI()">Add</button></div>'+
+   (allPkgs().length?'<select id="f_pkg" onchange="addPkgNI(this.value)"><option value="">📋 Or add a service package…</option>'+allPkgs().slice().sort(function(a,b){return (a.created||0)-(b.created||0)}).map(function(p){return '<option value="'+esc(p.id)+'">'+esc(p.name)+(p.hours?' ('+p.hours+' h)':'')+'</option>'}).join('')+'</select>':'')+
    '<div id="f_nis">'+niList()+'</div></div>'+
   H('📅 Scheduling')+
    '<label>Unit location</label><input id="f_loc" placeholder="e.g. Shop, customer yard, roadside">'+
@@ -792,7 +795,7 @@ function createSO(){blurA();
     mechanic:me,desc:nItems.map(function(x){return x.t}).join(', '),mileage:$('f_mi').value.trim(),location:$('f_loc').value.trim(),availAt:$('f_av').value||'',mustAccess:$('f_must').checked,backBy:$('f_back').value.trim(),
     schedDate:$('f_sd').value||'',schedTime:$('f_st').value||'',estH:parseFloat($('f_eh').value)||0,po:$('f_po').value.trim(),preAuth:$('f_pa').checked,preAmt:parseFloat($('f_pam').value)||0,deskNotes:$('f_nt').value.trim(),
     vin:$('f_vi').value.trim().toUpperCase(),plate:$('f_pl').value.trim().toUpperCase(),plateState:$('f_ps').value.trim().toUpperCase(),vehicle:(VINMORE[$('f_vi').value.trim().toUpperCase()]||''),items:[],
-    actions:nItems.map(function(x){var a=newAct(x.t,me);if(x.skip){a.st='repair';a.noDiag=true}return a}),rate:+cfg.rate||+lg('wm_rate')||0,notes:'',status:'open',photos:[],created:Date.now()};
+    actions:nItems.map(function(x){var a=newAct(x.t,me);if(x.skip){a.st='repair';a.noDiag=true}if(x.hours)a.inv=x.hours;return a}),rate:(nItems.reduce(function(r,x){return r||x.rate||0},0)||+cfg.rate||+lg('wm_rate')||0),notes:'',status:'open',photos:[],created:Date.now()};
   nItems=[];toast('✓ SO '+so+' created');pushNotify('so','SO '+so+' · '+(o.customer||'')+(o.unit?' · '+o.unit:''));
   if(o.customer){var exC=docs('customers').find(function(c){return lc(c.name)===lc(o.customer)});
     if(!exC)saveDoc('customers',{id:'c'+Date.now().toString(36),name:o.customer,email:o.email||'',created:Date.now()});
@@ -990,13 +993,13 @@ function schedView(){
 }
 
 // ---- shop desk tabs, customers, parts ----
-var dtab='new',tf='open',cq='',pq='',copen=null,cedit=null,cdel=false,pedit=null,pdel=false,preCu='',custs=[],pcat=[],pendR=false,cvis=[],pvis=[];
+var dtab='new',tf='open',cq='',pq='',copen=null,cedit=null,cdel=false,pedit=null,pdel=false,preCu='',custs=[],pcat=[],pkgCat=[],pendR=false,cvis=[],pvis=[];
 document.addEventListener('focusout',function(){if(pendR){pendR=false;setTimeout(render,500)}});
 function blurA(){var a=document.activeElement;if(a&&a.blur&&a!==document.body)a.blur()}
 function lc(s){return String(s||'').trim().toLowerCase()}
 function SP(){if(isMech())return !!cfg.mechPrices;return tab==1||!!cfg.mechPrices}
 function money(n){return '$'+(+n||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}
-function docs(col){return db?({customers:custs,parts:pcat,vendors:vends,pos:pos}[col]||[]):(lg('wm_'+col)||[])}
+function docs(col){return db?({customers:custs,parts:pcat,vendors:vends,pos:pos,packages:pkgCat}[col]||[]):(lg('wm_'+col)||[])}
 function saveDoc(col,o){sbPush(col,o.id,o);if(db)return db.collection(col).doc(o.id).set(o).catch(function(){});var a=lg('wm_'+col)||[],i=a.findIndex(function(x){return x.id===o.id});if(i<0)a.push(o);else a[i]=o;sv('wm_'+col,a);render();return Promise.resolve()}
 function delDoc(col,id){sbPush(col,id,null,true);if(db)return db.collection(col).doc(id).delete().catch(function(){});sv('wm_'+col,(lg('wm_'+col)||[]).filter(function(x){return x.id!==id}));render();return Promise.resolve()}
 function subNav(){
@@ -1006,7 +1009,7 @@ function subNav(){
   return m?'<div class="ptitle"><span>'+m[2]+'</span>'+m[1]+'</div>':'';
 }
 // ---- slide-out side menu (replaces the tabs) ----
-var MENU=[['tech','Tech Home','🛠'],['new','Create SO','➕'],['open','Service','📋'],['map','Live map','📍'],['sched','Schedule','📅'],['parts','Parts','🔧'],['po','Purchase orders','📦'],['vendors','Vendors','🏭'],['office','Office','🧾'],['inv','Invoices','🧾'],['rep','Reporting','📈'],['cust','Customers','👤'],['hrs','Workers hours','⏱']];
+var MENU=[['tech','Tech Home','🛠'],['new','Create SO','➕'],['open','Service','📋'],['map','Live map','📍'],['sched','Schedule','📅'],['parts','Parts','🔧'],['po','Purchase orders','📦'],['vendors','Vendors','🏭'],['office','Office','🧾'],['inv','Invoices','🧾'],['pkgs','Service packages','🧰'],['codes','Fault codes','🔧'],['rep','Reporting','📈'],['cust','Customers','👤'],['hrs','Workers hours','⏱']];
 var invQ='';
 function invoicesView(){
   return '<div class="drs" style="margin-top:8px"><input id="inv_q" type="search" autocomplete="off" placeholder="Search invoice #, customer, SO" value="'+esc(invQ)+'" oninput="invQ=this.value;$(\'invlist\').innerHTML=invListRows()"></div><div id="invlist">'+invListRows()+'</div>';
@@ -1035,7 +1038,7 @@ function menuBadges(k){
 }
 function curKey(){return setOpen?'settings':tab==2?'tech':dtab}
 function drawerHtml(){
-  var L=MENU.filter(function(m){return !isMech()||m[0]=='tech'}),k=curKey();
+  var L=MENU.filter(function(m){return !isMech()||m[0]=='tech'||m[0]=='codes'}),k=curKey();
   return '<div class="drp" role="dialog" aria-label="Menu"><div class="drh"><b>'+esc(cfg.shop||'Waymore Jobs')+'</b>'+(ME?'<span>'+esc(ME.name)+' · '+roleName(ROLE)+'</span>':'')+'</div>'+
     '<div class="drs"><input id="dr_q" type="search" autocomplete="off" placeholder="Search SO, customer, truck, VIN" oninput="drSearch(this.value)"></div><div class="drr" id="dr_res"></div>'+
     L.map(function(m){return '<button class="dri'+(k==m[0]?' on':'')+'" onclick="go(\''+m[0]+'\')"><span class="ic">'+m[2]+'</span><span>'+m[1]+'</span><span class="bg">'+menuBadges(m[0])+'</span></button>'}).join('')+
@@ -1056,7 +1059,8 @@ function drSearch(q){
   w.innerHTML=R.map(function(o){return '<button class="dri" onclick="drawer(false);if(!isMech())tab=1;openSO(\''+o.id+'\')"><span><b>SO '+esc(sonum(o))+'</b> · '+esc(o.customer||'')+'<br><span style="opacity:.75">'+esc(o.unit||'')+'</span></span></button>'}).join('')||'<div style="padding:8px 4px;opacity:.75">No matches</div>';tr(w);
 }
 function go(k){
-  drawer(false);commit();poCommit();copen=null;cedit=null;pedit=null;cdel=false;pdel=false;cur=null;splitting=null;vopen=null;vedit=null;vdel=false;poOpen=null;poDel=false;
+  drawer(false);commit();poCommit();copen=null;cedit=null;pedit=null;cdel=false;pdel=false;cur=null;splitting=null;vopen=null;vedit=null;vdel=false;poOpen=null;poDel=false;codesOpen=false;
+  if(k=='codes'){codesOpen=true;render();scrollTo(0,0);return}
   if(k=='settings'){setOpen=true;if(SB)loadWorkers()}else{setOpen=false;if(k=='tech')tab=2;else{tab=1;dtab=k}}
   render();scrollTo(0,0);
 }
@@ -1830,6 +1834,51 @@ function emailInvoice(id,auto){
     }).catch(function(){if(!auto)toast('Could not send the email. Check your signal.',true)});}catch(e){}
   o.invEmailed=Date.now();saveOrder(o);
 }
+// ================= J1939 heavy-truck fault-code lookup (free; SAE standard tables) =================
+var codesOpen=false;
+var FMI={0:'Data valid but ABOVE normal range — most severe',1:'Data valid but BELOW normal range — most severe',2:'Data erratic, intermittent or incorrect',3:'Voltage ABOVE normal or shorted to high source',4:'Voltage BELOW normal or shorted to low source',5:'Current below normal or OPEN circuit',6:'Current above normal or GROUNDED circuit',7:'Mechanical system not responding / out of adjustment',8:'Abnormal frequency, pulse width or period',9:'Abnormal update rate',10:'Abnormal rate of change',11:'Root cause not known',12:'Bad intelligent device or component',13:'Out of calibration',14:'Special instructions',15:'Above normal range — least severe',16:'Above normal range — moderately severe',17:'Below normal range — least severe',18:'Below normal range — moderately severe',19:'Received network data in error',20:'Data drifted high',21:'Data drifted low',31:'Condition exists'};
+var SPN={51:'Throttle position',84:'Wheel-based vehicle speed',91:'Accelerator pedal position',92:'Engine percent load at current speed',94:'Fuel delivery pressure',96:'Fuel level',98:'Engine oil level',100:'Engine oil pressure',101:'Crankcase pressure',102:'Intake manifold (boost) pressure',105:'Intake manifold air temperature',107:'Air filter differential pressure',108:'Barometric pressure',110:'Engine coolant temperature',111:'Coolant level',132:'Intake air mass flow',157:'Injector metering rail 1 pressure',158:'Keyswitch battery potential',164:'Injection control pressure',168:'Battery voltage',171:'Ambient air temperature',172:'Intake air temperature',173:'Exhaust gas temperature',174:'Fuel temperature',175:'Engine oil temperature',176:'Turbocharger oil temperature',177:'Transmission oil temperature',183:'Engine fuel rate',190:'Engine speed (RPM)',191:'Transmission output shaft speed',245:'Total vehicle distance',247:'Engine total hours of operation',411:'EGR differential pressure',412:'EGR temperature',441:'Auxiliary temperature 1',513:'Actual engine percent torque',514:'Nominal friction percent torque',521:'Brake pedal position',523:'Transmission current gear',524:'Transmission selected gear',558:'Accelerator pedal low idle switch',560:'Transmission driveline engaged',563:'Anti-lock brake (ABS) active',573:'Torque converter lockup engaged',597:'Brake switch',598:'Clutch switch',627:'Power supply',629:'Controller #1 (ECM)',639:'J1939 data link / network #1',651:'Injector cylinder 1',652:'Injector cylinder 2',653:'Injector cylinder 3',654:'Injector cylinder 4',655:'Injector cylinder 5',656:'Injector cylinder 6',677:'Engine starter motor relay',723:'Engine speed sensor #2',974:'Remote accelerator pedal position',1072:'Engine compression (engine) brake',1127:'Turbocharger 1 boost pressure',1172:'Turbocharger 1 compressor intake temperature',1180:'Turbocharger 1 turbine intake temperature',1209:'Exhaust gas pressure',1231:'J1939 data link / network #2',1323:'Engine misfire cylinder 1',1347:'Engine fuel pump pressurizing assembly 1',1349:'Injector metering rail 2 pressure',1569:'Engine protection torque derate',1636:'Intake manifold 1 air temperature',1761:'Diesel exhaust fluid (DEF) tank level',2623:'Accelerator pedal position 2',2659:'EGR mass flow rate',2791:'EGR valve control',3031:'DEF tank temperature',3216:'Aftertreatment 1 intake NOx',3226:'Aftertreatment 1 outlet NOx',3242:'DPF intake gas temperature',3246:'DPF outlet gas temperature',3250:'DPF outlet gas temperature',3251:'DPF differential pressure',3359:'SCR intake temperature',3360:'Aftertreatment SCR system',3361:'DEF dosing unit',3363:'DEF tank heater',3464:'Engine throttle actuator control',3480:'Aftertreatment fuel pressure',3482:'Aftertreatment fuel enable actuator',3490:'Aftertreatment purge air actuator',3509:'Sensor supply voltage 1',3510:'Sensor supply voltage 2',3511:'Sensor supply voltage 3',3556:'Aftertreatment hydrocarbon doser 1',3597:'ECU power output supply voltage 1',3609:'DPF intake pressure',3610:'DPF outlet pressure',3711:'DPF active regen inhibited (inhibit switch)',3719:'DPF soot load percent',3720:'DPF ash load percent',4094:'Engine NOx limits exceeded — derate',4096:'NOx too high — reagent/SCR insufficient',4334:'DEF doser absolute pressure',4360:'SCR catalyst intake gas temperature',4363:'SCR catalyst outlet gas temperature',4364:'SCR conversion efficiency low',5246:'SCR operator inducement (derate / speed limit)',5394:'DEF dosing valve',5571:'High-pressure fuel rail pressure relief valve'};
+function spnSys(n){n=lc(n||'');
+  if(/dpf|def|scr|nox|aftertreatment|exhaust|egr|regen|doser|reagent|particulate|hydrocarbon/.test(n))return 'Emissions / aftertreatment';
+  if(/transmission|gear|clutch|torque converter|driveline|shaft/.test(n))return 'Transmission / driveline';
+  if(/brake|abs|wheel|parking/.test(n))return 'Brakes / ABS';
+  if(/battery|voltage|charging|sensor supply|power|relay|network|controller|module|data link/.test(n))return 'Electrical / network';
+  if(/oil|coolant|fuel|boost|intake|turbo|injector|engine|crankcase|manifold|\bair\b|rail|throttle|accelerator|speed|rpm|barometric|ambient|temperature|pressure|misfire/.test(n))return 'Engine';
+  return 'General';}
+function codesView(){
+  return '<button class="btn alt" onclick="codesOpen=false;render()">← Back</button>'+
+   '<div class="card" style="margin-top:12px"><b style="font-size:20px">🔧 Truck fault-code lookup (J1939)</b>'+
+   '<p class="mu" style="margin:4px 0 10px">Heavy-truck diagnostic codes. Read the <b>SPN</b> and <b>FMI</b> off the dash or a scan tool, enter them, and tap Look up.</p>'+
+   '<div class="row"><span><label>SPN</label><input id="code_spn" inputmode="numeric" placeholder="e.g. 3251"></span><span><label>FMI</label><input id="code_fmi" inputmode="numeric" placeholder="0–31"></span></div>'+
+   '<button class="btn" onclick="codesRun()">Look up code</button><div id="code_out" style="margin-top:12px"></div></div>'+
+   '<div class="card"><b>Common codes</b><input id="code_q" type="search" autocomplete="off" placeholder="Search by name or SPN number" oninput="codesFilter(this.value)" style="margin:8px 0"><div id="code_list">'+codesListHTML('')+'</div></div>';
+}
+function codesListHTML(q){q=lc(q);var ks=Object.keys(SPN).filter(function(k){return !q||lc(SPN[k]).indexOf(q)>=0||String(k).indexOf(q)>=0}).sort(function(a,b){return +a-+b});
+  return ks.slice(0,200).map(function(k){return '<div class="row mu" style="border-top:1px solid var(--ln);padding:7px 0;cursor:pointer" onclick="$(\'code_spn\').value=\''+k+'\';scrollTo(0,0)"><span style="flex:1"><b>SPN '+k+'</b> · '+esc(SPN[k])+'</span><span style="text-align:right">'+esc(spnSys(SPN[k]))+'</span></div>'}).join('')||'<div class="mu">No match.</div>';}
+function codesFilter(q){var e=$('code_list');if(e)e.innerHTML=codesListHTML(q)}
+function codesRun(){var spn=parseInt(($('code_spn')||{}).value)||0,fv=($('code_fmi')||{}).value,fmi=fv===''?NaN:parseInt(fv),out=$('code_out');if(!out)return;
+  if(!spn){out.innerHTML='<div class="mu">Enter the SPN number.</div>';return}
+  var known=!!SPN[spn],name=known?SPN[spn]:('SPN '+spn+' — not in the quick list (check a full J1939 database)'),sys=known?spnSys(SPN[spn]):'';
+  var fm=!isNaN(fmi)?(FMI[fmi]||('FMI '+fmi+' — manufacturer-specific / reserved')):'';
+  out.innerHTML='<div class="box2"><div style="font-size:18px;font-weight:700">SPN '+spn+(!isNaN(fmi)?' · FMI '+fmi:'')+'</div>'+
+    '<div style="margin-top:6px"><b>'+esc(name)+'</b>'+(sys?' <span class="mu">· '+esc(sys)+'</span>':'')+'</div>'+
+    (fm?'<div style="margin-top:8px"><b>Failure mode:</b> '+esc(fm)+'</div>':'<div class="mu" style="margin-top:6px">Add the FMI (0–31) for the failure type.</div>')+
+    '<button class="btn alt" style="margin-top:10px" onclick="codeCopy(\''+spn+'\','+(isNaN(fmi)?'-1':fmi)+')">Copy</button></div>';}
+function codeCopy(spn,fmi){var name=SPN[spn]||('SPN '+spn),fm=fmi>=0?(FMI[fmi]||('FMI '+fmi)):'';var t='SPN '+spn+(fmi>=0?' FMI '+fmi:'')+' — '+name+(fm?' ('+fm+')':'');try{if(navigator.clipboard)navigator.clipboard.writeText(t).then(function(){toast('✓ Copied')}).catch(function(){})}catch(e){}}
+// ================= Service packages (canned jobs) =================
+function allPkgs(){return docs('packages')||[]}
+var PKGDEF=[{name:'Oil change — Gas',hours:0.5},{name:'Oil change — Diesel',hours:0.8},{name:'PM Service A',hours:1.5},{name:'PM Service B',hours:3},{name:'DOT Inspection',hours:1},{name:'Brake job — per axle',hours:2.5},{name:'Tire replacement',hours:0.5},{name:'Diagnose check-engine light',hours:1}];
+function seedPkgs(){PKGDEF.forEach(function(p,i){saveDoc('packages',{id:'pk'+Date.now().toString(36)+i,name:p.name,hours:p.hours,rate:0,created:Date.now()+i})});setTimeout(render,200)}
+function pkgsView(){var L=allPkgs().slice().sort(function(a,b){return (a.created||0)-(b.created||0)});
+  return '<div class="card"><b style="font-size:20px">🧰 Service packages</b><p class="mu" style="margin:4px 0 8px">Canned jobs with default hours. Add them on a service order and the complaint and invoiced hours fill in automatically.</p>'+
+   (L.length?'':'<button class="btn" onclick="seedPkgs()">➕ Add common packages to start</button>')+
+   L.map(function(p){return '<div style="border-top:1px solid var(--ln);padding:8px 0"><input id="pk_n_'+p.id+'" value="'+esc(p.name)+'" style="margin:2px 0">'+
+     '<div class="row"><span><label>Default hours</label><input id="pk_h_'+p.id+'" inputmode="decimal" value="'+esc(p.hours||'')+'"></span><span><label>Labor rate (blank = shop default)</label><input id="pk_r_'+p.id+'" inputmode="decimal" value="'+(p.rate||'')+'"></span></div>'+
+     '<div class="row"><button class="btn alt" style="margin:0" onclick="savePkg(\''+p.id+'\')">Save</button><button class="btn alt" style="margin:0;color:#e03131;border-color:#e03131" onclick="delDoc(\'packages\',\''+p.id+'\')">Delete</button></div></div>'}).join('')+
+   '<div style="border-top:2px solid var(--tx);margin-top:10px;padding-top:8px"><b>Add a package</b><input id="pk_new_n" placeholder="Service name, e.g. Coolant flush" style="margin:4px 0"><div class="row"><span><label>Default hours</label><input id="pk_new_h" inputmode="decimal" placeholder="e.g. 1.0"></span><button class="btn" style="align-self:flex-end;margin:0" onclick="addPkgRow()">➕ Add</button></div></div></div>';}
+function savePkg(id){var p=allPkgs().find(function(x){return x.id==id});if(!p)return;p=JSON.parse(JSON.stringify(p));p.name=(($('pk_n_'+id)||{}).value||p.name).trim();p.hours=parseFloat(($('pk_h_'+id)||{}).value)||0;p.rate=parseFloat(($('pk_r_'+id)||{}).value)||0;saveDoc('packages',p);toast('✓ Saved')}
+function addPkgRow(){var n=(($('pk_new_n')||{}).value||'').trim(),h=parseFloat(($('pk_new_h')||{}).value)||0;if(!n)return;saveDoc('packages',{id:'pk'+Date.now().toString(36),name:n,hours:h,rate:0,created:Date.now()});setTimeout(render,150)}
+function addPkgNI(id){if(!id)return;var p=allPkgs().find(function(x){return x.id==id});if(p){nItems.push({t:p.name,skip:false,hours:p.hours||0,rate:p.rate||0});drawNI()}var s=$('f_pkg');if(s)s.value=''}
 function lastMiles(o){
   var best=null;all().forEach(function(x){if(x.id===o.id||grp(x)===grp(o))return;var same=(o.vin&&x.vin&&lc(x.vin)===lc(o.vin))||(o.plate&&x.plate&&lc(x.plate)===lc(o.plate))||(lc(o.unit)&&lc(x.unit)===lc(o.unit));var mi=parseInt(String(x.mileage||'').replace(/\D/g,''));
     if(same&&mi&&(!best||x.created>best.t))best={mi:mi,t:x.created}});return best;
