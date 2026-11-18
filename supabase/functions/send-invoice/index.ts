@@ -26,13 +26,14 @@ Deno.serve(async (req: Request) => {
   if (!KEY) return json({ error: "not_configured" }, 200);
   const FROM = Deno.env.get("INVOICE_FROM") || "Waymore Truck Repairs <onboarding@resend.dev>";
 
-  let to = "", subject = "", html = "", replyTo = "";
+  let to = "", subject = "", html = "", replyTo = "", cc: string[] = [];
   try {
     const b = await req.json();
     to = String(b?.to || "").trim();
     subject = String(b?.subject || "Invoice");
     html = String(b?.html || "");
     replyTo = String(b?.replyTo || "").trim();
+    if (Array.isArray(b?.cc)) cc = b.cc.map((x: unknown) => String(x).trim()).filter((x: string) => x.includes("@"));
   } catch (_) {
     return json({ error: "bad_request" }, 400);
   }
@@ -41,6 +42,7 @@ Deno.serve(async (req: Request) => {
   try {
     const payload: Record<string, unknown> = { from: FROM, to: [to], subject, html };
     if (replyTo) payload.reply_to = replyTo;
+    if (cc.length) payload.cc = cc;
     const r = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: { "Authorization": "Bearer " + KEY, "Content-Type": "application/json" },

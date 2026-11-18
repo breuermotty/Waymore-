@@ -500,7 +500,9 @@ function settingsView(){
      '<div class="row"><span><label>Email</label><input id="s_iemail" value="'+esc(iv('shopEmail'))+'"></span><span><label>Phone</label><input id="s_iphone" value="'+esc(iv('shopPhone'))+'"></span></div>'+
      '<label>Remit payment to</label><textarea id="s_iremit" rows="3">'+esc(iv('remit'))+'</textarea>'+
      '<div class="row"><span><label>Tax rate (%)</label><input id="s_itax" inputmode="decimal" value="'+esc(iv('taxRate'))+'"></span><span><label>Tax label</label><input id="s_itaxl" value="'+esc(iv('taxLabel'))+'"></span></div>'+
-     '<div class="row"><span><label>Terms</label><input id="s_iterms" value="'+esc(iv('terms'))+'"></span><span><label>First invoice #</label><input id="s_iinv" inputmode="numeric" value="'+esc(iv('invStart'))+'"></span></div></div>'+
+     '<div class="row"><span><label>Terms</label><input id="s_iterms" value="'+esc(iv('terms'))+'"></span><span><label>First invoice #</label><input id="s_iinv" inputmode="numeric" value="'+esc(iv('invStart'))+'"></span></div>'+
+     '<label>Parts markup (%)</label><input id="s_imk" inputmode="decimal" value="'+esc(iv('markup'))+'"><div class="mu" style="margin:-4px 0 4px">Added to part prices on invoices (a per-invoice checkbox can turn it off).</div>'+
+     '<label>Always CC these emails on invoices (one per line)</label><textarea id="s_icc" rows="2" placeholder="billing@waymoreauto.com">'+esc(iv('invCC'))+'</textarea></div>'+
     (SB?'<div class="box2"><b>🗄 Supabase</b><div class="mu">All shop data is saved in Supabase. Every change is also kept in the shop_backup history.</div></div>':movedBox('',false)+'<div hidden><b>🗄 Supabase backup</b>'+
      '<label class="ck" style="border:0"><input type="checkbox" id="s_sb"'+ck(cfg.sb!==false)+'><span>Copy every change to Supabase</span></label>'+
      '<label>Project URL</label><input id="s_sbu" autocomplete="off" value="'+esc(sbUrl())+'">'+
@@ -518,7 +520,7 @@ function savePhone(){
 function saveShop(){
   blurA();var c={shop:$('s_shop').value.trim(),rate:parseFloat($('s_rate').value)||0,photos:Math.max(0,parseInt($('s_ph').value)||0),auth:$('s_auth').checked,mechPrices:$('s_mp').checked,
     mechs:$('s_me').value.split('\n').map(function(s){return s.trim()}).filter(Boolean),sb:$('s_sb')?$('s_sb').checked:cfg.sb,sbUrl:$('s_sbu')?$('s_sbu').value.trim().replace(/\/+$/,''):(cfg.sbUrl||''),sbKey:$('s_sbk')?$('s_sbk').value.trim():(cfg.sbKey||''),
-    shopAddr:$('s_iaddr')?$('s_iaddr').value.trim():cfg.shopAddr,shopEmail:$('s_iemail')?$('s_iemail').value.trim():cfg.shopEmail,shopPhone:$('s_iphone')?$('s_iphone').value.trim():cfg.shopPhone,remit:$('s_iremit')?$('s_iremit').value.trim():cfg.remit,taxRate:$('s_itax')?(parseFloat($('s_itax').value)||0):cfg.taxRate,taxLabel:$('s_itaxl')?$('s_itaxl').value.trim():cfg.taxLabel,terms:$('s_iterms')?$('s_iterms').value.trim():cfg.terms,invStart:$('s_iinv')?(parseInt($('s_iinv').value)||1001):cfg.invStart,updated:Date.now()};
+    shopAddr:$('s_iaddr')?$('s_iaddr').value.trim():cfg.shopAddr,shopEmail:$('s_iemail')?$('s_iemail').value.trim():cfg.shopEmail,shopPhone:$('s_iphone')?$('s_iphone').value.trim():cfg.shopPhone,remit:$('s_iremit')?$('s_iremit').value.trim():cfg.remit,taxRate:$('s_itax')?(parseFloat($('s_itax').value)||0):cfg.taxRate,taxLabel:$('s_itaxl')?$('s_itaxl').value.trim():cfg.taxLabel,terms:$('s_iterms')?$('s_iterms').value.trim():cfg.terms,invStart:$('s_iinv')?(parseInt($('s_iinv').value)||1001):cfg.invStart,markup:$('s_imk')?(parseFloat($('s_imk').value)||0):cfg.markup,invCC:$('s_icc')?$('s_icc').value.trim():cfg.invCC,updated:Date.now()};
   if(isNaN(parseInt($('s_ph').value)))c.photos=3;
   cfg=c;sv('wm_settings',c);sbPush('settings','shop',c);if(db)db.doc('settings/shop').set(c).catch(function(){$('net').textContent='Could not save'});
   setMsg='✓ Saved';render();
@@ -535,7 +537,7 @@ var ES={
 'All parts billed.':'Todas las partes facturadas.','Billing':'Facturación','CLOCKED IN':'ENTRADA MARCADA','Cancel':'Cancelar','Checklist':'Lista de tareas',
 'Clock in':'Marcar entrada','Clock out':'Marcar salida',
 '🔔 iPhone notifications':'🔔 Notificaciones al iPhone','Turn on notifications':'Activar notificaciones','🔔 On · tap to re-check this phone':'🔔 Activas · toca para volver a verificar','Get a push on this phone when a new service order comes in, a job is ready to invoice, a new worker signs up, or a repair needs authorization.':'Recibe un aviso en este teléfono cuando entra una orden nueva, un trabajo está listo para facturar, un trabajador nuevo se registra o una reparación necesita autorización.','On iPhone: first add this website to your Home Screen (Share → Add to Home Screen), open it from the Home Screen, then tap the button.':'En iPhone: primero agrega esta página a la pantalla de inicio (Compartir → Agregar a inicio), ábrela desde ahí y luego toca el botón.','To get push on iPhone, add this website to your Home Screen and open it from there, then come back here.':'Para recibir avisos en iPhone, agrega esta página a la pantalla de inicio y ábrela desde ahí, luego vuelve aquí.','✓ This phone will get notifications.':'✓ Este teléfono recibirá notificaciones.',
-'Customer email (for invoices)':'Correo del cliente (para facturas)','🧾 Invoice':'🧾 Factura','🖨 Print / Save PDF':'🖨 Imprimir / Guardar PDF','✉️ Email customer':'✉️ Enviar al cliente','← Close':'← Cerrar','Add the customer email on the ticket first, then try again.':'Agrega el correo del cliente en la orden primero e intenta otra vez.','Could not send the email. Check your signal.':'No se pudo enviar el correo. Revisa la señal.','🧾 Invoice':'🧾 Factura','Shown on printed invoices.':'Aparece en las facturas impresas.','Shop address':'Dirección del taller','Remit payment to':'Enviar el pago a','Tax rate (%)':'Impuesto (%)','Tax label':'Etiqueta del impuesto','Terms':'Términos','First invoice #':'Primer # de factura','Email':'Correo','Phone':'Teléfono','Delete customer':'Eliminar cliente','Delete this customer? Their SOs stay.':'¿Eliminar este cliente? Sus SO se quedan.',
+'Customer email (for invoices)':'Correo del cliente (para facturas)','🧾 Invoice':'🧾 Factura','🖨 Print / Save PDF':'🖨 Imprimir / Guardar PDF','✉️ Email customer':'✉️ Enviar al cliente','← Close':'← Cerrar','Add the customer email on the ticket first, then try again.':'Agrega el correo del cliente en la orden primero e intenta otra vez.','Could not send the email. Check your signal.':'No se pudo enviar el correo. Revisa la señal.','🧾 Invoice':'🧾 Factura','Shown on printed invoices.':'Aparece en las facturas impresas.','Shop address':'Dirección del taller','Remit payment to':'Enviar el pago a','Tax rate (%)':'Impuesto (%)','Tax label':'Etiqueta del impuesto','Terms':'Términos','First invoice #':'Primer # de factura','Email':'Correo','Phone':'Teléfono','Parts markup (%)':'Margen en piezas (%)','Always CC these emails on invoices (one per line)':'Siempre poner en copia (CC) estos correos (uno por línea)','Added to part prices on invoices (a per-invoice checkbox can turn it off).':'Se suma al precio de las piezas en las facturas (una casilla por factura puede quitarlo).','Parts cost':'Costo de piezas','Parts billed':'Piezas facturadas','Delete customer':'Eliminar cliente','Delete this customer? Their SOs stay.':'¿Eliminar este cliente? Sus SO se quedan.',
 'Delete this part from the list?':'¿Eliminar esta pieza de la lista?','Delete part':'Eliminar pieza','Description':'Descripción','Edit':'Editar','Edit part':'Editar pieza',
 'Email':'Correo','Every open ticket is scheduled.':'Todas las órdenes abiertas están programadas.','Gallery':'Galería','Hours this week':'Horas esta semana',
 'Hours to bill together':'Horas a facturar juntas','Location (shelf / bin)':'Ubicación (estante / caja)','Mark done':'Marcar terminada',
@@ -640,7 +642,7 @@ var PAT=[
 [/^🏷 Price parts \((\d+)\)$/,'🏷 Poner precio ($1)'],[/^🛒 Order parts \((\d+)\)$/,'🛒 Pedir piezas ($1)'],[/^📦 Receive parts \((\d+)\)$/,'📦 Recibir piezas ($1)'],
 [/^Invoiced (\d+) days? ago$/,'Facturada hace $1 día(s)'],[/^Paid (.+)$/,'Pagada $1'],[/^All revenue · (\d+) orders$/,'Ingresos totales · $1 órdenes'],[/^Labor · (\d+) orders$/,'Mano de obra · $1 órdenes'],[/^Parts · (\d+) orders$/,'Piezas · $1 órdenes'],
 [/^(\d+) SOs? · (.+) h authorized$/,'$1 SO · $2 h autorizadas'],[/^(.+) days$/,'$1 días'],
-[/^✓ Invoice emailed to (.+)$/,'✓ Factura enviada a $1'],[/^Email not sent: (.+)$/,'Correo no enviado: $1'],[/^Requested by: (.*)$/,'Pidió: $1'],[/^PO #: (.*)$/,'PO #: $1'],[/^Available: (.*)$/,'Disponible: $1'],[/^⚠️ Must access at: (.*)$/,'⚠️ Atender a las: $1'],[/^Wanted back: (.*)$/,'De regreso: $1'],
+[/^✓ Invoice emailed to (.+)$/,'✓ Factura enviada a $1'],[/^Add (.+)% parts markup to the invoice$/,'Agregar $1% de margen en piezas a la factura'],[/^Add (.+)% parts markup \(not shown on the invoice\)$/,'Agregar $1% de margen en piezas (no aparece en la factura)'],[/^\+ (.+)% markup$/,'+ $1% margen'],[/^Email not sent: (.+)$/,'Correo no enviado: $1'],[/^Requested by: (.*)$/,'Pidió: $1'],[/^PO #: (.*)$/,'PO #: $1'],[/^Available: (.*)$/,'Disponible: $1'],[/^⚠️ Must access at: (.*)$/,'⚠️ Atender a las: $1'],[/^Wanted back: (.*)$/,'De regreso: $1'],
 [/^Pre-authorized up to (.*)$/,'Pre-autorizado hasta $1'],[/^Over by (.+)\. Get the customer's approval\.$/,'Excede por $1. Pide la aprobación del cliente.'],[/^Plate (.+?) · (.*)$/,function(m,a,b){return 'Placa '+a+' · '+b}],
 [/^✓ Found in your records: SO (.+)$/,'✓ Encontrado en tus registros: SO $1'],[/^Plate (.+) copied\. (.+)$/,function(m,a,b){return 'Placa '+a+' copiada. '+trS(b)}],[/^Plate (.+)$/,'Placa $1'],
 [/^✓ (.+?)( \(read by Claude, please double-check\))?( · VIN check digit does not match, double-check the VIN)?$/,function(m,a,b,c){return '✓ '+a+(b?' (leído por Claude, revísalo)':'')+(c?' · el dígito de control del VIN no coincide, revisa el VIN':'')}],
@@ -815,8 +817,8 @@ function listView(){
 function billBox(o){
   if(tab!=1)return '';
   var n='SO '+esc(sonum(o));
-  if(o.billed)return '<div class="card" style="margin-top:12px"><b>Billing</b> <span class="tag billed">BILLED</span><div class="mu">'+n+' billed on '+new Date(o.billedAt).toLocaleDateString(LOC())+(o.billedWith&&o.billedWith.length>1?'<br>Billed together: SO '+esc(o.billedWith.join(' + ')):'')+'</div>'+hoursTable([o])+partsSum([o])+estSum([o])+'<div class="row"><button class="btn" style="margin-top:0" onclick="openInvoice(\''+o.id+'\')">🧾 Invoice</button><button class="btn alt" style="margin-top:0" onclick="bill(\''+o.id+'\',false)">'+(o.billedWith&&o.billedWith.length>1?'Undo billing for all '+o.billedWith.length+' parts':'Undo billed')+'</button></div></div>';
-  return '<div class="card" style="margin-top:12px"><b>Billing</b><div class="mu">'+(o.status=='done'?n+' is done and ready to bill.':n+' is not marked done yet.')+'</div>'+hoursTable([o])+partsSum([o])+estSum([o])+'<button class="btn" style="background:var(--ok)" onclick="bill(\''+o.id+'\',true)">💲 Mark '+n+' billed</button></div>';
+  if(o.billed)return '<div class="card" style="margin-top:12px"><b>Billing</b> <span class="tag billed">BILLED</span><div class="mu">'+n+' billed on '+new Date(o.billedAt).toLocaleDateString(LOC())+(o.billedWith&&o.billedWith.length>1?'<br>Billed together: SO '+esc(o.billedWith.join(' + ')):'')+'</div>'+hoursTable([o])+partsSum([o])+billSummary(o)+'<div class="row"><button class="btn" style="margin-top:0" onclick="openInvoice(\''+o.id+'\')">🧾 Invoice</button><button class="btn alt" style="margin-top:0" onclick="bill(\''+o.id+'\',false)">'+(o.billedWith&&o.billedWith.length>1?'Undo billing for all '+o.billedWith.length+' parts':'Undo billed')+'</button></div></div>';
+  return '<div class="card" style="margin-top:12px"><b>Billing</b><div class="mu">'+(o.status=='done'?n+' is done and ready to bill.':n+' is not marked done yet.')+'</div>'+hoursTable([o])+partsSum([o])+billSummary(o)+'<button class="btn" style="background:var(--ok)" onclick="bill(\''+o.id+'\',true)">💲 Mark '+n+' billed</button></div>';
 }
 function bill(id,v){
   var o=byId(id);if(!o)return;
@@ -1673,6 +1675,14 @@ function est(o){
 }
 function estSum(list){var t={lh:0,lab:0,pp:0,tot:0};list.forEach(function(o){var e=est(o);t.lh+=e.lh;t.lab+=e.lab;t.pp+=e.pp;t.tot+=e.tot});
   return '<div class="hrs"><b>Invoice total</b><div class="row mu"><span>Labor ('+t.lh.toFixed(2)+' invoiced h)</span><span>'+money(t.lab)+'</span></div><div class="row mu"><span>Parts</span><span>'+money(t.pp)+'</span></div><div class="row"><b>Total</b><b style="text-align:right">'+money(t.tot)+'</b></div></div>'}
+function markupToggle(o){return tab!=1?'':'<label class="ck"><input type="checkbox"'+(markupOn(o)?' checked':'')+' onchange="toggleMarkup(\''+o.id+'\',this.checked)"><span>Add '+(parseFloat(iv('markup'))||0)+'% parts markup to the invoice</span></label>'}
+function billSummary(o){var T=invTotal(o);
+  return '<div class="hrs"><b>Invoice total</b>'+
+    '<div class="row mu"><span>Labor ('+T.lh.toFixed(2)+' h)</span><span>'+money(T.lab)+'</span></div>'+
+    '<div class="row mu"><span>Parts cost</span><span>'+money(T.pp)+'</span></div>'+
+    (T.mPct?'<div class="row mu"><span>+ '+T.mPct+'% markup</span><span>'+money(T.markup)+'</span></div><div class="row mu"><span>Parts billed</span><span>'+money(T.ppM)+'</span></div>':'')+
+    (T.rate?'<div class="row mu"><span>Tax · '+esc(iv('taxLabel'))+' ('+T.rate+'%)</span><span>'+money(T.tax)+'</span></div>':'')+
+    '<div class="row"><b>Total</b><b style="text-align:right">'+money(T.total)+'</b></div></div>'+markupToggle(o)}
 function estimateTab(o){
   var e=est(o),A=acts(o);
   var h='<div class="card"><b>Estimate · SO '+esc(sonum(o))+'</b><div class="mu">'+esc(o.customer)+' · '+esc(o.unit)+(o.vin?' · VIN '+esc(o.vin):'')+(o.mileage?' · '+esc(o.mileage)+' mi':'')+'</div>'+
@@ -1689,28 +1699,36 @@ function estimateTab(o){
 }
 // ---- printable invoice (prefilled from the shop's real invoice; editable in Settings) ----
 var INVDEF={shopAddr:'245 Quaker Road\nPomona, NY 10970',shopEmail:'office@waymoreauto.com',shopPhone:'845-293-2266',
-  remit:'Waymore Auto\n49 Mezritch Rd #114\nSpring Valley, NY 10977',taxLabel:'Spring Valley',taxRate:8.375,terms:'COD',invStart:1001};
+  remit:'Waymore Auto\n49 Mezritch Rd #114\nSpring Valley, NY 10977',taxLabel:'Spring Valley',taxRate:8.375,terms:'COD',invStart:1001,markup:50,invCC:''};
+// Parts markup: added to part prices on the customer invoice (not shown as a line). On by default; a per-order checkbox can turn it off.
+function markupOn(o){return o&&o.markup!==false}
+function markPct(o){return markupOn(o)?(parseFloat(iv('markup'))||0):0}
+function toggleMarkup(id,v){var o=byId(id);if(!o)return;o.markup=!!v;saveOrder(o).then(render)}
+function ccList(){return String(iv('invCC')||'').split(/[\n,;]+/).map(function(s){return s.trim()}).filter(function(s){return /@/.test(s)})}
 function iv(k){var c=cfg||{},v=c[k];return (v===undefined||v===''||v===null)?INVDEF[k]:v}
 function invName(){return (cfg&&cfg.shop)||'Waymore Auto'}
 function nextInv(){var mx=all().reduce(function(m,o){var n=parseInt(String(o.invNo||'').replace(/\D/g,''));return n>m?n:m},0);return Math.max((parseInt(iv('invStart'))||1001),mx+1)}
 function invGroup(o){return o.billed&&o.billedWith&&o.billedWith.length>1?parts(o).filter(function(p){return p.billed&&p.billedAt===o.billedAt}):[o]}
-function invTotal(o){var G=invGroup(o),lab=0,pp=0,lh=0;G.forEach(function(x){var e=est(x);lab+=e.lab;pp+=e.pp;lh+=e.lh});var sub=lab+pp,rate=parseFloat(iv('taxRate'))||0,tax=sub*rate/100,total=sub+tax,paid=o.paid?total:0;return {lh:lh,lab:lab,pp:pp,sub:sub,rate:rate,tax:tax,total:total,paid:paid,bal:total-paid}}
+function invTotal(o){var G=invGroup(o),lab=0,pp=0,lh=0;G.forEach(function(x){var e=est(x);lab+=e.lab;pp+=e.pp;lh+=e.lh});
+  var mPct=markPct(o),ppM=pp*(1+mPct/100),markup=ppM-pp,sub=lab+ppM,rate=parseFloat(iv('taxRate'))||0,tax=sub*rate/100,total=sub+tax,paid=o.paid?total:0;
+  return {lh:lh,lab:lab,pp:pp,ppM:ppM,mPct:mPct,markup:markup,sub:sub,rate:rate,tax:tax,total:total,paid:paid,bal:total-paid}}
 function nl2br(s){return esc(String(s||'')).replace(/\n/g,'<br>')}
 function invRow(item,desc,qty,rate,amt){return '<tr><td>'+esc(item)+'</td><td>'+desc+'</td><td class="r">'+(qty!=null?qty:'')+'</td><td class="r">'+(rate!=null?money(rate):'')+'</td><td class="r">'+money(amt)+'</td></tr>'}
 function invoiceHTML(o){
-  var G=invGroup(o),T=invTotal(o),d=new Date(o.invDate||o.billedAt||Date.now()),dd=d.toLocaleDateString(LOC());
+  var G=invGroup(o),T=invTotal(o),d=new Date(o.invDate||o.billedAt||Date.now()),dd=d.toLocaleDateString(LOC()),m=markPct(o)/100;
   var rows='';
   G.forEach(function(x){var rate=+x.rate||0;
     acts(x).forEach(function(a){var hrs=+a.inv||0,lab=hrs*rate;
       var desc='<div>'+esc(a.c||x.desc||'Service')+(a.corr?' — '+esc(a.corr):'')+'</div><div class="mu">Created: '+new Date(x.created||d).toLocaleDateString(LOC())+(a.doneAt?' · Completed: '+new Date(a.doneAt).toLocaleDateString(LOC()):'')+'</div>';
       if(hrs||lab)rows+=invRow('Labor',desc,hrs.toFixed(2),rate,lab);
-      (a.parts||[]).forEach(function(p){rows+=invRow('Part',esc((p.no?p.no+' — ':'')+(p.d||'')),p.q,p.pr||0,p.q*(p.pr||0))});
+      (a.parts||[]).forEach(function(p){rows+=invRow('Part',esc((p.no?p.no+' — ':'')+(p.d||'')),p.q,(p.pr||0)*(1+m),p.q*(p.pr||0)*(1+m))});
     });
-    (x.partsUsed||[]).forEach(function(p){rows+=invRow('Part',esc((p.no?p.no+' — ':'')+(p.d||'')),p.q,p.pr||0,p.q*(p.pr||0))});
+    (x.partsUsed||[]).forEach(function(p){rows+=invRow('Part',esc((p.no?p.no+' — ':'')+(p.d||'')),p.q,(p.pr||0)*(1+m),p.q*(p.pr||0)*(1+m))});
   });
   if(!rows)rows='<tr><td colspan="5" class="mu">No priced labor or parts yet. Set invoiced hours and part prices on the Shop desk.</td></tr>';
   var sos=G.map(function(x){return sonum(x)}).join(', ');
   var h='<div class="inv">';
+  h+='<label class="noprint" style="display:flex;gap:8px;align-items:center;margin-bottom:12px;font-size:13px;color:#111"><input type="checkbox" '+(markupOn(o)?'checked':'')+' onchange="toggleMarkup(\''+o.id+'\',this.checked)"> Add '+(parseFloat(iv('markup'))||0)+'% parts markup (not shown on the invoice)</label>';
   h+='<div class="hd"><div><div class="wm">WAYMORE <span>TRUCK REPAIRS</span></div><div style="margin-top:6px;font-weight:700">'+esc(invName())+'</div><div class="mu" style="font-size:12px">'+nl2br(iv('shopAddr'))+'<br>'+esc(iv('shopEmail'))+'<br>'+esc(iv('shopPhone'))+'</div></div>'+
     '<div class="ino"><div class="lbl">Invoice</div><b>'+esc(o.invNo||'(draft)')+'</b><div class="lbl" style="margin-top:8px">Date</div><div>'+dd+'</div></div></div>';
   h+='<div class="two"><div><div class="lbl">Bill To</div><div style="font-weight:700">'+esc(o.customer||'')+'</div>'+(o.contact?'<div class="mu">'+esc(o.contact)+'</div>':'')+(o.email?'<div class="mu">'+esc(o.email)+'</div>':'')+'</div>'+
@@ -1721,7 +1739,7 @@ function invoiceHTML(o){
   h+='<div class="unitb"><b>Unit:</b> '+esc(o.unit||'—')+(o.vin?' &nbsp; <b>VIN:</b> '+esc(o.vin):'')+(o.plate?'<br><b>License Plate:</b> '+(o.plateState?'('+esc(o.plateState)+') ':'')+esc(o.plate):'')+(o.mileage?'<br><b>Mileage:</b> '+esc(o.mileage):'')+(o.vehicle?'<br><span class="mu">'+esc(o.vehicle)+'</span>':'')+'</div>';
   h+='<div class="tot">'+
     '<div class="row"><span>Labor</span><span>'+money(T.lab)+'</span></div>'+
-    '<div class="row"><span>Parts</span><span>'+money(T.pp)+'</span></div>'+
+    '<div class="row"><span>Parts</span><span>'+money(T.ppM)+'</span></div>'+
     '<div class="row"><span>Subtotal</span><span>'+money(T.sub)+'</span></div>'+
     (T.rate?'<div class="row"><span>Tax · '+esc(iv('taxLabel'))+' ('+T.rate+'% of '+money(T.sub)+')</span><span>'+money(T.tax)+'</span></div>':'')+
     '<div class="row grand"><span>Total</span><span>'+money(T.total)+'</span></div>'+
@@ -1744,17 +1762,17 @@ function invMount(){var w=document.getElementById('invwrap');
 }
 // email-safe invoice (inline styles so Gmail/Apple Mail render it)
 function invoiceEmailHTML(o){
-  var G=invGroup(o),T=invTotal(o),dd=new Date(o.invDate||o.billedAt||Date.now()).toLocaleDateString(LOC());
+  var G=invGroup(o),T=invTotal(o),dd=new Date(o.invDate||o.billedAt||Date.now()).toLocaleDateString(LOC()),m=markPct(o)/100;
   var cell='padding:7px 8px;border-bottom:1px solid #eee;font-size:13px;color:#111';
   var rth='padding:6px 8px;border-bottom:2px solid #111;font-size:10px;text-transform:uppercase;color:#888;text-align:left';
   function line(item,desc,qty,rate,amt){return '<tr><td style="'+cell+'">'+esc(item)+'</td><td style="'+cell+'">'+desc+'</td><td style="'+cell+';text-align:right">'+qty+'</td><td style="'+cell+';text-align:right">'+money(rate)+'</td><td style="'+cell+';text-align:right">'+money(amt)+'</td></tr>'}
   var rows='';
   G.forEach(function(x){var rate=+x.rate||0;
     acts(x).forEach(function(a){var hrs=+a.inv||0;if(hrs||hrs*rate)rows+=line('Labor',esc(a.c||x.desc||'Service')+(a.corr?' — '+esc(a.corr):''),hrs.toFixed(2),rate,hrs*rate);
-      (a.parts||[]).forEach(function(p){rows+=line('Part',esc((p.no?p.no+' — ':'')+(p.d||'')),p.q,p.pr||0,p.q*(p.pr||0))})});
-    (x.partsUsed||[]).forEach(function(p){rows+=line('Part',esc((p.no?p.no+' — ':'')+(p.d||'')),p.q,p.pr||0,p.q*(p.pr||0))})});
+      (a.parts||[]).forEach(function(p){rows+=line('Part',esc((p.no?p.no+' — ':'')+(p.d||'')),p.q,(p.pr||0)*(1+m),p.q*(p.pr||0)*(1+m))})});
+    (x.partsUsed||[]).forEach(function(p){rows+=line('Part',esc((p.no?p.no+' — ':'')+(p.d||'')),p.q,(p.pr||0)*(1+m),p.q*(p.pr||0)*(1+m))})});
   function tr2(l,v,b){var s='padding:3px 0;font-size:13px'+(b?';font-weight:700;border-top:2px solid #111':'');return '<tr><td style="'+s+'">'+l+'</td><td align="right" style="'+s+'">'+v+'</td></tr>'}
-  var tot='<table style="width:280px;margin:12px 0 0 auto">'+tr2('Labor',money(T.lab))+tr2('Parts',money(T.pp))+tr2('Subtotal',money(T.sub))+(T.rate?tr2('Tax · '+esc(iv('taxLabel'))+' ('+T.rate+'%)',money(T.tax)):'')+tr2('Total',money(T.total),true)+tr2('Payments & Credits',money(T.paid))+tr2('Balance Due',money(T.bal),true)+'</table>';
+  var tot='<table style="width:280px;margin:12px 0 0 auto">'+tr2('Labor',money(T.lab))+tr2('Parts',money(T.ppM))+tr2('Subtotal',money(T.sub))+(T.rate?tr2('Tax · '+esc(iv('taxLabel'))+' ('+T.rate+'%)',money(T.tax)):'')+tr2('Total',money(T.total),true)+tr2('Payments & Credits',money(T.paid))+tr2('Balance Due',money(T.bal),true)+'</table>';
   return '<div style="font-family:Arial,Helvetica,sans-serif;max-width:640px;margin:0 auto;color:#111;padding:8px">'+
     '<div style="font-size:20px;font-weight:800">WAYMORE <span style="color:#e6a700">TRUCK REPAIRS</span></div>'+
     '<div style="font-weight:700;margin-top:4px">'+esc(invName())+'</div>'+
@@ -1769,7 +1787,7 @@ function emailInvoice(id,auto){
   if(!o.email){if(!auto)toast('Add the customer email on the ticket first, then try again.',true);return}
   if(!o.invNo){o.invNo='INV-'+nextInv();if(!o.invDate)o.invDate=Date.now()}
   var T=invTotal(o),html=invoiceEmailHTML(o),subject=invName()+' · Invoice '+(o.invNo||'')+' · '+money(T.total);
-  try{if(SB&&sbc&&sbc.functions)sbc.functions.invoke('send-invoice',{body:{to:o.email,subject:subject,html:html,replyTo:iv('shopEmail')}}).then(function(r){
+  try{if(SB&&sbc&&sbc.functions)sbc.functions.invoke('send-invoice',{body:{to:o.email,cc:ccList(),subject:subject,html:html,replyTo:iv('shopEmail')}}).then(function(r){
       var err=(r&&r.error&&r.error.message)||(r&&r.data&&r.data.error);
       if(!auto){if(err)toast('Email not sent: '+err,true);else toast('✓ Invoice emailed to '+o.email)}
     }).catch(function(){if(!auto)toast('Could not send the email. Check your signal.',true)});}catch(e){}
