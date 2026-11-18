@@ -105,6 +105,29 @@ details.card>summary{font-weight:700;cursor:pointer;font-size:16px;padding:2px 0
 .card.run{border:3px solid var(--ok);box-shadow:0 0 0 4px rgba(43,138,62,.18)}
 .runb{background:var(--ok);color:#fff;font-weight:700;font-size:13px;border-radius:8px;padding:4px 10px;margin:-4px 0 8px;display:inline-block}
 @media print{header,nav,.btn,.seg,.sub,#mbw{display:none!important}body{background:#fff}.card{border:0}}
+#invwrap{position:fixed;inset:0;background:#fff;color:#111;overflow:auto;z-index:4000;font-size:13px;-webkit-text-size-adjust:100%}
+.invbar{position:sticky;top:0;display:flex;gap:8px;padding:10px;background:#f1f3f5;border-bottom:1px solid #ddd;z-index:1}
+.invbar .btn{margin:0;width:auto;flex:1;padding:12px 6px}
+.inv{max-width:820px;margin:0 auto;padding:22px 20px 60px;color:#111;background:#fff;line-height:1.4}
+.inv .hd{display:flex;justify-content:space-between;gap:16px;align-items:flex-start}
+.inv .wm{font-size:22px;font-weight:800;letter-spacing:.5px}
+.inv .wm span{color:#e6a700}
+.inv .ino{text-align:right}.inv .ino b{font-size:18px}
+.inv .two{display:flex;justify-content:space-between;gap:24px;margin:14px 0}
+.inv .two>div{flex:1}
+.inv .lbl{font-size:10px;letter-spacing:.5px;text-transform:uppercase;color:#888;font-weight:700}
+.inv table{width:100%;border-collapse:collapse;margin:14px 0 6px}
+.inv th{font-size:10px;letter-spacing:.3px;text-transform:uppercase;color:#888;text-align:left;border-bottom:1px solid #111;padding:6px 6px}
+.inv td{text-align:left;padding:7px 6px;border-bottom:1px solid #eee;vertical-align:top}
+.inv td.r,.inv th.r{text-align:right;white-space:nowrap}
+.inv .mu{color:#777;font-size:11px}
+.inv .tot{margin-left:auto;width:62%;max-width:360px;margin-top:8px}
+.inv .tot .row{display:flex;justify-content:space-between;padding:4px 0}
+.inv .tot .grand{border-top:2px solid #111;font-weight:800;font-size:16px;margin-top:4px;padding-top:7px}
+.inv .tot .bal{border-top:1px solid #111;font-weight:800;padding-top:6px}
+.inv .unitb{margin-top:14px;font-size:12px}
+.inv .meta td{border-bottom:0;padding:3px 6px}
+@media print{body.inv-open>*:not(#invwrap){display:none!important}body.inv-open #invwrap{position:static;overflow:visible}.invbar,.noprint{display:none!important}}
 .tag.billed{background:var(--ok);border-color:var(--ok);color:#fff}.tag.tobill{color:var(--act);border-color:var(--act)}
 .pt{display:inline-block;font-size:12px;font-weight:700;padding:2px 8px;border-radius:99px;background:var(--tx);color:var(--bg);margin-left:4px;vertical-align:2px}
 .prt{display:flex;gap:8px;align-items:center;padding:10px 0;border-top:1px solid var(--ln);cursor:pointer}
@@ -472,6 +495,12 @@ function settingsView(){
     '<label class="ck"><input type="checkbox" id="s_auth"'+ck(cfg.auth!==false)+'><span>Shop must authorize each repair</span></label>'+
     '<label class="ck"><input type="checkbox" id="s_mp"'+ck(cfg.mechPrices)+'><span>Mechanics can see prices</span></label>'+
     '<label style="display:block;margin-top:10px">Mechanics (one name per line)</label><textarea id="s_me" rows="4">'+esc((cfg.mechs||[]).join('\n'))+'</textarea>'+
+    '<div class="box2"><b>🧾 Invoice</b><div class="mu">Shown on printed invoices.</div>'+
+     '<label>Shop address</label><textarea id="s_iaddr" rows="2">'+esc(iv('shopAddr'))+'</textarea>'+
+     '<div class="row"><span><label>Email</label><input id="s_iemail" value="'+esc(iv('shopEmail'))+'"></span><span><label>Phone</label><input id="s_iphone" value="'+esc(iv('shopPhone'))+'"></span></div>'+
+     '<label>Remit payment to</label><textarea id="s_iremit" rows="3">'+esc(iv('remit'))+'</textarea>'+
+     '<div class="row"><span><label>Tax rate (%)</label><input id="s_itax" inputmode="decimal" value="'+esc(iv('taxRate'))+'"></span><span><label>Tax label</label><input id="s_itaxl" value="'+esc(iv('taxLabel'))+'"></span></div>'+
+     '<div class="row"><span><label>Terms</label><input id="s_iterms" value="'+esc(iv('terms'))+'"></span><span><label>First invoice #</label><input id="s_iinv" inputmode="numeric" value="'+esc(iv('invStart'))+'"></span></div></div>'+
     (SB?'<div class="box2"><b>🗄 Supabase</b><div class="mu">All shop data is saved in Supabase. Every change is also kept in the shop_backup history.</div></div>':movedBox('',false)+'<div hidden><b>🗄 Supabase backup</b>'+
      '<label class="ck" style="border:0"><input type="checkbox" id="s_sb"'+ck(cfg.sb!==false)+'><span>Copy every change to Supabase</span></label>'+
      '<label>Project URL</label><input id="s_sbu" autocomplete="off" value="'+esc(sbUrl())+'">'+
@@ -488,7 +517,8 @@ function savePhone(){
 }
 function saveShop(){
   blurA();var c={shop:$('s_shop').value.trim(),rate:parseFloat($('s_rate').value)||0,photos:Math.max(0,parseInt($('s_ph').value)||0),auth:$('s_auth').checked,mechPrices:$('s_mp').checked,
-    mechs:$('s_me').value.split('\n').map(function(s){return s.trim()}).filter(Boolean),sb:$('s_sb')?$('s_sb').checked:cfg.sb,sbUrl:$('s_sbu')?$('s_sbu').value.trim().replace(/\/+$/,''):(cfg.sbUrl||''),sbKey:$('s_sbk')?$('s_sbk').value.trim():(cfg.sbKey||''),updated:Date.now()};
+    mechs:$('s_me').value.split('\n').map(function(s){return s.trim()}).filter(Boolean),sb:$('s_sb')?$('s_sb').checked:cfg.sb,sbUrl:$('s_sbu')?$('s_sbu').value.trim().replace(/\/+$/,''):(cfg.sbUrl||''),sbKey:$('s_sbk')?$('s_sbk').value.trim():(cfg.sbKey||''),
+    shopAddr:$('s_iaddr')?$('s_iaddr').value.trim():cfg.shopAddr,shopEmail:$('s_iemail')?$('s_iemail').value.trim():cfg.shopEmail,shopPhone:$('s_iphone')?$('s_iphone').value.trim():cfg.shopPhone,remit:$('s_iremit')?$('s_iremit').value.trim():cfg.remit,taxRate:$('s_itax')?(parseFloat($('s_itax').value)||0):cfg.taxRate,taxLabel:$('s_itaxl')?$('s_itaxl').value.trim():cfg.taxLabel,terms:$('s_iterms')?$('s_iterms').value.trim():cfg.terms,invStart:$('s_iinv')?(parseInt($('s_iinv').value)||1001):cfg.invStart,updated:Date.now()};
   if(isNaN(parseInt($('s_ph').value)))c.photos=3;
   cfg=c;sv('wm_settings',c);sbPush('settings','shop',c);if(db)db.doc('settings/shop').set(c).catch(function(){$('net').textContent='Could not save'});
   setMsg='✓ Saved';render();
@@ -686,6 +716,7 @@ function render(){
   tr(document.body);
   setNet();if(SB)geoSync();
   if(dtab=='map'&&tab==1&&!cur&&!setOpen)mapMount();
+  invMount();
 }
 function render0(){
   var ae=document.activeElement;if(ae&&ae.id&&ae.type!='checkbox'&&/^(nt|ei|eo|nmi|sp|ck|rv|f_|cu_|pa_|pu_|sc_|dt_|ac_|s_|rp_|lg_|wr_|ve_|po_)/.test(ae.id)){pendR=true;return}
@@ -780,7 +811,7 @@ function listView(){
 function billBox(o){
   if(tab!=1)return '';
   var n='SO '+esc(sonum(o));
-  if(o.billed)return '<div class="card" style="margin-top:12px"><b>Billing</b> <span class="tag billed">BILLED</span><div class="mu">'+n+' billed on '+new Date(o.billedAt).toLocaleDateString(LOC())+(o.billedWith&&o.billedWith.length>1?'<br>Billed together: SO '+esc(o.billedWith.join(' + ')):'')+'</div>'+hoursTable([o])+partsSum([o])+estSum([o])+'<button class="btn alt" onclick="bill(\''+o.id+'\',false)">'+(o.billedWith&&o.billedWith.length>1?'Undo billing for all '+o.billedWith.length+' parts':'Undo billed')+'</button></div>';
+  if(o.billed)return '<div class="card" style="margin-top:12px"><b>Billing</b> <span class="tag billed">BILLED</span><div class="mu">'+n+' billed on '+new Date(o.billedAt).toLocaleDateString(LOC())+(o.billedWith&&o.billedWith.length>1?'<br>Billed together: SO '+esc(o.billedWith.join(' + ')):'')+'</div>'+hoursTable([o])+partsSum([o])+estSum([o])+'<div class="row"><button class="btn" style="margin-top:0" onclick="openInvoice(\''+o.id+'\')">🧾 Invoice</button><button class="btn alt" style="margin-top:0" onclick="bill(\''+o.id+'\',false)">'+(o.billedWith&&o.billedWith.length>1?'Undo billing for all '+o.billedWith.length+' parts':'Undo billed')+'</button></div></div>';
   return '<div class="card" style="margin-top:12px"><b>Billing</b><div class="mu">'+(o.status=='done'?n+' is done and ready to bill.':n+' is not marked done yet.')+'</div>'+hoursTable([o])+partsSum([o])+estSum([o])+'<button class="btn" style="background:var(--ok)" onclick="bill(\''+o.id+'\',true)">💲 Mark '+n+' billed</button></div>';
 }
 function bill(id,v){
@@ -1646,8 +1677,63 @@ function estimateTab(o){
   h+='<div style="border-top:2px solid var(--tx);margin-top:10px;padding-top:6px" class="hrs"><div class="row"><span>Labor ('+e.lh.toFixed(2)+' h)</span><span style="text-align:right">'+money(e.lab)+'</span></div><div class="row"><span>Parts</span><span style="text-align:right">'+money(e.pp)+'</span></div><div class="row" style="font-size:18px"><b>Total</b><b style="text-align:right">'+money(e.tot)+'</b></div></div>'+
     (+o.preAmt>0?'<div class="box2">Customer pre-authorized up to <b>'+money(o.preAmt)+'</b>'+(e.tot>+o.preAmt?'<div style="color:#e03131;font-weight:700">Over by '+money(e.tot-o.preAmt)+'. Get the customer\'s approval.</div>':'<div style="color:var(--ok);font-weight:700">✓ Within the pre-authorized amount</div>')+'</div>':'')+
     (e.lh?'':'<div class="mu">Labor uses the invoiced hours on each action item. Set them on the Shop desk.</div>')+
-    '<div class="row">'+(tab==1&&!o.billed?'<button class="btn alt" onclick="saveDetails(\''+o.id+'\')">Save rate</button>':'')+'<button class="btn alt" onclick="window.print()">🖨 Print</button></div></div>';
+    '<div class="row">'+(tab==1&&!o.billed?'<button class="btn alt" onclick="saveDetails(\''+o.id+'\')">Save rate</button>':'')+'<button class="btn" onclick="openInvoice(\''+o.id+'\')">🧾 Invoice</button></div></div>';
   return h+billBox(o);
+}
+// ---- printable invoice (prefilled from the shop's real invoice; editable in Settings) ----
+var INVDEF={shopAddr:'245 Quaker Road\nPomona, NY 10970',shopEmail:'office@waymoreauto.com',shopPhone:'845-293-2266',
+  remit:'Waymore Auto\n49 Mezritch Rd #114\nSpring Valley, NY 10977',taxLabel:'Spring Valley',taxRate:8.375,terms:'COD',invStart:1001};
+function iv(k){var c=cfg||{},v=c[k];return (v===undefined||v===''||v===null)?INVDEF[k]:v}
+function invName(){return (cfg&&cfg.shop)||'Waymore Auto'}
+function nextInv(){var mx=all().reduce(function(m,o){var n=parseInt(String(o.invNo||'').replace(/\D/g,''));return n>m?n:m},0);return Math.max((parseInt(iv('invStart'))||1001),mx+1)}
+function invGroup(o){return o.billed&&o.billedWith&&o.billedWith.length>1?parts(o).filter(function(p){return p.billed&&p.billedAt===o.billedAt}):[o]}
+function invTotal(o){var G=invGroup(o),lab=0,pp=0,lh=0;G.forEach(function(x){var e=est(x);lab+=e.lab;pp+=e.pp;lh+=e.lh});var sub=lab+pp,rate=parseFloat(iv('taxRate'))||0,tax=sub*rate/100,total=sub+tax,paid=o.paid?total:0;return {lh:lh,lab:lab,pp:pp,sub:sub,rate:rate,tax:tax,total:total,paid:paid,bal:total-paid}}
+function nl2br(s){return esc(String(s||'')).replace(/\n/g,'<br>')}
+function invRow(item,desc,qty,rate,amt){return '<tr><td>'+esc(item)+'</td><td>'+desc+'</td><td class="r">'+(qty!=null?qty:'')+'</td><td class="r">'+(rate!=null?money(rate):'')+'</td><td class="r">'+money(amt)+'</td></tr>'}
+function invoiceHTML(o){
+  var G=invGroup(o),T=invTotal(o),d=new Date(o.invDate||o.billedAt||Date.now()),dd=d.toLocaleDateString(LOC());
+  var rows='';
+  G.forEach(function(x){var rate=+x.rate||0;
+    acts(x).forEach(function(a){var hrs=+a.inv||0,lab=hrs*rate;
+      var desc='<div>'+esc(a.c||x.desc||'Service')+(a.corr?' — '+esc(a.corr):'')+'</div><div class="mu">Created: '+new Date(x.created||d).toLocaleDateString(LOC())+(a.doneAt?' · Completed: '+new Date(a.doneAt).toLocaleDateString(LOC()):'')+'</div>';
+      if(hrs||lab)rows+=invRow('Labor',desc,hrs.toFixed(2),rate,lab);
+      (a.parts||[]).forEach(function(p){rows+=invRow('Part',esc((p.no?p.no+' — ':'')+(p.d||'')),p.q,p.pr||0,p.q*(p.pr||0))});
+    });
+    (x.partsUsed||[]).forEach(function(p){rows+=invRow('Part',esc((p.no?p.no+' — ':'')+(p.d||'')),p.q,p.pr||0,p.q*(p.pr||0))});
+  });
+  if(!rows)rows='<tr><td colspan="5" class="mu">No priced labor or parts yet. Set invoiced hours and part prices on the Shop desk.</td></tr>';
+  var sos=G.map(function(x){return sonum(x)}).join(', ');
+  var h='<div class="inv">';
+  h+='<div class="hd"><div><div class="wm">WAYMORE <span>TRUCK REPAIRS</span></div><div style="margin-top:6px;font-weight:700">'+esc(invName())+'</div><div class="mu" style="font-size:12px">'+nl2br(iv('shopAddr'))+'<br>'+esc(iv('shopEmail'))+'<br>'+esc(iv('shopPhone'))+'</div></div>'+
+    '<div class="ino"><div class="lbl">Invoice</div><b>'+esc(o.invNo||'(draft)')+'</b><div class="lbl" style="margin-top:8px">Date</div><div>'+dd+'</div></div></div>';
+  h+='<div class="two"><div><div class="lbl">Bill To</div><div style="font-weight:700">'+esc(o.customer||'')+'</div>'+(o.contact?'<div class="mu">'+esc(o.contact)+'</div>':'')+'</div>'+
+    '<div><div class="lbl">Remit Payment To</div><div class="mu">'+nl2br(iv('remit'))+'</div></div></div>';
+  h+='<table class="meta"><tr><th>Service Order</th><th>Terms</th><th>Due Date</th><th>Customer PO</th><th>Unit</th></tr>'+
+    '<tr><td>'+esc(sos)+'</td><td>'+esc(iv('terms'))+'</td><td>'+dd+'</td><td>'+esc(o.po||'')+'</td><td>'+esc(o.unit||'')+'</td></tr></table>';
+  h+='<table><tr><th>Item</th><th>Description</th><th class="r">Qty</th><th class="r">Rate</th><th class="r">Amount</th></tr>'+rows+'</table>';
+  h+='<div class="unitb"><b>Unit:</b> '+esc(o.unit||'—')+(o.vin?' &nbsp; <b>VIN:</b> '+esc(o.vin):'')+(o.plate?'<br><b>License Plate:</b> '+(o.plateState?'('+esc(o.plateState)+') ':'')+esc(o.plate):'')+(o.mileage?'<br><b>Mileage:</b> '+esc(o.mileage):'')+(o.vehicle?'<br><span class="mu">'+esc(o.vehicle)+'</span>':'')+'</div>';
+  h+='<div class="tot">'+
+    '<div class="row"><span>Labor</span><span>'+money(T.lab)+'</span></div>'+
+    '<div class="row"><span>Parts</span><span>'+money(T.pp)+'</span></div>'+
+    '<div class="row"><span>Subtotal</span><span>'+money(T.sub)+'</span></div>'+
+    (T.rate?'<div class="row"><span>Tax · '+esc(iv('taxLabel'))+' ('+T.rate+'% of '+money(T.sub)+')</span><span>'+money(T.tax)+'</span></div>':'')+
+    '<div class="row grand"><span>Total</span><span>'+money(T.total)+'</span></div>'+
+    '<div class="row"><span>Payments &amp; Credits</span><span>'+money(T.paid)+'</span></div>'+
+    '<div class="row bal"><span>Balance Due</span><span>'+money(T.bal)+'</span></div></div>';
+  h+='<div class="mu" style="margin-top:28px">'+(o.paid?'Paid '+new Date(o.paidAt||d).toLocaleDateString(LOC())+(o.payMethod?' · '+esc(o.payMethod):''):'Thank you for your business.')+'</div>';
+  return h+'</div>';
+}
+var invOpen=null;
+function openInvoice(id){var o=byId(id);if(!o)return;if(!o.invNo){o.invNo='INV-'+nextInv();if(!o.invDate)o.invDate=Date.now();saveOrder(o)}invOpen=id;render();scrollTo(0,0)}
+function closeInvoice(){invOpen=null;render()}
+function shareInvoice(){var o=byId(invOpen);if(!o)return;var T=invTotal(o),txt=invName()+' '+(o.invNo||'Invoice')+' · '+(o.customer||'')+' · '+money(T.total);
+  if(navigator.share){navigator.share({title:o.invNo||'Invoice',text:txt}).catch(function(){})}else{window.print()}}
+function invMount(){var w=document.getElementById('invwrap');
+  if(!invOpen){if(w)w.remove();document.body.classList.remove('inv-open');return}
+  var o=byId(invOpen);if(!o){if(w)w.remove();document.body.classList.remove('inv-open');invOpen=null;return}
+  if(!w){w=document.createElement('div');w.id='invwrap';document.body.appendChild(w)}
+  document.body.classList.add('inv-open');
+  w.innerHTML='<div class="invbar noprint"><button class="btn alt" onclick="closeInvoice()">← Close</button><button class="btn alt" onclick="window.print()">🖨 Print / Save PDF</button><button class="btn alt" onclick="shareInvoice()">Share</button></div>'+invoiceHTML(o);
 }
 function lastMiles(o){
   var best=null;all().forEach(function(x){if(x.id===o.id||grp(x)===grp(o))return;var same=(o.vin&&x.vin&&lc(x.vin)===lc(o.vin))||(o.plate&&x.plate&&lc(x.plate)===lc(o.plate))||(lc(o.unit)&&lc(x.unit)===lc(o.unit));var mi=parseInt(String(x.mileage||'').replace(/\D/g,''));
