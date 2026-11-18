@@ -1,0 +1,232 @@
+<title>Orbit Switch</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@600;800&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  /* Layout: one full-screen canvas, HUD pinned top, overlay card centered. Single deliberate dark "deep space" look. */
+  :root {
+    --void: #0b0e1a;
+    --ink: #e8ecff;
+    --muted: #8a93b8;
+    --lane: #2a3256;
+    --star: #ffd166;
+    --rock: #ff6b6b;
+    --ship: #7ae7ff;
+    --display: "Syne", "Trebuchet MS", sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+    color-scheme: dark;
+  }
+  html, body { height: 100%; }
+  body {
+    background: var(--void); color: var(--ink); font-family: var(--mono);
+    overflow: hidden; user-select: none; -webkit-user-select: none; touch-action: manipulation;
+  }
+  canvas { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+  .hud {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 2; pointer-events: none;
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding-top: calc(14px + env(safe-area-inset-top, 0px)); padding-bottom: 0;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    font-variant-numeric: tabular-nums;
+  }
+  .hud .label { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+  .hud .val { font-family: var(--display); font-weight: 800; font-size: 28px; line-height: 1; }
+  .hud .right { text-align: right; }
+  .overlay {
+    position: fixed; inset: 0; z-index: 3; display: grid; place-items: center;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    background: color-mix(in srgb, var(--void) 55%, transparent);
+  }
+  .card { max-width: 340px; display: grid; gap: 14px; text-align: center; }
+  h1 { margin: 0; font-family: var(--display); font-weight: 800; font-size: clamp(40px, 11vw, 64px); letter-spacing: -.02em; line-height: .95; text-wrap: balance; }
+  h1 span { color: var(--ship); }
+  p { margin: 0; color: var(--muted); line-height: 1.55; font-size: 13px; }
+  .legend { display: flex; gap: 18px; justify-content: center; font-size: 12px; color: var(--ink); }
+  .dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 6px; vertical-align: 0; }
+  button {
+    font: 600 15px var(--display); letter-spacing: .06em; text-transform: uppercase;
+    color: var(--void); background: var(--ship); border: 0; border-radius: 999px;
+    padding: 12px 28px; cursor: pointer; justify-self: center;
+  }
+  button:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+  .final { font-family: var(--display); font-weight: 800; font-size: 48px; color: var(--star); line-height: 1; }
+</style>
+
+<canvas id="c"></canvas>
+<div class="hud">
+  <div><div class="label">Stars</div><div class="val" id="score">0</div></div>
+  <div class="right"><div class="label">Best</div><div class="val" id="best">0</div></div>
+</div>
+<div class="overlay" id="overlay">
+  <div class="card">
+    <h1>Orbit <span>Switch</span></h1>
+    <p id="msg">Your probe circles the planet on its own. Tap, click or press Space to hop between the inner and outer orbit.</p>
+    <div class="legend"><span><i class="dot" style="background:var(--star)"></i>Collect stars</span><span><i class="dot" style="background:var(--rock)"></i>Dodge rocks</span></div>
+    <div class="final" id="final" hidden>0</div>
+    <button id="go" type="button">Launch</button>
+  </div>
+</div>
+
+<script>
+(() => {
+  const cv = document.getElementById('c'), ctx = cv.getContext('2d');
+  const $score = document.getElementById('score'), $best = document.getElementById('best');
+  const overlay = document.getElementById('overlay'), msg = document.getElementById('msg');
+  const final = document.getElementById('final'), go = document.getElementById('go');
+  const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  const C = { lane: css('--lane'), star: css('--star'), rock: css('--rock'), ship: css('--ship'), ink: css('--ink') };
+  const TAU = Math.PI * 2;
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  let W, H, cx, cy, R = [0, 0], dpr = 1;
+  const bgStars = Array.from({ length: 90 }, () => ({ x: Math.random(), y: Math.random(), s: Math.random() * 1.4 + .3, t: Math.random() * TAU }));
+  function resize() {
+    dpr = Math.min(devicePixelRatio || 1, 2);
+    W = innerWidth; H = innerHeight;
+    cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    cx = W / 2; cy = H / 2 + 14;
+    const m = Math.min(W, H - 60);
+    R = [m * 0.24, m * 0.40];
+  }
+  addEventListener('resize', resize); resize();
+
+  let best = 0;
+  try { best = +localStorage.getItem('orbit-best') || 0; } catch (e) {}
+  $best.textContent = best;
+
+  let state = 'menu', ang, lane, shipR, speed, score, objs, spawnT, parts, shake, t0;
+  function reset() {
+    ang = -Math.PI / 2; lane = 1; shipR = R[1]; speed = 1.5; score = 0; objs = []; spawnT = 0; parts = []; shake = 0;
+    $score.textContent = 0;
+    for (let i = 0; i < 4; i++) spawn(ang + 1.2 + i * 1.1);
+  }
+  const rel = a => ((a - ang) % TAU + TAU) % TAU;
+  function spawn(at) {
+    const rockOdds = Math.min(0.35 + score * 0.015, 0.6);
+    const type = Math.random() < rockOdds ? 'rock' : 'star';
+    const l = Math.random() < .5 ? 0 : 1;
+    const a = at ?? ang + Math.PI + (Math.random() - .5) * 1.2;
+    // keep a fair gap: never place a rock where both lanes would be blocked
+    if (objs.some(o => Math.abs(((o.a - a) % TAU + TAU + Math.PI) % TAU - Math.PI) < 0.35)) return;
+    objs.push({ type, lane: l, a, born: performance.now(), prev: rel(a) });
+  }
+  function burst(x, y, col, n) {
+    for (let i = 0; i < n; i++) {
+      const th = Math.random() * TAU, v = 40 + Math.random() * 140;
+      parts.push({ x, y, vx: Math.cos(th) * v, vy: Math.sin(th) * v, life: 1, col });
+    }
+  }
+  function start() {
+    reset(); state = 'play'; overlay.hidden = true; t0 = performance.now();
+  }
+  function over() {
+    state = 'over'; shake = 12;
+    burst(cx + Math.cos(ang) * shipR, cy + Math.sin(ang) * shipR, C.ship, 40);
+    if (score > best) { best = score; $best.textContent = best; try { localStorage.setItem('orbit-best', best); } catch (e) {} }
+    setTimeout(() => {
+      msg.textContent = score >= best && score > 0 ? 'New best orbit run.' : 'A rock clipped your probe.';
+      final.hidden = false; final.textContent = score + (score === 1 ? ' star' : ' stars');
+      go.textContent = 'Fly again'; overlay.hidden = false; go.focus();
+    }, 700);
+  }
+  function flip() { if (state === 'play') lane ^= 1; }
+
+  go.addEventListener('click', e => { e.stopPropagation(); start(); });
+  cv.addEventListener('pointerdown', e => { e.preventDefault(); flip(); });
+  addEventListener('keydown', e => {
+    if (e.code === 'Space' || e.code === 'ArrowUp' || e.code === 'ArrowDown') {
+      e.preventDefault();
+      if (state === 'play') flip(); else if (!overlay.hidden) start();
+    }
+  });
+
+  let last = performance.now();
+  function frame(now) {
+    const dt = Math.min((now - last) / 1000, 0.05); last = now;
+    if (state === 'play') {
+      ang += speed * dt;
+      shipR += (R[lane] - shipR) * Math.min(1, dt * 14);
+      speed = 1.5 + score * 0.045;
+      spawnT -= dt;
+      if (spawnT <= 0) { spawn(); spawnT = Math.max(0.28, 0.75 - score * 0.012); }
+      const sx = cx + Math.cos(ang) * shipR, sy = cy + Math.sin(ang) * shipR;
+      for (let i = objs.length - 1; i >= 0; i--) {
+        const o = objs[i], r = rel(o.a);
+        if (r > o.prev + Math.PI) { objs.splice(i, 1); continue; } // ship passed it
+        o.prev = r;
+        const ox = cx + Math.cos(o.a) * R[o.lane], oy = cy + Math.sin(o.a) * R[o.lane];
+        if (Math.hypot(ox - sx, oy - sy) < (o.type === 'rock' ? 17 : 20)) {
+          if (o.type === 'star') { score++; $score.textContent = score; burst(ox, oy, C.star, 14); objs.splice(i, 1); }
+          else { over(); break; }
+        }
+      }
+    }
+    for (let i = parts.length - 1; i >= 0; i--) {
+      const p = parts[i]; p.x += p.vx * dt; p.y += p.vy * dt; p.life -= dt * 1.6;
+      if (p.life <= 0) parts.splice(i, 1);
+    }
+    shake *= 0.88;
+    draw(now);
+    requestAnimationFrame(frame);
+  }
+
+  function draw(now) {
+    ctx.save();
+    ctx.fillStyle = getComputedStyle(document.body).backgroundColor; ctx.fillRect(0, 0, W, H);
+    if (shake > .5 && !reduce) ctx.translate((Math.random() - .5) * shake, (Math.random() - .5) * shake);
+    for (const s of bgStars) {
+      ctx.globalAlpha = .25 + .35 * (reduce ? 1 : (Math.sin(now / 900 + s.t) + 1) / 2);
+      ctx.fillStyle = C.ink; ctx.fillRect(s.x * W, s.y * H, s.s, s.s);
+    }
+    ctx.globalAlpha = 1;
+    // planet
+    const pr = R[0] * 0.48;
+    const g = ctx.createRadialGradient(cx - pr * .35, cy - pr * .35, pr * .1, cx, cy, pr);
+    g.addColorStop(0, '#6c7bd9'); g.addColorStop(1, '#232a5c');
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(cx, cy, pr, 0, TAU); ctx.fill();
+    // lanes
+    ctx.strokeStyle = C.lane; ctx.lineWidth = 2; ctx.setLineDash([3, 9]);
+    for (const r of R) { ctx.beginPath(); ctx.arc(cx, cy, r, 0, TAU); ctx.stroke(); }
+    ctx.setLineDash([]);
+    // objects
+    for (const o of objs) {
+      const x = cx + Math.cos(o.a) * R[o.lane], y = cy + Math.sin(o.a) * R[o.lane];
+      const k = Math.min(1, (now - o.born) / 300);
+      ctx.globalAlpha = k;
+      if (o.type === 'star') {
+        ctx.fillStyle = C.star; ctx.beginPath();
+        for (let i = 0; i < 10; i++) {
+          const rr = (i % 2 ? 4 : 10) * k, th = i * Math.PI / 5 + now / 600;
+          ctx.lineTo(x + Math.cos(th) * rr, y + Math.sin(th) * rr);
+        }
+        ctx.closePath(); ctx.fill();
+      } else {
+        ctx.fillStyle = C.rock; ctx.beginPath();
+        for (let i = 0; i < 7; i++) {
+          const th = i * TAU / 7 + o.a * 3, rr = (9 + (i % 3) * 2.5) * k;
+          ctx.lineTo(x + Math.cos(th) * rr, y + Math.sin(th) * rr);
+        }
+        ctx.closePath(); ctx.fill();
+      }
+    }
+    ctx.globalAlpha = 1;
+    // ship
+    if (state !== 'over' && ang !== undefined) {
+      const sx = cx + Math.cos(ang) * shipR, sy = cy + Math.sin(ang) * shipR;
+      for (let i = 1; i <= 8; i++) {
+        const a2 = ang - i * 0.035;
+        ctx.globalAlpha = (1 - i / 9) * .5; ctx.fillStyle = C.ship;
+        ctx.beginPath(); ctx.arc(cx + Math.cos(a2) * shipR, cy + Math.sin(a2) * shipR, 6 - i * .5, 0, TAU); ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+      ctx.save(); ctx.translate(sx, sy); ctx.rotate(ang + Math.PI / 2 + Math.PI / 2);
+      ctx.fillStyle = C.ship; ctx.beginPath(); ctx.moveTo(-11, 0); ctx.lineTo(8, -7); ctx.lineTo(4, 0); ctx.lineTo(8, 7); ctx.closePath(); ctx.fill();
+      ctx.restore();
+    }
+    for (const p of parts) { ctx.globalAlpha = Math.max(0, p.life); ctx.fillStyle = p.col; ctx.fillRect(p.x - 2, p.y - 2, 4, 4); }
+    ctx.restore();
+  }
+  requestAnimationFrame(frame);
+})();
+</script>
