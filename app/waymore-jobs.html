@@ -504,6 +504,7 @@ function settingsView(){
      '<div class="row"><button class="btn alt" style="margin-top:0" onclick="sbTest()">🔌 Test connection</button><button class="btn alt" style="margin-top:0" onclick="sbAll()">⬆️ Back up everything now</button></div>'+
      '<div id="sb_st" class="mu" style="margin-top:6px">'+esc(sbStatText())+'</div></div>')+
     '<button class="btn" onclick="saveShop()">Save shop settings</button></div>')+workersBox()+
+   (ROLE=='admin'?'<div class="card"><b>📥 Import from Fullbay</b><p class="mu" style="margin:4px 0 8px">Upload your Fullbay invoices CSV to load your customers and invoice history (including who still owes you).</p><input type="file" id="imp_file" accept=".csv,text/csv" onchange="impPreview(this.files[0])"><div id="imp_out" class="mu" style="margin-top:8px"></div></div>':'')+
    (setMsg?'<p style="color:var(--ok);font-weight:700">'+esc(setMsg)+'</p>':'');
 }
 function savePhone(){
@@ -1015,7 +1016,8 @@ function invListRows(){
   }).filter(function(o){return !q||lc([o.invNo,o.customer,sonum(o),o.unit].join(' ')).indexOf(q)>=0})
    .sort(function(a,b){return (b.invDate||b.billedAt||b.created||0)-(a.invDate||a.billedAt||a.created||0)});
   if(!L.length)return '<div class="mu" style="margin-top:10px">No invoices yet. Mark an order billed, or open a done order and tap 🧾 Invoice.</div>';
-  return L.map(function(o){var T=invTotal(o),st=o.paid?'<span class="pill paid">PAID</span>':(o.billed?'<span class="pill wpay">UNPAID</span>':'<span class="pill open">DRAFT</span>');
+  var more=L.length>300?'<div class="mu" style="margin:8px 0">Showing 300 of '+L.length+'. Search to find a specific invoice.</div>':'';
+  return more+L.slice(0,300).map(function(o){var T=invTotal(o),st=o.paid?'<span class="pill paid">PAID</span>':(o.billed?'<span class="pill wpay">UNPAID</span>':'<span class="pill open">DRAFT</span>');
     return '<div class="card so" onclick="openInvoice(\''+o.id+'\')"><div class="row" style="align-items:center"><span style="flex:1"><b>'+esc(o.invNo||'(draft)')+'</b> · '+esc(o.customer||'')+'<br><span class="mu">'+new Date(o.invDate||o.billedAt||o.created).toLocaleDateString(LOC())+' · SO '+esc(sonum(o))+' · '+money(T.total)+'</span></span><span style="flex:0 0 auto;text-align:right">'+st+(o.invEmailed?'<div class="mu" style="margin-top:4px">✉️ sent</div>':'')+'</span></div></div>';
   }).join('');
 }
@@ -1741,7 +1743,10 @@ function iv(k){var c=cfg||{},v=c[k];return (v===undefined||v===''||v===null)?INV
 function invName(){return (cfg&&cfg.shop)||'Waymore Auto'}
 function nextInv(){var mx=all().reduce(function(m,o){var n=parseInt(String(o.invNo||'').replace(/\D/g,''));return n>m?n:m},0);return Math.max((parseInt(iv('invStart'))||1001),mx+1)}
 function invGroup(o){return o.billed&&o.billedWith&&o.billedWith.length>1?parts(o).filter(function(p){return p.billed&&p.billedAt===o.billedAt}):[o]}
-function invTotal(o){var G=invGroup(o),lab=0,pp=0,lh=0;G.forEach(function(x){var e=est(x);lab+=e.lab;pp+=e.pp;lh+=e.lh});
+function invTotal(o){
+  if(o.imported){var L=+o.impLabor||0,Pt=+o.impParts||0,Fe=+o.impFees||0,Tx=+o.impTax||0,Tt=+o.impTotal||0,Bl=+o.impBalance||0;
+    return {lh:0,lab:L,pp:Pt,ppM:Pt,mPct:0,markup:0,fees:Fe,sub:(Tt-Tx),rate:0,tax:Tx,total:Tt,paid:Tt-Bl,bal:Bl,imported:true};}
+  var G=invGroup(o),lab=0,pp=0,lh=0;G.forEach(function(x){var e=est(x);lab+=e.lab;pp+=e.pp;lh+=e.lh});
   var mPct=markPct(o),ppM=pp*(1+mPct/100),markup=ppM-pp;
   var fees=(o.fees||[]).reduce(function(s,f){return s+(+f.amt||0)},0),taxFees=(o.fees||[]).reduce(function(s,f){return s+(f.tax===false?0:(+f.amt||0))},0);
   var sub=lab+ppM+fees,rate=parseFloat(iv('taxRate'))||0,tax=(lab+ppM+taxFees)*rate/100,total=sub+tax,paid=o.paid?total:0;
@@ -1763,7 +1768,12 @@ function invRow(item,desc,qty,rate,amt){return '<tr><td>'+esc(item)+'</td><td>'+
 function invoiceHTML(o){
   var G=invGroup(o),T=invTotal(o),d=new Date(o.invDate||o.billedAt||Date.now()),dd=d.toLocaleDateString(LOC()),m=markPct(o)/100;
   var rows='';
-  G.forEach(function(x){var rate=+x.rate||0;
+  if(o.imported){
+    if(+o.impLabor)rows+=invRow('Labor','Labor',null,null,+o.impLabor);
+    if(+o.impParts)rows+=invRow('Parts','Parts and materials',null,null,+o.impParts);
+    if(+o.impFees)rows+=invRow('Fee','Shop supplies / misc fees',null,null,+o.impFees);
+  }
+  if(!o.imported)G.forEach(function(x){var rate=+x.rate||0;
     acts(x).forEach(function(a){var hrs=+a.inv||0,lab=hrs*rate;
       var desc='<div>'+esc(a.c||x.desc||'Service')+(a.corr?' — '+esc(a.corr):'')+'</div><div class="mu">Created: '+new Date(x.created||d).toLocaleDateString(LOC())+(a.doneAt?' · Completed: '+new Date(a.doneAt).toLocaleDateString(LOC()):'')+'</div>';
       if(hrs||lab)rows+=invRow('Labor',desc,hrs.toFixed(2),rate,lab);
@@ -1771,8 +1781,8 @@ function invoiceHTML(o){
     });
     (x.partsUsed||[]).forEach(function(p){rows+=invRow('Part',esc((p.no?p.no+' — ':'')+(p.d||'')),p.q,(p.pr||0)*(1+m),p.q*(p.pr||0)*(1+m))});
   });
-  var orate=+o.rate||0;(o.laborLines||[]).forEach(function(l){var hh=+l.hours||0;rows+=invRow('Labor',esc(l.desc||'Labor'),hh.toFixed(2),orate,hh*orate)});
-  (o.fees||[]).forEach(function(f){rows+=invRow('Fee',esc(f.name),'',null,+f.amt||0)});
+  if(!o.imported){var orate=+o.rate||0;(o.laborLines||[]).forEach(function(l){var hh=+l.hours||0;rows+=invRow('Labor',esc(l.desc||'Labor'),hh.toFixed(2),orate,hh*orate)});
+  (o.fees||[]).forEach(function(f){rows+=invRow('Fee',esc(f.name),'',null,+f.amt||0)})}
   if(!rows)rows='<tr><td colspan="5" class="mu">No priced labor or parts yet. Set invoiced hours and part prices on the Shop desk.</td></tr>';
   var sos=G.map(function(x){return sonum(x)}).join(', ');
   var h='<div class="inv">';
@@ -1890,6 +1900,50 @@ function pkgsView(){var L=allPkgs().slice().sort(function(a,b){return (a.created
 function savePkg(id){var p=allPkgs().find(function(x){return x.id==id});if(!p)return;p=JSON.parse(JSON.stringify(p));p.name=(($('pk_n_'+id)||{}).value||p.name).trim();p.hours=parseFloat(($('pk_h_'+id)||{}).value)||0;p.rate=parseFloat(($('pk_r_'+id)||{}).value)||0;saveDoc('packages',p);toast('✓ Saved')}
 function addPkgRow(){var n=(($('pk_new_n')||{}).value||'').trim(),h=parseFloat(($('pk_new_h')||{}).value)||0;if(!n)return;saveDoc('packages',{id:'pk'+Date.now().toString(36),name:n,hours:h,rate:0,created:Date.now()});setTimeout(render,150)}
 function addPkgNI(id){if(!id)return;var p=allPkgs().find(function(x){return x.id==id});if(p){nItems.push({t:p.name,skip:false,hours:p.hours||0,rate:p.rate||0});drawNI()}var s=$('f_pkg');if(s)s.value=''}
+// ================= Import invoice history from Fullbay (CSV) =================
+function csvParse(text){
+  text=String(text||'').replace(/\r\n/g,'\n').replace(/\r/g,'\n');
+  var rows=[],field='',row=[],q=false;
+  for(var i=0;i<text.length;i++){var c=text[i];
+    if(q){if(c=='"'){if(text[i+1]=='"'){field+='"';i++}else q=false}else field+=c}
+    else{if(c=='"')q=true;else if(c==','){row.push(field);field=''}else if(c=='\n'){row.push(field);rows.push(row);row=[];field=''}else field+=c}}
+  if(field.length||row.length){row.push(field);rows.push(row)}
+  var head=(rows.shift()||[]).map(function(h){return String(h).trim()});
+  return rows.filter(function(r){return r.length>1||(r[0]&&r[0].trim())}).map(function(r){var o={};head.forEach(function(h,j){o[h]=r[j]!==undefined?r[j]:''});return o});
+}
+function impClean(v){v=String(v==null?'':v).trim();if(v.slice(0,2)=='="'&&v.slice(-1)=='"')v=v.slice(2,-1);return v.trim()}
+function impNum(v){var n=parseFloat(impClean(v).replace(/[,$]/g,''));return isNaN(n)?0:n}
+function impDate(v){v=impClean(v);var m=/^(\d{1,2})\/(\d{1,2})\/(\d{4})/.exec(v);if(m)return new Date(+m[3],+m[1]-1,+m[2]).getTime();var t=Date.parse(v);return isNaN(t)?0:t}
+function impSlug(s){return String(s||'').toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_|_$/g,'').slice(0,46)||'x'}
+function impBuild(rows){
+  var invs=[],cm={};
+  rows.forEach(function(r){var inv=impClean(r['Number']||r['Invoice']||'');if(!inv)return;
+    var cust=impClean(r['Customer']||'');if(cust)cm[cust]=1;
+    var amount=impNum(r['Amount']),bal=impNum(r['Balance']),tax=impNum(r['Tax']),mi=impNum(r['Mileage']);
+    var paid=(impClean(r['Status'])=='Paid')||bal<=0.005;
+    invs.push({id:'imp_'+impSlug(inv),imported:true,invNo:inv,so:impClean(r['SO / CS']||r['SO']||'')||inv,customer:cust,unit:impClean(r['Unit']||''),mileage:mi?String(Math.round(mi)):'',po:impClean(r['Purchase Order']||''),
+      billed:true,billedAt:impDate(r['Invoice Date']||r['Created Date']),created:impDate(r['Created Date'])||impDate(r['Invoice Date'])||Date.now(),paid:paid,paidAt:paid?impDate(r['Invoice Date']):0,
+      impLabor:impNum(r['Labor']),impParts:impNum(r['Parts']),impFees:impNum(r['Misc Fees'])+impNum(r['Supplies'])+impNum(r['Sublet']),impSub:impNum(r['Subtotal']),impTax:tax,impTotal:amount,impBalance:bal,
+      payMethod:impClean(r['Payment Method']||''),invNote:impClean(r['Notes']||''),fbStatus:impClean(r['Status']||''),status:'done'})});
+  return {invs:invs,custs:Object.keys(cm).map(function(nm){return {id:'cimp_'+impSlug(nm),name:nm,created:Date.now()}})};
+}
+var impData=null;
+function impPreview(file){var out=$('imp_out');if(!file||!out)return;out.textContent='Reading…';
+  var fr=new FileReader();
+  fr.onload=function(){try{var d=impBuild(csvParse(fr.result));impData=d;
+    var un=d.invs.filter(function(x){return !x.paid}),owed=un.reduce(function(s,x){return s+x.impBalance},0);
+    out.innerHTML='<b>'+d.invs.length+'</b> invoices · <b>'+d.custs.length+'</b> customers · '+un.length+' unpaid ('+money(owed)+' owed).<br><button class="btn" style="margin-top:8px" onclick="impRun()">Import into Waymore</button>';tr(out);
+  }catch(e){out.textContent='Could not read that file. Make sure it is the Fullbay invoices CSV.'}};
+  fr.readAsText(file);
+}
+async function impRun(){if(!impData){return}var out=$('imp_out');
+  var list=impData.custs.map(function(c){return {col:'customers',id:c.id,data:c}}).concat(impData.invs.map(function(o){return {col:'serviceOrders',id:o.id,data:o}}));
+  var done=0,fail=0,P=function(){if(out)out.innerHTML='Importing… '+done+' / '+list.length+(fail?(' · '+fail+' failed'):'')};P();
+  if(SB&&sbc){for(var i=0;i<list.length;i+=200){var batch=list.slice(i,i+200);try{var r=await sbc.from('docs').upsert(batch);if(r&&r.error)fail+=batch.length;else done+=batch.length}catch(e){fail+=batch.length}P()}}
+  else{for(var k=0;k<list.length;k++){try{if(list[k].col=='serviceOrders')saveOrder(list[k].data);else saveDoc(list[k].col,list[k].data);done++}catch(e){fail++}}P()}
+  if(out)out.innerHTML='✓ Imported '+done+' records'+(fail?(' · '+fail+' failed — tap Import again to retry'):'')+'. Open Invoices and Customers to see them.';
+  impData=null;setTimeout(render,600);
+}
 function lastMiles(o){
   var best=null;all().forEach(function(x){if(x.id===o.id||grp(x)===grp(o))return;var same=(o.vin&&x.vin&&lc(x.vin)===lc(o.vin))||(o.plate&&x.plate&&lc(x.plate)===lc(o.plate))||(lc(o.unit)&&lc(x.unit)===lc(o.unit));var mi=parseInt(String(x.mileage||'').replace(/\D/g,''));
     if(same&&mi&&(!best||x.created>best.t))best={mi:mi,t:x.created}});return best;
