@@ -1058,8 +1058,8 @@ function drawer(on){
 }
 function drSearch(q){
   var w=$('dr_res');if(!w)return;q=lc(q);if(q.length<2){w.innerHTML='';return}
-  var R=all().filter(function(o){return lc([sonum(o),o.so,o.customer,o.unit,o.vin,o.plate,o.desc].join(' ')).indexOf(q)>=0}).slice(0,8);
-  w.innerHTML=R.map(function(o){return '<button class="dri" onclick="drawer(false);if(!isMech())tab=1;openSO(\''+o.id+'\')"><span><b>SO '+esc(sonum(o))+'</b> · '+esc(o.customer||'')+'<br><span style="opacity:.75">'+esc(o.unit||'')+'</span></span></button>'}).join('')||'<div style="padding:8px 4px;opacity:.75">No matches</div>';tr(w);
+  var R=all().filter(function(o){return lc([sonum(o),o.so,o.invNo,o.customer,o.unit,o.vin,o.plate,o.po,o.desc].join(' ')).indexOf(q)>=0}).sort(function(a,b){return (b.invDate||b.billedAt||b.created||0)-(a.invDate||a.billedAt||a.created||0)}).slice(0,12);
+  w.innerHTML=R.map(function(o){return '<button class="dri" onclick="drawer(false);if(!isMech())tab=1;openSO(\''+o.id+'\')"><span><b>'+esc(o.invNo||('SO '+sonum(o)))+'</b> · '+esc(o.customer||'')+'<br><span style="opacity:.75">'+esc(o.unit||'')+(o.billed?' · '+money(invTotal(o).total):'')+'</span></span></button>'}).join('')||'<div style="padding:8px 4px;opacity:.75">No matches</div>';tr(w);
 }
 function go(k){
   stopSOTimer(cur);drawer(false);commit();poCommit();copen=null;cedit=null;pedit=null;cdel=false;pdel=false;cur=null;splitting=null;vopen=null;vedit=null;vdel=false;poOpen=null;poDel=false;codesOpen=false;
